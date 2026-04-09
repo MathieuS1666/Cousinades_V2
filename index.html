@@ -101,9 +101,15 @@
             background-color: #e74c3c;
             margin-left: 10px;
             padding: 5px;
-            width: 80px; /* Largeur fixe */
-            font-size: 12px; /* Taille de police plus petite */
-            white-space: nowrap;
+            width: 30px; /* Réduit la largeur */
+            height: 30px; /* Ajoute une hauteur égale */
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50%; /* Le rend rond si c'est un "X" */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
         .supprimer-btn:hover {
             background-color: #c0392b;
@@ -241,7 +247,7 @@
                             <span>
                                 <strong>${item.nom}</strong> : <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
                             </span>
-                            <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">Supprimer</button>
+                            <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">retirer</button>
                         </div>
                     `).join('');
             };
