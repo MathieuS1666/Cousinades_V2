@@ -182,82 +182,179 @@
         </div>
     </div>
 
-    <script>
-        // Liste des plats avec nom, nombre de parts et catégories
-        let plats = [];
+  <script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzHHeh0VfzoQNKB169x0mCl9MDwihy0HlPAYaRpNCKoDzJWuXxTbOfifbJryFCRDg/exec";
 
-        // Charger les plats depuis le stockage local (si disponible)
-        if (localStorage.getItem('platsFamille')) {
-            plats = JSON.parse(localStorage.getItem('platsFamille'));
-            afficherPlats();
-        }
+  // Liste des plats (chargée depuis Google Sheets)
+  let plats = [];
 
-        function ajouterPlat() {
-            const nomInput = document.getElementById('nomPersonne');
-            const platInput = document.getElementById('nouveauPlat');
-            const partsInput = document.getElementById('nombreParts');
+  // Charger les plats depuis Google Sheets
+  async function chargerPlats() {
+    const response = await fetch(`${API_URL}?action=getPlats`);
+    plats = await response.json();
+    afficherPlats();
+  }
 
-            const nom = nomInput.value.trim();
-            const plat = platInput.value.trim();
-            const parts = parseInt(partsInput.value);
+  // Ajouter un plat via l'API
+  async function ajouterPlat() {
+    const nomInput = document.getElementById('nomPersonne');
+    const platInput = document.getElementById('nouveauPlat');
+    const partsInput = document.getElementById('nombreParts');
 
-            // Récupérer les catégories cochées
-            const apero = document.getElementById('apero').checked;
-            const entree = document.getElementById('entree').checked;
-            const platPrincipal = document.getElementById('platPrincipal').checked;
-            const dessert = document.getElementById('dessert').checked;
+    const nom = nomInput.value.trim();
+    const plat = platInput.value.trim();
+    const parts = parseInt(partsInput.value);
 
-            if (nom && plat && !isNaN(parts) && parts > 0) {
-                plats.push({ nom, plat, parts, apero, entree, platPrincipal, dessert });
-                localStorage.setItem('platsFamille', JSON.stringify(plats));
-                afficherPlats();
-                nomInput.value = '';
-                platInput.value = '';
-                partsInput.value = '';
-                document.getElementById('apero').checked = false;
-                document.getElementById('entree').checked = false;
-                document.getElementById('platPrincipal').checked = false;
-                document.getElementById('dessert').checked = false;
-                alert('Merci pour votre contribution !');
-            } else {
-                alert('Veuillez remplir tous les champs correctement.');
-            }
-        }
+    // Récupérer les catégories cochées
+    const apero = document.getElementById('apero').checked;
+    const entree = document.getElementById('entree').checked;
+    const platPrincipal = document.getElementById('platPrincipal').checked;
+    const dessert = document.getElementById('dessert').checked;
 
-        function supprimerPlat(index) {
-            plats.splice(index, 1);
-            localStorage.setItem('platsFamille', JSON.stringify(plats));
-            afficherPlats();
-        }
+    if (nom && plat && !isNaN(parts) && parts > 0) {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nom, plat, parts, apero, entree, platPrincipal, dessert })
+      });
+      const result = await response.text();
+      alert(result);
+      chargerPlats(); // Recharger la liste
+      nomInput.value = '';
+      platInput.value = '';
+      partsInput.value = '';
+      document.getElementById('apero').checked = false;
+      document.getElementById('entree').checked = false;
+      document.getElementById('platPrincipal').checked = false;
+      document.getElementById('dessert').checked = false;
+    } else {
+      alert('Veuillez remplir tous les champs correctement.');
+    }
+  }
 
-        function afficherPlats() {
-            // Filtrer les plats par catégorie
-            const aperos = plats.filter(plat => plat.apero);
-            const entrees = plats.filter(plat => plat.entree);
-            const platsPrincipaux = plats.filter(plat => plat.platPrincipal);
-            const desserts = plats.filter(plat => plat.dessert);
+  // Supprimer un plat (à adapter si nécessaire)
+  async function supprimerPlat(index) {
+    // Pour supprimer, il faudrait ajouter une fonction dans Apps Script
+    // et l'appeler ici. Pour simplifier, on recharge juste la liste.
+    chargerPlats();
+  }
 
-            // Fonction pour générer le HTML d'une liste de plats
-            const genererListe = (id, plats) => {
-                const liste = document.getElementById(id);
-                liste.innerHTML = plats.length === 0
-                    ? '<p>Aucun plat proposé.</p>'
-                    : plats.map((item, index) => `
-                        <div class="plat-item">
-                            <span>
-                                <strong>${item.nom}</strong> : <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
-                            </span>
-                            <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">retirer</button>
-                        </div>
-                    `).join('');
-            };
+  // Afficher les plats (comme avant, mais avec les données de Google Sheets)
+  function afficherPlats() {
+    const aperos = plats.filter(plat => plat.apero);
+    const entrees = plats.filter(plat => plat.entree);
+    const platsPrincipaux = plats.filter(plat => plat.platPrincipal);
+    const desserts = plats.filter(plat => plat.dessert);
 
-            // Générer les listes pour chaque catégorie
-            genererListe('aperoListe', aperos);
-            genererListe('entreeListe', entrees);
-            genererListe('platListe', platsPrincipaux);
-            genererListe('dessertListe', desserts);
-        }
-    </script>
+    const genererListe = (id, plats) => {
+      const liste = document.getElementById(id);
+      liste.innerHTML = plats.length === 0
+        ? '<p>Aucun plat proposé.</p>'
+        : plats.map((item, index) => `
+            <div class="plat-item">
+              <span>
+                <strong>${item.nom}</strong> : <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
+              </span>
+              <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">Supprimer</button>
+            </div>
+          `).join('');
+    };
+
+    genererListe('aperoListe', aperos);
+    genererListe('entreeListe', entrees);
+    genererListe('platListe', platsPrincipaux);
+    genererListe('dessertListe', desserts);
+  }
+
+  // Charger les plats au démarrage
+  chargerPlats();
+</script><script>
+  const API_URL = "VOTRE_URL_API_GOOGLE_APPS_SCRIPT";
+
+  // Liste des plats (chargée depuis Google Sheets)
+  let plats = [];
+
+  // Charger les plats depuis Google Sheets
+  async function chargerPlats() {
+    const response = await fetch(`${API_URL}?action=getPlats`);
+    plats = await response.json();
+    afficherPlats();
+  }
+
+  // Ajouter un plat via l'API
+  async function ajouterPlat() {
+    const nomInput = document.getElementById('nomPersonne');
+    const platInput = document.getElementById('nouveauPlat');
+    const partsInput = document.getElementById('nombreParts');
+
+    const nom = nomInput.value.trim();
+    const plat = platInput.value.trim();
+    const parts = parseInt(partsInput.value);
+
+    // Récupérer les catégories cochées
+    const apero = document.getElementById('apero').checked;
+    const entree = document.getElementById('entree').checked;
+    const platPrincipal = document.getElementById('platPrincipal').checked;
+    const dessert = document.getElementById('dessert').checked;
+
+    if (nom && plat && !isNaN(parts) && parts > 0) {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nom, plat, parts, apero, entree, platPrincipal, dessert })
+      });
+      const result = await response.text();
+      alert(result);
+      chargerPlats(); // Recharger la liste
+      nomInput.value = '';
+      platInput.value = '';
+      partsInput.value = '';
+      document.getElementById('apero').checked = false;
+      document.getElementById('entree').checked = false;
+      document.getElementById('platPrincipal').checked = false;
+      document.getElementById('dessert').checked = false;
+    } else {
+      alert('Veuillez remplir tous les champs correctement.');
+    }
+  }
+
+  // Supprimer un plat (à adapter si nécessaire)
+  async function supprimerPlat(index) {
+    // Pour supprimer, il faudrait ajouter une fonction dans Apps Script
+    // et l'appeler ici. Pour simplifier, on recharge juste la liste.
+    chargerPlats();
+  }
+
+  // Afficher les plats (comme avant, mais avec les données de Google Sheets)
+  function afficherPlats() {
+    const aperos = plats.filter(plat => plat.apero);
+    const entrees = plats.filter(plat => plat.entree);
+    const platsPrincipaux = plats.filter(plat => plat.platPrincipal);
+    const desserts = plats.filter(plat => plat.dessert);
+
+    const genererListe = (id, plats) => {
+      const liste = document.getElementById(id);
+      liste.innerHTML = plats.length === 0
+        ? '<p>Aucun plat proposé.</p>'
+        : plats.map((item, index) => `
+            <div class="plat-item">
+              <span>
+                <strong>${item.nom}</strong> : <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
+              </span>
+              <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">Supprimer</button>
+            </div>
+          `).join('');
+    };
+
+    genererListe('aperoListe', aperos);
+    genererListe('entreeListe', entrees);
+    genererListe('platListe', platsPrincipaux);
+    genererListe('dessertListe', desserts);
+  }
+
+  // Charger les plats au démarrage
+  chargerPlats();
+</script>
+
 </body>
 </html>
