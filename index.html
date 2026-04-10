@@ -6,47 +6,36 @@
     <title>Liste des Plats - Cousinade Bob</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0; padding: 0;
             background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-attachment: fixed; background-position: center;
-            min-height: 100vh; color: #333;
+            background-size: cover; background-attachment: fixed; min-height: 100vh;
         }
         .container {
             display: flex; max-width: 1100px; margin: 20px auto;
-            padding: 20px; background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px; background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; }
         .reponses { flex: 2; padding: 20px; }
-        h1 { color: #2c3e50; margin-top: 0; text-align: center; }
-        .plat-categories {
-            margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px;
-        }
-        .plat-categories label {
-            display: flex; align-items: center; background: #eee;
-            padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.9em;
-        }
         input[type="text"], input[type="number"] {
             padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
         }
-        button {
-            background-color: #27ae60; color: white; border: none;
-            padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.3s;
+        .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+        .plat-categories label { background: #eee; padding: 5px 10px; border-radius: 20px; font-size: 0.85em; cursor: pointer; }
+        button#btnAjouter {
+            background: #27ae60; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer;
         }
-        button:hover { background-color: #219150; }
-        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .colonne { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-        .colonne h3 { margin-top: 0; color: #d35400; font-size: 1.1em; border-bottom: 2px solid #d35400; padding-bottom: 5px; }
+        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .colonne { background: #f9f9f9; padding: 10px; border-radius: 8px; }
+        .colonne h3 { color: #d35400; border-bottom: 2px solid #d35400; padding-bottom: 5px; font-size: 1.1em; }
         .plat-item {
             padding: 10px; background: white; margin: 8px 0; border-radius: 6px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
             font-size: 0.9em; border-left: 4px solid #27ae60;
         }
         .supprimer-btn {
-            background-color: #ff4757; color: white; border: none;
-            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
-            font-size: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+            background: #ff4757; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
         }
         @media (max-width: 768px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
     </style>
@@ -55,9 +44,9 @@
     <div class="container">
         <div class="formulaire">
             <h1>Cousinade 2026</h1>
-            <p>Indiquez ce que vous apportez :</p>
-            <input type="text" id="nomPersonne" placeholder="Votre nom (ex: Famille Martin)">
-            <input type="text" id="nouveauPlat" placeholder="Nom du plat (ex: Quiche...)">
+            <p>Dites-nous ce que vous apportez !</p>
+            <input type="text" id="nomPersonne" placeholder="Votre nom">
+            <input type="text" id="nouveauPlat" placeholder="Nom du plat">
             <div class="plat-categories">
                 <label><input type="checkbox" id="apero"> Apéro</label>
                 <label><input type="checkbox" id="entree"> Entrée</label>
@@ -80,9 +69,15 @@
     </div>
 
 <script>
-    // --- REMPLACEZ L'URL CI-DESSOUS PAR LA VOTRE ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbwaspNe0mgTpq2AJL0D-MMwFY2CgjcvbXzwKbQsUjvxoW8ZtF3msAvz6FFlieITdbJt/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzbZ2Eg9HdtEMJVjmslEaTaMftbA3q0uNO-v6iz8yAumVh9-8jt4C8N6r9AnbH6Ax1J/exec";
     
+    // 1. GESTION DE L'IDENTITE DU NAVIGATEUR
+    let browserId = localStorage.getItem('cousinade_id');
+    if (!browserId) {
+        browserId = 'user_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('cousinade_id', browserId);
+    }
+
     let plats = [];
 
     async function chargerPlats() {
@@ -90,9 +85,7 @@
             const response = await fetch(`${API_URL}?action=getPlats`);
             plats = await response.json();
             afficherPlats();
-        } catch (error) {
-            console.error("Erreur chargement:", error);
-        }
+        } catch (e) { console.error(e); }
     }
 
     async function ajouterPlat() {
@@ -104,60 +97,46 @@
             apero: document.getElementById('apero').checked,
             entree: document.getElementById('entree').checked,
             platPrincipal: document.getElementById('platPrincipal').checked,
-            dessert: document.getElementById('dessert').checked
+            dessert: document.getElementById('dessert').checked,
+            browserId: browserId // Envoi de l'ID unique
         };
 
-        if (!data.nom || !data.plat || !data.parts) return alert("Remplissez tous les champs !");
-        
+        if (!data.nom || !data.plat || !data.parts) return alert("Champs vides !");
         btn.disabled = true; btn.innerText = "Envoi...";
 
         try {
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-            location.reload(); // Recharge la page pour voir le nouveau plat
-        } catch (e) {
-            alert("Erreur lors de l'envoi");
-            btn.disabled = false; btn.innerText = "Ajouter mon plat";
-        }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+            location.reload();
+        } catch (e) { alert("Erreur"); btn.disabled = false; }
     }
 
     async function supprimerPlat(rowId) {
-        const password = prompt("Entrez le mot de passe pour supprimer :");
-        if (!password) return;
-
+        if (!confirm("Supprimer ce plat ?")) return;
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                body: JSON.stringify({ action: "delete", rowId: rowId, password: password })
+                body: JSON.stringify({ action: "delete", rowId: rowId, browserId: browserId })
             });
-            const resText = await response.text();
-            alert(resText);
+            const msg = await response.text();
+            if (msg.includes("Erreur")) alert(msg);
             chargerPlats();
-        } catch (e) {
-            alert("Erreur lors de la suppression");
-        }
+        } catch (e) { alert("Erreur de connexion"); }
     }
 
     function afficherPlats() {
-        const categories = {
-            'aperoListe': plats.filter(p => p.apero),
-            'entreeListe': plats.filter(p => p.entree),
-            'platListe': plats.filter(p => p.platPrincipal),
-            'dessertListe': plats.filter(p => p.dessert)
-        };
+        const ids = ['aperoListe', 'entreeListe', 'platListe', 'dessertListe'];
+        const keys = ['apero', 'entree', 'platPrincipal', 'dessert'];
 
-        for (const [id, liste] of Object.entries(categories)) {
+        ids.forEach((id, index) => {
             const container = document.getElementById(id);
-            container.innerHTML = liste.length === 0 ? '<p style="font-size:0.8em; color:gray;">Rien pour l\'instant</p>' : 
-            liste.map(item => `
+            const items = plats.filter(p => p[keys[index]]);
+            container.innerHTML = items.map(item => `
                 <div class="plat-item">
                     <span><strong>${item.nom}</strong><br>${item.plat} (${item.parts}p)</span>
-                    <button class="supprimer-btn" onclick="supprimerPlat(${item.id})">✕</button>
+                    ${item.ownerId === browserId ? `<button class="supprimer-btn" onclick="supprimerPlat(${item.id})">✕</button>` : ''}
                 </div>
-            `).join('');
-        }
+            `).join('') || '<p style="color:gray;font-size:0.8em">Vide</p>';
+        });
     }
 
     chargerPlats();
