@@ -6,6 +6,210 @@
     <title>Cousinade 2026 - Liste des Plats</title>
     <style>
         body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0; padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-attachment: fixed; min-height: 100vh; color: #333;
+        }
+        .container {
+            display: flex; max-width: 1200px; margin: 20px auto;
+            padding: 20px; background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; }
+        .reponses { flex: 2.5; padding: 20px; }
+        h1 { color: #2c3e50; text-align: center; font-size: 1.4em; margin-top: 0; }
+        
+        input[type="text"], input[type="number"] {
+            padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+        }
+        
+        .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+        .plat-categories label {
+            display: flex; align-items: center; background: #f0f0f0;
+            padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85em; transition: 0.2s;
+        }
+        .plat-categories label:hover { background: #e0e0e0; }
+
+        .boutons-groupe { display: flex; gap: 10px; margin-top: 10px; }
+        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; flex: 1; }
+        #btnAjouter { background-color: #27ae60; color: white; }
+        #btnAnnuler { background-color: #95a5a6; color: white; display: none; }
+        
+        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 20px; }
+        .colonne { background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .colonne h3 { margin-top: 0; color: #d35400; font-size: 1em; border-bottom: 2px solid #d35400; padding-bottom: 5px; text-align: center; }
+        
+        .plat-item {
+            padding: 10px; background: white; margin: 8px 0; border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.82em; border-left: 4px solid #27ae60;
+        }
+        .actions { display: flex; align-items: center; gap: 8px; }
+        .supprimer-btn { background-color: #ff4757; color: white; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; }
+
+        @media (max-width: 900px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="formulaire">
+            <h1 id="titre-form">Cousinade Bob 2026</h1>
+            <p id="instruction" style="text-align:center; font-size:0.9em;">Indiquez ce que vous apportez :</p>
+            
+            <input type="text" id="nomPersonne" placeholder="Votre nom (ex: Famille Dupont)">
+            <input type="text" id="nouveauPlat" placeholder="Nom du plat (ex: Cake olives)">
+            
+            <p style="font-size:0.8em; margin: 10px 0 5px 0; font-weight:bold;">Catégorie (obligatoire) :</p>
+            <div class="plat-categories">
+                <label><input type="checkbox" id="apero"> Apéro</label>
+                <label><input type="checkbox" id="entree"> Entrée</label>
+                <label><input type="checkbox" id="platPrincipal"> Plat</label>
+                <label><input type="checkbox" id="dessert"> Dessert</label>
+                <label><input type="checkbox" id="autre"> Autre</label>
+            </div>
+            
+            <input type="number" id="nombreParts" placeholder="Nombre de parts">
+            
+            <div class="boutons-groupe">
+                <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
+                <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
+            </div>
+        </div>
+
+        <div class="reponses">
+            <div class="colonnes">
+                <div class="colonne"><h3>Apéro</h3><div id="aperoListe"></div></div>
+                <div class="colonne"><h3>Entrées</h3><div id="entreeListe"></div></div>
+                <div class="colonne"><h3>Plats</h3><div id="platListe"></div></div>
+                <div class="colonne"><h3>Desserts</h3><div id="dessertListe"></div></div>
+                <div class="colonne"><h3>Autres</h3><div id="autreListe"></div></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzeLVHKgQHhRpsh47MKBY5r5dcgZgWxkfrtdL1CfIR4xmHnLxFPNpWjvdfqvi_r-o29/exec";
+
+    let plats = [];
+    let modeEdition = false;
+    let idEnCoursEdition = null;
+    let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
+    localStorage.setItem('cousinade_id', browserId);
+
+    async function chargerPlats() {
+        try {
+            const response = await fetch(`${API_URL}?action=getPlats`);
+            plats = await response.json();
+            afficherPlats();
+        } catch (e) { console.error("Erreur chargement", e); }
+    }
+
+    async function ajouterPlat() {
+        const btn = document.getElementById('btnAjouter');
+        const fields = {
+            nom: document.getElementById('nomPersonne').value.trim(),
+            plat: document.getElementById('nouveauPlat').value.trim(),
+            parts: document.getElementById('nombreParts').value,
+            apero: document.getElementById('apero').checked,
+            entree: document.getElementById('entree').checked,
+            platPrincipal: document.getElementById('platPrincipal').checked,
+            dessert: document.getElementById('dessert').checked,
+            autre: document.getElementById('autre').checked
+        };
+
+        const hasCat = fields.apero || fields.entree || fields.platPrincipal || fields.dessert || fields.autre;
+
+        if (!fields.nom || !fields.plat || !fields.parts) return alert("Merci de remplir tous les champs.");
+        if (!hasCat) return alert("Veuillez cocher au moins une catégorie.");
+        
+        btn.disabled = true; btn.innerText = "Envoi...";
+
+        try {
+            await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) 
+            });
+            annulerEdition();
+            await chargerPlats();
+        } catch (e) { alert("Erreur réseau"); } finally { btn.disabled = false; }
+    }
+
+    function preparerModification(id) {
+        const p = plats.find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('nomPersonne').value = p.nom;
+        document.getElementById('nouveauPlat').value = p.plat;
+        document.getElementById('nombreParts').value = p.parts;
+        document.getElementById('apero').checked = p.apero;
+        document.getElementById('entree').checked = p.entree;
+        document.getElementById('platPrincipal').checked = p.platPrincipal;
+        document.getElementById('dessert').checked = p.dessert;
+        document.getElementById('autre').checked = p.autre;
+
+        modeEdition = true; idEnCoursEdition = id;
+        document.getElementById('btnAjouter').innerText = "Enregistrer";
+        document.getElementById('btnAjouter').style.backgroundColor = "#f39c12";
+        document.getElementById('btnAnnuler').style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function annulerEdition() {
+        modeEdition = false; idEnCoursEdition = null;
+        document.getElementById('nomPersonne').value = "";
+        document.getElementById('nouveauPlat').value = "";
+        document.getElementById('nombreParts').value = "";
+        document.querySelectorAll('.plat-categories input').forEach(c => c.checked = false);
+        document.getElementById('btnAjouter').innerText = "Ajouter mon plat";
+        document.getElementById('btnAjouter').style.backgroundColor = "#27ae60";
+        document.getElementById('btnAnnuler').style.display = "none";
+    }
+
+    async function supprimerPlat(id) {
+        if (!confirm("Supprimer ce plat ?")) return;
+        try {
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
+            await chargerPlats();
+        } catch (e) { alert("Erreur"); }
+    }
+
+    function afficherPlats() {
+        const config = [
+            { id: 'aperoListe', key: 'apero' },
+            { id: 'entreeListe', key: 'entree' },
+            { id: 'platListe', key: 'platPrincipal' },
+            { id: 'dessertListe', key: 'dessert' },
+            { id: 'autreListe', key: 'autre' }
+        ];
+
+        config.forEach(cat => {
+            const container = document.getElementById(cat.id);
+            const filtered = plats.filter(p => p[cat.key]);
+            container.innerHTML = filtered.length ? filtered.map(p => `
+                <div class="plat-item">
+                    <span><strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                    <div class="actions">
+                        ${p.ownerId === browserId ? `
+                            <button onclick="preparerModification(${p.id})" style="background:none; border:none; cursor:pointer;">✏️</button>
+                            <button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('') : '<p style="color:gray; font-size:0.8em; text-align:center;">-</p>';
+        });
+    }
+
+    chargerPlats();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cousinade 2026 - Liste des Plats</title>
+    <style>
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0; padding: 0;
             background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
