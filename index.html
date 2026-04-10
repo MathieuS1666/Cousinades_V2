@@ -38,6 +38,13 @@
             background: #ff4757; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
         }
         @media (max-width: 768px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
+        .actions {
+    display: flex;
+    align-items: center;
+}
+.plat-item span {
+    line-height: 1.4;
+}
     </style>
 </head>
 <body>
@@ -69,9 +76,12 @@
     </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzbZ2Eg9HdtEMJVjmslEaTaMftbA3q0uNO-v6iz8yAumVh9-8jt4C8N6r9AnbH6Ax1J/exec";
-    
-    // 1. GESTION DE L'IDENTITE DU NAVIGATEUR
+    const API_URL = "https://script.google.com/macros/s/AKfycbwQMKEJPogoT6hRgoBaCEpecDGzwRHmKZDtxG18kzrsT-HKayXwQDTb6MByJeg0KH7D/exec";
+    // 1. VARIABLES GLOBALES (États de l'application)
+    let plats = []; // Stocke la liste des plats reçus
+    let modeEdition = false; // Savoir si on ajoute ou si on modifie
+    let idEnCoursEdition = null; // Stocke l'ID du plat qu'on est en train de modifier
+    // 2. GESTION DE L'IDENTITE DU NAVIGATEUR
     let browserId = localStorage.getItem('cousinade_id');
     if (!browserId) {
         browserId = 'user_' + Math.random().toString(36).substr(2, 9);
@@ -80,6 +90,29 @@
 
     let plats = [];
 
+    function preparerModification(id) {
+    const plat = plats.find(p => p.id === id);
+    if (!plat) return;
+
+    // Remplir les champs
+    document.getElementById('nomPersonne').value = plat.nom;
+    document.getElementById('nouveauPlat').value = plat.plat;
+    document.getElementById('nombreParts').value = plat.parts;
+    document.getElementById('apero').checked = plat.apero;
+    document.getElementById('entree').checked = plat.entree;
+    document.getElementById('platPrincipal').checked = plat.platPrincipal;
+    document.getElementById('dessert').checked = plat.dessert;
+
+    // Changer le bouton
+    modeEdition = true;
+    idEnCoursEdition = id;
+    const btn = document.getElementById('btnAjouter');
+    btn.innerText = "Enregistrer les modifications";
+    btn.style.backgroundColor = "#f39c12"; // Orange pour l'édition
+    
+    // Remonter en haut de page pour voir le formulaire
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
     async function chargerPlats() {
         try {
             const response = await fetch(`${API_URL}?action=getPlats`);
@@ -90,17 +123,12 @@
 
 async function ajouterPlat() {
     const btn = document.getElementById('btnAjouter');
-    
-    // On récupère les références des éléments pour pouvoir les vider plus tard
-    const nomInput = document.getElementById('nomPersonne');
-    const platInput = document.getElementById('nouveauPlat');
-    const partsInput = document.getElementById('nombreParts');
-    const checkboxes = document.querySelectorAll('.plat-categories input[type="checkbox"]');
-
     const data = {
-        nom: nomInput.value.trim(),
-        plat: platInput.value.trim(),
-        parts: partsInput.value,
+        action: modeEdition ? "update" : "insert", // On précise l'action
+        rowId: idEnCoursEdition,
+        nom: document.getElementById('nomPersonne').value.trim(),
+        plat: document.getElementById('nouveauPlat').value.trim(),
+        parts: document.getElementById('nombreParts').value,
         apero: document.getElementById('apero').checked,
         entree: document.getElementById('entree').checked,
         platPrincipal: document.getElementById('platPrincipal').checked,
@@ -110,30 +138,24 @@ async function ajouterPlat() {
 
     if (!data.nom || !data.plat || !data.parts) return alert("Champs vides !");
     
-    btn.disabled = true; 
-    btn.innerText = "Envoi...";
+    btn.disabled = true;
+    btn.innerText = "Traitement...";
 
     try {
-        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         
-        if (response.ok) {
-            // --- C'EST ICI QUE LE NETTOYAGE SE PASSE ---
-            nomInput.value = "";
-            platInput.value = "";
-            partsInput.value = "";
-            checkboxes.forEach(cb => cb.checked = false);
-            
-            alert("Plat ajouté avec succès !");
-            
-            // On recharge les données sans recharger toute la page
-            chargerPlats(); 
-        }
-    } catch (e) { 
-        alert("Erreur de connexion"); 
-    } finally {
-        btn.disabled = false; 
+        // Reset du formulaire
+        modeEdition = false;
+        idEnCoursEdition = null;
         btn.innerText = "Ajouter mon plat";
-    }
+        btn.style.backgroundColor = "#27ae60";
+        
+        // Vider les champs (réutilisez votre logique précédente)
+        document.querySelectorAll('input').forEach(i => { if(i.type !== 'checkbox') i.value = "" });
+        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+        
+        chargerPlats();
+    } catch (e) { alert("Erreur"); btn.disabled = false; }
 }
 
 async function supprimerPlat(rowId) {
@@ -174,21 +196,53 @@ async function supprimerPlat(rowId) {
 }
 
     function afficherPlats() {
-        const ids = ['aperoListe', 'entreeListe', 'platListe', 'dessertListe'];
-        const keys = ['apero', 'entree', 'platPrincipal', 'dessert'];
+    // 1. Définition des conteneurs HTML et des clés correspondantes dans les données
+    const categories = [
+        { id: 'aperoListe', key: 'apero' },
+        { id: 'entreeListe', key: 'entree' },
+        { id: 'platListe', key: 'platPrincipal' },
+        { id: 'dessertListe', key: 'dessert' }
+    ];
 
-        ids.forEach((id, index) => {
-            const container = document.getElementById(id);
-            container.innerHTML = "";
-            const items = plats.filter(p => p[keys[index]]);
-            container.innerHTML = items.map(item => `
-                <div class="plat-item">
-                    <span><strong>${item.nom}</strong><br>${item.plat} (${item.parts}p)</span>
-                    ${item.ownerId === browserId ? `<button class="supprimer-btn" onclick="supprimerPlat(${item.id})">✕</button>` : ''}
-                </div>
-            `).join('') || '<p style="color:gray;font-size:0.8em">Vide</p>';
-        });
-    }
+    categories.forEach(cat => {
+        const container = document.getElementById(cat.id);
+        
+        // 2. On vide le conteneur avant de le remplir pour éviter les doublons
+        container.innerHTML = ""; 
+
+        // 3. Filtrage des plats appartenant à cette catégorie
+        const items = plats.filter(p => p[cat.key] === true);
+
+        if (items.length === 0) {
+            container.innerHTML = '<p style="color:gray; font-size:0.8em; font-style:italic;">Aucun plat pour le moment</p>';
+        } else {
+            items.forEach(item => {
+                // Création de l'élément div pour le plat
+                const platDiv = document.createElement('div');
+                platDiv.className = 'plat-item';
+
+                // Construction du contenu HTML interne
+                // On vérifie si l'utilisateur actuel est le créateur pour afficher les actions
+                const estProprietaire = (item.ownerId === browserId);
+
+                platDiv.innerHTML = `
+                    <span>
+                        <strong>${item.nom}</strong><br>
+                        ${item.plat} <small>(${item.parts} pers.)</small>
+                    </span>
+                    <div class="actions">
+                        ${estProprietaire ? `
+                            <button onclick="preparerModification(${item.id})" title="Modifier" style="background:none; border:none; cursor:pointer; font-size:16px; margin-right:5px;">✏️</button>
+                            <button class="supprimer-btn" onclick="supprimerPlat(${item.id})" title="Supprimer">✕</button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(platDiv);
+            });
+        }
+    });
+}
 
     chargerPlats();
 </script>
