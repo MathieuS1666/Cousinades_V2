@@ -136,18 +136,42 @@ async function ajouterPlat() {
     }
 }
 
-    async function supprimerPlat(rowId) {
-        if (!confirm("Supprimer ce plat ?")) return;
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "delete", rowId: rowId, browserId: browserId })
-            });
-            const msg = await response.text();
-            if (msg.includes("Erreur")) alert(msg);
-            chargerPlats();
-        } catch (e) { alert("Erreur de connexion"); }
+async function supprimerPlat(rowId) {
+    if (!confirm("Supprimer ce plat ?")) return;
+
+    // 1. MISE À JOUR OPTIMISTE : On cache l'élément immédiatement
+    // On cherche l'élément HTML qui contient le bouton cliqué
+    const bouton = event.target;
+    const elementPlat = bouton.closest('.plat-item');
+    const ancienneAffichage = elementPlat.style.display;
+    elementPlat.style.display = 'none'; 
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ 
+                action: "delete", 
+                rowId: rowId, 
+                browserId: browserId 
+            })
+        });
+
+        const msg = await response.text();
+
+        if (msg.includes("Erreur")) {
+            alert(msg);
+            // En cas d'erreur (ex: pas le bon auteur), on réaffiche l'élément
+            elementPlat.style.display = ancienneAffichage;
+        } else {
+            // 2. FORCER LE RAFRAÎCHISSEMENT DES DONNÉES
+            // On recharge la liste proprement depuis le serveur pour être sûr
+            await chargerPlats();
+        }
+    } catch (e) {
+        alert("Erreur de connexion");
+        elementPlat.style.display = ancienneAffichage;
     }
+}
 
     function afficherPlats() {
         const ids = ['aperoListe', 'entreeListe', 'platListe', 'dessertListe'];
@@ -155,6 +179,7 @@ async function ajouterPlat() {
 
         ids.forEach((id, index) => {
             const container = document.getElementById(id);
+            container.innerHTML = "";
             const items = plats.filter(p => p[keys[index]]);
             container.innerHTML = items.map(item => `
                 <div class="plat-item">
