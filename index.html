@@ -61,6 +61,19 @@
                         font-size: 12px;}
 
         @media (max-width: 900px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
+   .plat-icone {
+    font-size: 1.2em;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Optionnel : Ajouter l'icône aussi dans les titres de colonnes */
+.colonne h3::before {
+    margin-right: 8px;
+}
+
+/* On peut cibler chaque colonne spécifiquement pour le titre si tu veux : */
+/* #aperoListe-parent h3::before { content: "🍹 "; } */
     </style>
 </head>
 <body>
@@ -186,30 +199,46 @@
     }
 
     function afficherPlats() {
-        const config = [
-            { id: 'aperoListe', key: 'apero' },
-            { id: 'entreeListe', key: 'entree' },
-            { id: 'platListe', key: 'platPrincipal' },
-            { id: 'dessertListe', key: 'dessert' },
-            { id: 'autreListe', key: 'autre' }
-        ];
+    // On définit les icônes pour chaque catégorie
+    const icones = {
+        'aperoListe': '🍹',
+        'entreeListe': '🥗',
+        'platListe': '🥘',
+        'dessertListe': '🍰',
+        'autreListe': '📦'
+    };
 
-        config.forEach(cat => {
-            const container = document.getElementById(cat.id);
-            const filtered = plats.filter(p => p[cat.key]);
-            container.innerHTML = filtered.length ? filtered.map(p => `
-                <div class="plat-item">
-                    <span><strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                    <div class="actions">
-                        ${p.ownerId === browserId ? `
-                            <button onclick="preparerModification(${p.id})" style="background:none; border:none; cursor:pointer;">✏️</button>
-                            <button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>
-                        ` : ''}
-                    </div>
+    const config = [
+        { id: 'aperoListe', key: 'apero' },
+        { id: 'entreeListe', key: 'entree' },
+        { id: 'platListe', key: 'platPrincipal' },
+        { id: 'dessertListe', key: 'dessert' },
+        { id: 'autreListe', key: 'autre' }
+    ];
+
+    config.forEach(cat => {
+        const container = document.getElementById(cat.id);
+        const filtered = plats.filter(p => p[cat.key]);
+        
+        // On ajoute l'icône dans le titre de la colonne si on veut, 
+        // mais ici on va l'ajouter directement dans chaque item
+        container.innerHTML = filtered.length ? filtered.map(p => `
+            <div class="plat-item">
+                <span>
+                    <span class="plat-icone">${icones[cat.id]}</span> 
+                    <strong>${p.nom}</strong><br>
+                    ${p.plat} (${p.parts}p)
+                </span>
+                <div class="actions">
+                    ${p.ownerId === browserId ? `
+                        <button onclick="preparerModification(${p.id})" style="background:none; border:none; cursor:pointer; font-size:16px;">✏️</button>
+                        <button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>
+                    ` : ''}
                 </div>
-            `).join('') : '<p style="color:gray; font-size:0.8em; text-align:center;">-</p>';
-        });
-    }
+            </div>
+        `).join('') : '<p style="color:gray; font-size:0.8em; text-align:center;">-</p>';
+    });
+}
 
     chargerPlats();
 </script>
