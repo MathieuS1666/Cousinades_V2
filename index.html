@@ -88,27 +88,53 @@
         } catch (e) { console.error(e); }
     }
 
-    async function ajouterPlat() {
-        const btn = document.getElementById('btnAjouter');
-        const data = {
-            nom: document.getElementById('nomPersonne').value.trim(),
-            plat: document.getElementById('nouveauPlat').value.trim(),
-            parts: document.getElementById('nombreParts').value,
-            apero: document.getElementById('apero').checked,
-            entree: document.getElementById('entree').checked,
-            platPrincipal: document.getElementById('platPrincipal').checked,
-            dessert: document.getElementById('dessert').checked,
-            browserId: browserId // Envoi de l'ID unique
-        };
+async function ajouterPlat() {
+    const btn = document.getElementById('btnAjouter');
+    
+    // On récupère les références des éléments pour pouvoir les vider plus tard
+    const nomInput = document.getElementById('nomPersonne');
+    const platInput = document.getElementById('nouveauPlat');
+    const partsInput = document.getElementById('nombreParts');
+    const checkboxes = document.querySelectorAll('.plat-categories input[type="checkbox"]');
 
-        if (!data.nom || !data.plat || !data.parts) return alert("Champs vides !");
-        btn.disabled = true; btn.innerText = "Envoi...";
+    const data = {
+        nom: nomInput.value.trim(),
+        plat: platInput.value.trim(),
+        parts: partsInput.value,
+        apero: document.getElementById('apero').checked,
+        entree: document.getElementById('entree').checked,
+        platPrincipal: document.getElementById('platPrincipal').checked,
+        dessert: document.getElementById('dessert').checked,
+        browserId: browserId 
+    };
 
-        try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-            location.reload();
-        } catch (e) { alert("Erreur"); btn.disabled = false; }
+    if (!data.nom || !data.plat || !data.parts) return alert("Champs vides !");
+    
+    btn.disabled = true; 
+    btn.innerText = "Envoi...";
+
+    try {
+        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        
+        if (response.ok) {
+            // --- C'EST ICI QUE LE NETTOYAGE SE PASSE ---
+            nomInput.value = "";
+            platInput.value = "";
+            partsInput.value = "";
+            checkboxes.forEach(cb => cb.checked = false);
+            
+            alert("Plat ajouté avec succès !");
+            
+            // On recharge les données sans recharger toute la page
+            chargerPlats(); 
+        }
+    } catch (e) { 
+        alert("Erreur de connexion"); 
+    } finally {
+        btn.disabled = false; 
+        btn.innerText = "Ajouter mon plat";
     }
+}
 
     async function supprimerPlat(rowId) {
         if (!confirm("Supprimer ce plat ?")) return;
