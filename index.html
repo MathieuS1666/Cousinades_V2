@@ -3,275 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Plats - cousinade Bob</title>
+    <title>Liste des Plats - Cousinade Bob</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            min-height: 100vh;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-attachment: fixed; background-position: center;
+            min-height: 100vh; color: #333;
         }
         .container {
-            display: flex;
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex; max-width: 1100px; margin: 20px auto;
+            padding: 20px; background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .formulaire {
-            flex: 1;
-            padding: 20px;
-            border-right: 1px solid #eee;
-        }
-        .reponses {
-            flex: 2;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            grid-column: 1 / -1;
-        }
+        .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; }
+        .reponses { flex: 2; padding: 20px; }
+        h1 { color: #2c3e50; margin-top: 0; text-align: center; }
         .plat-categories {
-            margin: 15px 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 10px;
+            margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px;
         }
         .plat-categories label {
-            display: flex;
-            align-items: center;
-            width: 24%;
+            display: flex; align-items: center; background: #eee;
+            padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.9em;
         }
-        input[type="checkbox"] {
-            margin-right: 2px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 8px 0;
-            width: 100%;
-            box-sizing: border-box;
+        input[type="text"], input[type="number"] {
+            padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
         }
         button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 15px;
+            background-color: #27ae60; color: white; border: none;
+            padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.3s;
         }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .colonnes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .colonne {
-            flex: 1;
-            min-width: 200px;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .colonne h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
+        button:hover { background-color: #219150; }
+        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .colonne { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .colonne h3 { margin-top: 0; color: #d35400; font-size: 1.1em; border-bottom: 2px solid #d35400; padding-bottom: 5px; }
         .plat-item {
-            padding: 8px;
-            background-color: white;
-            margin: 5px 0;
-            border-radius: 3px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 10px; background: white; margin: 8px 0; border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.9em; border-left: 4px solid #27ae60;
         }
         .supprimer-btn {
-            background-color: #e74c3c;
-            margin-left: 10px;
-            padding: 5px;
-            width: 30px; /* Réduit la largeur */
-            height: 30px; /* Ajoute une hauteur égale */
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 10%; /* Le rend rond si c'est un "X" */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
+            background-color: #ff4757; color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            font-size: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
-        .supprimer-btn:hover {
-            background-color: #c0392b;
-        }
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .formulaire {
-                border-right: none;
-                border-bottom: 1px solid #eee;
-                
-            }
-            .colonnes {
-                flex-direction: column;
-            }
-            .formulaire h1 {
-                text-align: center;
-                color: #2c3e50;
-            }
-            .formulaire p {
-                text-align: center;
-            }
-        }
+        @media (max-width: 768px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="formulaire">
-            <h1>Cousinades Bobillier - 9 mai 2026</h1>
-            <p>Merci d'indiquer ce que vous allez apporter pour les cousinades</p>
-            <div>
-                <input type="text" id="nomPersonne" placeholder="Votre nom">
-            </div>
-            <div>
-                <input type="text" id="nouveauPlat" placeholder="Ex: Tarte aux pommes, Salade de pâtes...">
-            </div>
+            <h1>Cousinade 2026</h1>
+            <p>Indiquez ce que vous apportez :</p>
+            <input type="text" id="nomPersonne" placeholder="Votre nom (ex: Famille Martin)">
+            <input type="text" id="nouveauPlat" placeholder="Nom du plat (ex: Quiche...)">
             <div class="plat-categories">
                 <label><input type="checkbox" id="apero"> Apéro</label>
                 <label><input type="checkbox" id="entree"> Entrée</label>
                 <label><input type="checkbox" id="platPrincipal"> Plat</label>
                 <label><input type="checkbox" id="dessert"> Dessert</label>
             </div>
-            <div>
-                <input type="number" id="nombreParts" placeholder="Estimation du nombre de parts" min="1">
-            </div>
-            <button onclick="ajouterPlat()">Ajouter mon plat</button>
+            <input type="number" id="nombreParts" placeholder="Nombre de parts">
+            <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
         </div>
 
         <div class="reponses">
-            <h2>Liste des plats proposés</h2>
+            <h2>Liste des plats</h2>
             <div class="colonnes">
-                <div class="colonne">
-                    <h3>Apéro</h3>
-                    <div id="aperoListe"></div>
-                </div>
-                <div class="colonne">
-                    <h3>Entrées</h3>
-                    <div id="entreeListe"></div>
-                </div>
-                <div class="colonne">
-                    <h3>Plats</h3>
-                    <div id="platListe"></div>
-                </div>
-                <div class="colonne">
-                    <h3>Desserts</h3>
-                    <div id="dessertListe"></div>
-                </div>
+                <div class="colonne"><h3>Apéro</h3><div id="aperoListe"></div></div>
+                <div class="colonne"><h3>Entrées</h3><div id="entreeListe"></div></div>
+                <div class="colonne"><h3>Plats</h3><div id="platListe"></div></div>
+                <div class="colonne"><h3>Desserts</h3><div id="dessertListe"></div></div>
             </div>
         </div>
     </div>
 
- <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwbKd_psjyGsVGc1lMpJMvfUdsAEoQUtUFjxxufLLwXkJuU92Oqjr20GIvBV8FT7CUT/exec";
-  let plats = [];
+<script>
+    // --- REMPLACEZ L'URL CI-DESSOUS PAR LA VOTRE ---
+    const API_URL = "https://script.google.com/macros/s/AKfycbwaspNe0mgTpq2AJL0D-MMwFY2CgjcvbXzwKbQsUjvxoW8ZtF3msAvz6FFlieITdbJt/exec";
+    
+    let plats = [];
 
-  // Charger les plats depuis Google Sheets
-  async function chargerPlats() {
-    try {
-      const response = await fetch(`${API_URL}?action=getPlats`);
-      plats = await response.json();
-      afficherPlats();
-    } catch (error) {
-      console.error("Erreur lors du chargement des plats :", error);
-      alert("Impossible de charger les plats. Vérifiez votre connexion ou réessayez plus tard.");
+    async function chargerPlats() {
+        try {
+            const response = await fetch(`${API_URL}?action=getPlats`);
+            plats = await response.json();
+            afficherPlats();
+        } catch (error) {
+            console.error("Erreur chargement:", error);
+        }
     }
-  }
 
-  // Ajouter un plat via l'API
-  async function ajouterPlat() {
-    const nomInput = document.getElementById('nomPersonne');
-    const platInput = document.getElementById('nouveauPlat');
-    const partsInput = document.getElementById('nombreParts');
+    async function ajouterPlat() {
+        const btn = document.getElementById('btnAjouter');
+        const data = {
+            nom: document.getElementById('nomPersonne').value.trim(),
+            plat: document.getElementById('nouveauPlat').value.trim(),
+            parts: document.getElementById('nombreParts').value,
+            apero: document.getElementById('apero').checked,
+            entree: document.getElementById('entree').checked,
+            platPrincipal: document.getElementById('platPrincipal').checked,
+            dessert: document.getElementById('dessert').checked
+        };
 
-    const nom = nomInput.value.trim();
-    const plat = platInput.value.trim();
-    const parts = parseInt(partsInput.value);
+        if (!data.nom || !data.plat || !data.parts) return alert("Remplissez tous les champs !");
+        
+        btn.disabled = true; btn.innerText = "Envoi...";
 
-    const apero = document.getElementById('apero').checked;
-    const entree = document.getElementById('entree').checked;
-    const platPrincipal = document.getElementById('platPrincipal').checked;
-    const dessert = document.getElementById('dessert').checked;
-
-    if (nom && plat && !isNaN(parts) && parts > 0) {
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nom, plat, parts, apero, entree, platPrincipal, dessert })
-        });
-        const result = await response.text();
-        alert(result);
-        chargerPlats();
-        nomInput.value = '';
-        platInput.value = '';
-        partsInput.value = '';
-        document.getElementById('apero').checked = false;
-        document.getElementById('entree').checked = false;
-        document.getElementById('platPrincipal').checked = false;
-        document.getElementById('dessert').checked = false;
-      } catch (error) {
-        console.error("Erreur lors de l'ajout du plat :", error);
-        alert("Impossible d'ajouter le plat. Vérifiez votre connexion ou réessayez plus tard.");
-      }
-    } else {
-      alert('Veuillez remplir tous les champs correctement.');
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            location.reload(); // Recharge la page pour voir le nouveau plat
+        } catch (e) {
+            alert("Erreur lors de l'envoi");
+            btn.disabled = false; btn.innerText = "Ajouter mon plat";
+        }
     }
-  }
 
-  // Supprimer un plat
-  async function supprimerPlat(index) {
-    chargerPlats(); // Recharge simplement la liste pour l'instant
-  }
+    async function supprimerPlat(rowId) {
+        const password = prompt("Entrez le mot de passe pour supprimer :");
+        if (!password) return;
 
-  // Afficher les plats
-  function afficherPlats() {
-    const aperos = plats.filter(plat => plat.apero);
-    const entrees = plats.filter(plat => plat.entree);
-    const platsPrincipaux = plats.filter(plat => plat.platPrincipal);
-    const desserts = plats.filter(plat => plat.dessert);
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "delete", rowId: rowId, password: password })
+            });
+            const resText = await response.text();
+            alert(resText);
+            chargerPlats();
+        } catch (e) {
+            alert("Erreur lors de la suppression");
+        }
+    }
 
-    const genererListe = (id, plats) => {
-      const liste = document.getElementById(id);
-      liste.innerHTML = plats.length === 0
-        ? '<p>Aucun plat proposé.</p>'
-        : plats.map((item) => `
-            <div class="plat-item">
-              <span>
-                <strong>${item.nom}</strong> : <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
-              </span>
-              <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">X</button>
-            </div>
-          `).join('');
-    };
+    function afficherPlats() {
+        const categories = {
+            'aperoListe': plats.filter(p => p.apero),
+            'entreeListe': plats.filter(p => p.entree),
+            'platListe': plats.filter(p => p.platPrincipal),
+            'dessertListe': plats.filter(p => p.dessert)
+        };
 
-    genererListe('aperoListe', aperos);
-    genererListe('entreeListe', entrees);
-    genererListe('platListe', platsPrincipaux);
-    genererListe('dessertListe', desserts);
-  }
-  // Charger les plats au démarrage
-  chargerPlats();
+        for (const [id, liste] of Object.entries(categories)) {
+            const container = document.getElementById(id);
+            container.innerHTML = liste.length === 0 ? '<p style="font-size:0.8em; color:gray;">Rien pour l\'instant</p>' : 
+            liste.map(item => `
+                <div class="plat-item">
+                    <span><strong>${item.nom}</strong><br>${item.plat} (${item.parts}p)</span>
+                    <button class="supprimer-btn" onclick="supprimerPlat(${item.id})">✕</button>
+                </div>
+            `).join('');
+        }
+    }
+
+    chargerPlats();
 </script>
 </body>
 </html>
