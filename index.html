@@ -74,6 +74,32 @@
 
 /* On peut cibler chaque colonne spécifiquement pour le titre si tu veux : */
 /* #aperoListe-parent h3::before { content: "🍹 "; } */
+        /* Couleurs par colonne */
+#aperoListe-parent { border-top: 5px solid #ff9f43; }
+#aperoListe-parent h3 { color: #e67e22; border-bottom-color: #ff9f43; }
+
+#entreeListe-parent { border-top: 5px solid #1dd1a1; }
+#entreeListe-parent h3 { color: #10ac84; border-bottom-color: #1dd1a1; }
+
+#platListe-parent { border-top: 5px solid #ff6b6b; }
+#platListe-parent h3 { color: #ee5253; border-bottom-color: #ff6b6b; }
+
+#dessertListe-parent { border-top: 5px solid #feca57; }
+#dessertListe-parent h3 { color: #f39c12; border-bottom-color: #feca57; }
+
+#autreListe-parent { border-top: 5px solid #48dbfb; }
+#autreListe-parent h3 { color: #0abde3; border-bottom-color: #48dbfb; }
+
+/* Style pour la bulle du total */
+.total-badge {
+    background: #eee;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    margin-left: 5px;
+    vertical-align: middle;
+}
     </style>
 </head>
 <body>
@@ -103,13 +129,13 @@
         </div>
 
         <div class="reponses">
-            <div class="colonnes">
-<div class="colonne"><h3>🍹 Apéro</h3><div id="aperoListe"></div></div>
-<div class="colonne"><h3>🥗 Entrées</h3><div id="entreeListe"></div></div>
-<div class="colonne"><h3>🥘 Plats</h3><div id="platListe"></div></div>
-<div class="colonne"><h3>🍰 Desserts</h3><div id="dessertListe"></div></div>
-<div class="colonne"><h3>📦 Autres</h3><div id="autreListe"></div></div>
-            </div>
+           <div class="colonnes">
+    <div class="colonne" id="aperoListe-parent"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
+    <div class="colonne" id="entreeListe-parent"><h3>🥗 Entrées <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
+    <div class="colonne" id="platListe-parent"><h3>🥘 Plats <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
+    <div class="colonne" id="dessertListe-parent"><h3>🍰 Desserts <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
+    <div class="colonne" id="autreListe-parent"><h3>📦 Autres <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
+</div>
         </div>
     </div>
 
@@ -199,15 +225,6 @@
     }
 
     function afficherPlats() {
-    // On définit les icônes pour chaque catégorie
-    const icones = {
-        'aperoListe': '🍹',
-        'entreeListe': '🥗',
-        'platListe': '🥘',
-        'dessertListe': '🍰',
-        'autreListe': '📦'
-    };
-
     const config = [
         { id: 'aperoListe', key: 'apero' },
         { id: 'entreeListe', key: 'entree' },
@@ -216,12 +233,24 @@
         { id: 'autreListe', key: 'autre' }
     ];
 
+    const icones = {
+        'aperoListe': '🍹',
+        'entreeListe': '🥗',
+        'platListe': '🥘',
+        'dessertListe': '🍰',
+        'autreListe': '📦'
+    };
+
     config.forEach(cat => {
         const container = document.getElementById(cat.id);
         const filtered = plats.filter(p => p[cat.key]);
         
-        // On ajoute l'icône dans le titre de la colonne si on veut, 
-        // mais ici on va l'ajouter directement dans chaque item
+        // --- CALCUL DU TOTAL DE PARTS ---
+        const totalParts = filtered.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+        const badge = document.getElementById('total-' + cat.key);
+        if (badge) badge.innerText = totalParts;
+        // --------------------------------
+
         container.innerHTML = filtered.length ? filtered.map(p => `
             <div class="plat-item">
                 <span>
@@ -239,7 +268,6 @@
         `).join('') : '<p style="color:gray; font-size:0.8em; text-align:center;">-</p>';
     });
 }
-
     chargerPlats();
 </script>
 </body>
