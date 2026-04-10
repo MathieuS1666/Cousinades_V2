@@ -46,7 +46,19 @@
             font-size: 0.82em; border-left: 4px solid #27ae60;
         }
         .actions { display: flex; align-items: center; gap: 8px; }
-        .supprimer-btn { background-color: #ff4757; color: white; border: none; width: 22px; height: 22px; border-radius: 10%; cursor: pointer; }
+        .supprimer-btn { background-color: #ff4757; 
+                        color: white; 
+                        border: none; 
+                        width: 22px; 
+                        height: 22px; 
+                        border-radius: 20%; 
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: center; /* Centre horizontalement */
+                        align-items: center;     /* Centre verticalement */    
+                        line-height: 1;          /* Évite les décalages dus à l'interligne */
+                        padding: 0;              /* Supprime les paddings par défaut des navigateurs */
+                        font-size: 12px;}
 
         @media (max-width: 900px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
     </style>
