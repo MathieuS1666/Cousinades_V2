@@ -74,8 +74,10 @@
 
     <div class="header-info">
         <div id="countdown">Chargement du compte à rebours...</div>
-        <div class="stats-bar">
+          <div class="stats-bar">
             <div class="stat-item">👥 Total Parts : <span id="stat-total">0</span></div>
+            <div class="stat-item">🍹 Apéro : <span id="stat-apero">0</span></div>
+            <div class="stat-item">🥗 Entrées : <span id="stat-entrees">0</span></div>
             <div class="stat-item">🥘 Plats : <span id="stat-plats">0</span></div>
             <div class="stat-item">🍰 Desserts : <span id="stat-desserts">0</span></div>
         </div>
@@ -150,15 +152,23 @@
         } catch (e) { console.error(e); }
     }
 
-    function calculerStatsGlobales() {
-        const total = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-        const nbPlats = plats.filter(p => p.platPrincipal).length;
-        const nbDesserts = plats.filter(p => p.dessert).length;
-        
-        document.getElementById('stat-total').innerText = total;
-        document.getElementById('stat-plats').innerText = nbPlats;
-        document.getElementById('stat-desserts').innerText = nbDesserts;
-    }
+function calculerStatsGlobales() {
+    // Calcul du total général des parts
+    const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    
+    // Calcul du nombre de parts par catégorie
+    const totalApero = plats.filter(p => p.apero).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    const totalEntrees = plats.filter(p => p.entree).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    const totalPlats = plats.filter(p => p.platPrincipal).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    const totalDesserts = plats.filter(p => p.dessert).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    
+    // Affichage dans le bandeau
+    document.getElementById('stat-total').innerText = totalParts;
+    document.getElementById('stat-apero').innerText = totalApero;
+    document.getElementById('stat-entrees').innerText = totalEntrees;
+    document.getElementById('stat-plats').innerText = totalPlats;
+    document.getElementById('stat-desserts').innerText = totalDesserts;
+}
 
     async function ajouterPlat() {
         const btn = document.getElementById('btnAjouter');
