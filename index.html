@@ -3,65 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Plats - Cousinade Bob</title>
+    <title>Cousinade 2026 - Liste des Plats</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0; padding: 0;
             background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-attachment: fixed; min-height: 100vh;
+            background-size: cover; background-attachment: fixed; background-position: center;
+            min-height: 100vh; color: #333;
         }
         .container {
             display: flex; max-width: 1100px; margin: 20px auto;
-            padding: 20px; background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 20px; background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; }
         .reponses { flex: 2; padding: 20px; }
+        h1 { color: #2c3e50; margin-top: 0; text-align: center; font-size: 1.5em; }
+        
         input[type="text"], input[type="number"] {
             padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
         }
-        .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
-        .plat-categories label { background: #eee; padding: 5px 10px; border-radius: 20px; font-size: 0.85em; cursor: pointer; }
-        button#btnAjouter {
-            background: #27ae60; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer;
+        
+        .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px; }
+        .plat-categories label {
+            display: flex; align-items: center; background: #eee;
+            padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.85em;
         }
-        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .colonne { background: #f9f9f9; padding: 10px; border-radius: 8px; }
-        .colonne h3 { color: #d35400; border-bottom: 2px solid #d35400; padding-bottom: 5px; font-size: 1.1em; }
+
+        .boutons-groupe { display: flex; gap: 10px; margin-top: 10px; }
+        button {
+            padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; flex: 1;
+        }
+        #btnAjouter { background-color: #27ae60; color: white; }
+        #btnAnnuler { background-color: #95a5a6; color: white; display: none; }
+        
+        .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .colonne { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .colonne h3 { margin-top: 0; color: #d35400; font-size: 1.1em; border-bottom: 2px solid #d35400; padding-bottom: 5px; }
+        
         .plat-item {
             padding: 10px; background: white; margin: 8px 0; border-radius: 6px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.9em; border-left: 4px solid #27ae60;
+            font-size: 0.85em; border-left: 4px solid #27ae60;
         }
+        .actions { display: flex; align-items: center; gap: 5px; }
         .supprimer-btn {
-            background: #ff4757; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            background-color: #ff4757; color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
         }
+
         @media (max-width: 768px) { .container { flex-direction: column; } .formulaire { border-right: none; border-bottom: 1px solid #ddd; } }
-        .actions {
-    display: flex;
-    align-items: center;
-}
-.plat-item span {
-    line-height: 1.4;
-}
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="formulaire">
-            <h1>Cousinade 2026</h1>
-            <p>Dites-nous ce que vous apportez !</p>
+        <div class="formulaire" id="form-top">
+            <h1>Cousinade Bob 2026</h1>
+            <p id="form-instruction">Indiquez ce que vous apportez :</p>
+            
             <input type="text" id="nomPersonne" placeholder="Votre nom">
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
+            
             <div class="plat-categories">
                 <label><input type="checkbox" id="apero"> Apéro</label>
                 <label><input type="checkbox" id="entree"> Entrée</label>
                 <label><input type="checkbox" id="platPrincipal"> Plat</label>
                 <label><input type="checkbox" id="dessert"> Dessert</label>
             </div>
+            
             <input type="number" id="nombreParts" placeholder="Nombre de parts">
-            <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
+            
+            <div class="boutons-groupe">
+                <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
+                <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
+            </div>
         </div>
 
         <div class="reponses">
@@ -76,174 +93,160 @@
     </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwQMKEJPogoT6hRgoBaCEpecDGzwRHmKZDtxG18kzrsT-HKayXwQDTb6MByJeg0KH7D/exec";
-    // 1. VARIABLES GLOBALES (États de l'application)
-    let plats = []; // Stocke la liste des plats reçus
-    let modeEdition = false; // Savoir si on ajoute ou si on modifie
-    let idEnCoursEdition = null; // Stocke l'ID du plat qu'on est en train de modifier
-    // 2. GESTION DE L'IDENTITE DU NAVIGATEUR
+    // --- 1. CONFIGURATION ---
+    const API_URL = "https://script.google.com/macros/s/AKfycbwQMKEJPogoT6hRgoBaCEpecDGzwRHmKZDtxG18kzrsT-HKayXwQDTb6MByJeg0KH7D/exec"; // REMPLACEZ PAR VOTRE URL
+
+    // --- 2. VARIABLES D'ÉTAT ---
+    let plats = [];
+    let modeEdition = false;
+    let idEnCoursEdition = null;
     let browserId = localStorage.getItem('cousinade_id');
+    
     if (!browserId) {
         browserId = 'user_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('cousinade_id', browserId);
     }
 
-    let plats = [];
+    // --- 3. FONCTIONS PRINCIPALES ---
 
-    function preparerModification(id) {
-    const plat = plats.find(p => p.id === id);
-    if (!plat) return;
-
-    // Remplir les champs
-    document.getElementById('nomPersonne').value = plat.nom;
-    document.getElementById('nouveauPlat').value = plat.plat;
-    document.getElementById('nombreParts').value = plat.parts;
-    document.getElementById('apero').checked = plat.apero;
-    document.getElementById('entree').checked = plat.entree;
-    document.getElementById('platPrincipal').checked = plat.platPrincipal;
-    document.getElementById('dessert').checked = plat.dessert;
-
-    // Changer le bouton
-    modeEdition = true;
-    idEnCoursEdition = id;
-    const btn = document.getElementById('btnAjouter');
-    btn.innerText = "Enregistrer les modifications";
-    btn.style.backgroundColor = "#f39c12"; // Orange pour l'édition
-    
-    // Remonter en haut de page pour voir le formulaire
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
     async function chargerPlats() {
         try {
             const response = await fetch(`${API_URL}?action=getPlats`);
             plats = await response.json();
             afficherPlats();
-        } catch (e) { console.error(e); }
+        } catch (error) {
+            console.error("Erreur chargement:", error);
+        }
     }
 
-async function ajouterPlat() {
-    const btn = document.getElementById('btnAjouter');
-    const data = {
-        action: modeEdition ? "update" : "insert", // On précise l'action
-        rowId: idEnCoursEdition,
-        nom: document.getElementById('nomPersonne').value.trim(),
-        plat: document.getElementById('nouveauPlat').value.trim(),
-        parts: document.getElementById('nombreParts').value,
-        apero: document.getElementById('apero').checked,
-        entree: document.getElementById('entree').checked,
-        platPrincipal: document.getElementById('platPrincipal').checked,
-        dessert: document.getElementById('dessert').checked,
-        browserId: browserId 
-    };
+    async function ajouterPlat() {
+        const btn = document.getElementById('btnAjouter');
+        const data = {
+            action: modeEdition ? "update" : "insert",
+            rowId: idEnCoursEdition,
+            nom: document.getElementById('nomPersonne').value.trim(),
+            plat: document.getElementById('nouveauPlat').value.trim(),
+            parts: document.getElementById('nombreParts').value,
+            apero: document.getElementById('apero').checked,
+            entree: document.getElementById('entree').checked,
+            platPrincipal: document.getElementById('platPrincipal').checked,
+            dessert: document.getElementById('dessert').checked,
+            browserId: browserId 
+        };
 
-    if (!data.nom || !data.plat || !data.parts) return alert("Champs vides !");
-    
-    btn.disabled = true;
-    btn.innerText = "Traitement...";
-
-    try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        if (!data.nom || !data.plat || !data.parts) return alert("Remplissez tous les champs !");
         
-        // Reset du formulaire
+        btn.disabled = true;
+        btn.innerText = "Envoi en cours...";
+
+        try {
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+            viderChamps();
+            await chargerPlats();
+        } catch (e) {
+            alert("Erreur de connexion au serveur.");
+        } finally {
+            btn.disabled = false;
+            annulerEdition(); // Repasse en mode ajout
+        }
+    }
+
+    function preparerModification(id) {
+        const plat = plats.find(p => p.id === id);
+        if (!plat) return;
+
+        // Remplir le formulaire
+        document.getElementById('nomPersonne').value = plat.nom;
+        document.getElementById('nouveauPlat').value = plat.plat;
+        document.getElementById('nombreParts').value = plat.parts;
+        document.getElementById('apero').checked = plat.apero;
+        document.getElementById('entree').checked = plat.entree;
+        document.getElementById('platPrincipal').checked = plat.platPrincipal;
+        document.getElementById('dessert').checked = plat.dessert;
+
+        // Changer l'interface
+        modeEdition = true;
+        idEnCoursEdition = id;
+        document.getElementById('btnAjouter').innerText = "Enregistrer les modifications";
+        document.getElementById('btnAjouter').style.backgroundColor = "#f39c12";
+        document.getElementById('btnAnnuler').style.display = "block";
+        document.getElementById('form-instruction').innerText = "Modification de votre plat :";
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function annulerEdition() {
         modeEdition = false;
         idEnCoursEdition = null;
-        btn.innerText = "Ajouter mon plat";
-        btn.style.backgroundColor = "#27ae60";
-        
-        // Vider les champs (réutilisez votre logique précédente)
-        document.querySelectorAll('input').forEach(i => { if(i.type !== 'checkbox') i.value = "" });
-        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-        
-        chargerPlats();
-    } catch (e) { alert("Erreur"); btn.disabled = false; }
-}
-
-async function supprimerPlat(rowId) {
-    if (!confirm("Supprimer ce plat ?")) return;
-
-    // 1. MISE À JOUR OPTIMISTE : On cache l'élément immédiatement
-    // On cherche l'élément HTML qui contient le bouton cliqué
-    const bouton = event.target;
-    const elementPlat = bouton.closest('.plat-item');
-    const ancienneAffichage = elementPlat.style.display;
-    elementPlat.style.display = 'none'; 
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ 
-                action: "delete", 
-                rowId: rowId, 
-                browserId: browserId 
-            })
-        });
-
-        const msg = await response.text();
-
-        if (msg.includes("Erreur")) {
-            alert(msg);
-            // En cas d'erreur (ex: pas le bon auteur), on réaffiche l'élément
-            elementPlat.style.display = ancienneAffichage;
-        } else {
-            // 2. FORCER LE RAFRAÎCHISSEMENT DES DONNÉES
-            // On recharge la liste proprement depuis le serveur pour être sûr
-            await chargerPlats();
-        }
-    } catch (e) {
-        alert("Erreur de connexion");
-        elementPlat.style.display = ancienneAffichage;
+        viderChamps();
+        document.getElementById('btnAjouter').innerText = "Ajouter mon plat";
+        document.getElementById('btnAjouter').style.backgroundColor = "#27ae60";
+        document.getElementById('btnAnnuler').style.display = "none";
+        document.getElementById('form-instruction').innerText = "Indiquez ce que vous apportez :";
     }
-}
+
+    function viderChamps() {
+        document.getElementById('nomPersonne').value = "";
+        document.getElementById('nouveauPlat').value = "";
+        document.getElementById('nombreParts').value = "";
+        document.querySelectorAll('.plat-categories input').forEach(cb => cb.checked = false);
+    }
+
+    async function supprimerPlat(rowId) {
+        if (!confirm("Voulez-vous vraiment supprimer ce plat ?")) return;
+        
+        // Suppression optimiste (on cache l'élément tout de suite)
+        const itemElement = event.target.closest('.plat-item');
+        itemElement.style.opacity = "0.3";
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "delete", rowId: rowId, browserId: browserId })
+            });
+            await chargerPlats();
+        } catch (e) {
+            alert("Erreur lors de la suppression.");
+            itemElement.style.opacity = "1";
+        }
+    }
 
     function afficherPlats() {
-    // 1. Définition des conteneurs HTML et des clés correspondantes dans les données
-    const categories = [
-        { id: 'aperoListe', key: 'apero' },
-        { id: 'entreeListe', key: 'entree' },
-        { id: 'platListe', key: 'platPrincipal' },
-        { id: 'dessertListe', key: 'dessert' }
-    ];
+        const categories = [
+            { id: 'aperoListe', key: 'apero' },
+            { id: 'entreeListe', key: 'entree' },
+            { id: 'platListe', key: 'platPrincipal' },
+            { id: 'dessertListe', key: 'dessert' }
+        ];
 
-    categories.forEach(cat => {
-        const container = document.getElementById(cat.id);
-        
-        // 2. On vide le conteneur avant de le remplir pour éviter les doublons
-        container.innerHTML = ""; 
+        categories.forEach(cat => {
+            const container = document.getElementById(cat.id);
+            container.innerHTML = "";
+            const items = plats.filter(p => p[cat.key] === true);
 
-        // 3. Filtrage des plats appartenant à cette catégorie
-        const items = plats.filter(p => p[cat.key] === true);
+            if (items.length === 0) {
+                container.innerHTML = '<p style="color:gray; font-size:0.8em;">Vide</p>';
+            } else {
+                items.forEach(item => {
+                    const estProprietaire = (item.ownerId === browserId);
+                    const platDiv = document.createElement('div');
+                    platDiv.className = 'plat-item';
+                    platDiv.innerHTML = `
+                        <span><strong>${item.nom}</strong><br>${item.plat} (${item.parts}p)</span>
+                        <div class="actions">
+                            ${estProprietaire ? `
+                                <button onclick="preparerModification(${item.id})" style="background:none; border:none; cursor:pointer; font-size:16px;">✏️</button>
+                                <button class="supprimer-btn" onclick="supprimerPlat(${item.id})">✕</button>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(platDiv);
+                });
+            }
+        });
+    }
 
-        if (items.length === 0) {
-            container.innerHTML = '<p style="color:gray; font-size:0.8em; font-style:italic;">Aucun plat pour le moment</p>';
-        } else {
-            items.forEach(item => {
-                // Création de l'élément div pour le plat
-                const platDiv = document.createElement('div');
-                platDiv.className = 'plat-item';
-
-                // Construction du contenu HTML interne
-                // On vérifie si l'utilisateur actuel est le créateur pour afficher les actions
-                const estProprietaire = (item.ownerId === browserId);
-
-                platDiv.innerHTML = `
-                    <span>
-                        <strong>${item.nom}</strong><br>
-                        ${item.plat} <small>(${item.parts} pers.)</small>
-                    </span>
-                    <div class="actions">
-                        ${estProprietaire ? `
-                            <button onclick="preparerModification(${item.id})" title="Modifier" style="background:none; border:none; cursor:pointer; font-size:16px; margin-right:5px;">✏️</button>
-                            <button class="supprimer-btn" onclick="supprimerPlat(${item.id})" title="Supprimer">✕</button>
-                        ` : ''}
-                    </div>
-                `;
-                
-                container.appendChild(platDiv);
-            });
-        }
-    });
-}
-
+    // Lancement initial
     chargerPlats();
 </script>
 </body>
