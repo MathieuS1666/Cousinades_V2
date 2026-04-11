@@ -1,226 +1,75 @@
-/* ========================================== */
-/* COUSINADE BOB 2026 - STYLE        */
-/* ========================================== */
+body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
 
-:root {
-    --primary: #d35400;
-    --secondary: #2c3e50;
-    --accent: #feca57;
-    --danger: #e74c3c;
-    --bg: #f4f7f6;
-    --shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-* { box-sizing: border-box; }
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
-    color: var(--secondary);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-}
-
-/* --- LE BANDEAU (HEADER) --- */
-header {
-    background: linear-gradient(135deg, var(--primary), #e67e22);
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    margin-bottom: 30px;
-}
-
-header h1 { margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px; }
-
-.countdown {
-    background: rgba(255,255,255,0.2);
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 50px;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-/* --- CONTAINER GLOBAL --- */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 15px 50px 15px;
-}
-
-/* --- LES CARTES (CARDS) --- */
-.card {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: var(--shadow);
-    margin-bottom: 25px;
-    border: 1px solid #eee;
-}
-
-.card h2, .card h3 {
-    margin-top: 0;
-    color: var(--secondary);
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 10px;
-}
-
-/* --- FORMULAIRE --- */
-label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-input[type="text"], input[type="number"], textarea, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1em;
-}
-
-textarea { height: 80px; resize: vertical; }
-
-.categories {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.categories label {
-    background: #f9f9f9;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid #eee;
-    font-weight: normal;
-    margin: 0;
-    transition: 0.3s;
-}
-
-.categories input { margin-right: 5px; }
-
-.categories label:hover { background: #fff3e0; }
-
-/* --- BOUTONS --- */
-button {
-    cursor: pointer;
-    border: none;
-    transition: 0.3s;
-    font-weight: bold;
-}
-
-.btn-principal {
-    width: 100%;
-    background: var(--primary);
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 1.1em;
-    margin-top: 20px;
-}
-
-.btn-principal:hover { background: #a04000; transform: translateY(-2px); }
-
-.btn-action {
-    background: #f1f2f6;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1.1em;
-}
-
-.btn-action:hover { background: #dfe4ea; }
-
-/* --- LISTES ET APPORTS --- */
-.liste-plats {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.plat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 10px;
-}
-
-.plat-item span { font-size: 1em; }
-
-/* --- STATISTIQUES --- */
-.grid-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
+.header-bandeau { 
+    background: #d35400; 
+    color: white; 
+    text-align: center; 
+    padding: 30px 10px; 
     margin-bottom: 20px;
 }
 
-.stat-item {
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 0.85em;
-    border-bottom: 3px solid var(--accent);
+.container { max-width: 600px; margin: auto; padding: 10px; }
+
+.card { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    margin-bottom: 20px;
 }
 
-.stat-item strong { display: block; font-size: 1.4em; color: var(--primary); }
-
-.presents-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 15px;
+input, textarea, select { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 8px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    display: block;
 }
 
-.badge-present {
-    background: #ecf0f1;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    display: flex;
+.categories-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 5px; 
+    margin: 10px 0;
+}
+
+.btn-valider { 
+    background: #d35400; 
+    color: white; 
+    border: none; 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 5px; 
+    font-size: 1.1em; 
+    cursor: pointer;
+}
+
+.stats-bar { text-align: center; padding: 10px; font-size: 1.1em; }
+
+.section-titre { 
+    font-weight: bold; 
+    margin-top: 25px; 
+    margin-bottom: 10px; 
+    border-bottom: 2px solid #d35400; 
+    padding-bottom: 5px;
+}
+
+.plat-item { 
+    background: white; 
+    padding: 10px; 
+    margin-bottom: 5px; 
+    border-radius: 5px; 
+    display: flex; 
+    justify-content: space-between; 
     align-items: center;
-    gap: 5px;
+    border: 1px solid #eee;
 }
 
-.btn-edit-small {
-    background: none;
-    font-size: 0.9em;
-    padding: 0;
-}
+.badges-presents { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+.badge-present { background: #ddd; padding: 5px 10px; border-radius: 15px; font-size: 0.8em; }
 
-/* --- LIVRE D'OR --- */
-.com-card {
-    border-left: 5px solid var(--accent);
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
-}
+.modal { display:none; position:fixed; z-index:10; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
+.modal-content { background:white; margin:20% auto; padding:20px; width:80%; max-width:300px; border-radius:10px; }
 
-.com-card p { margin: 5px 0; }
-
-/* --- FOOTER --- */
-footer { text-align: center; margin-top: 40px; }
-
-.btn-admin {
-    background: none;
-    color: #95a5a6;
-    font-size: 0.8em;
-    text-decoration: underline;
-}
-
-/* --- RESPONSIVE --- */
-@media (max-width: 600px) {
-    header h1 { font-size: 1.8em; }
-    .card { padding: 15px; }
-    .categories { grid-template-columns: 1fr 1fr; }
-}
+.btn-admin { display: block; margin: 40px auto; background: none; border: none; color: gray; text-decoration: underline; cursor: pointer; }
