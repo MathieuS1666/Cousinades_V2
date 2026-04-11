@@ -8,6 +8,111 @@
 </head>
 <body>
 
+    <div class="header-bandeau">
+        <h1>Cousinade Bob 2026</h1>
+        <p id="countdown">Calcul du compte à rebours...</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>✨ Je participe</h2>
+            <input type="text" id="nomPersonne" placeholder="Ton prénom">
+            
+            <div id="boxConvives">
+                <input type="number" id="nbConvives" step="0.5" placeholder="Nombre de personnes (ex: 2.5)">
+            </div>
+            <p id="msgConvivesOk" style="display:none; color: #27ae60; font-weight: bold; text-align:center;">✅ Présence enregistrée !</p>
+
+            <hr>
+            
+            <input type="text" id="nouveauPlat" placeholder="Nom de ton plat ou allergie">
+            <input type="number" id="nombreParts" placeholder="Nombre de parts">
+            
+            <div class="categories-grid">
+                <label><input type="radio" name="categoriePlat" value="apero"> 🍹 Apéro</label>
+                <label><input type="radio" name="categoriePlat" value="entree"> 🥗 Entrée</label>
+                <label><input type="radio" name="categoriePlat" value="platPrincipal"> 🥘 Plat</label>
+                <label><input type="radio" name="categoriePlat" value="dessert"> 🍰 Dessert</label>
+                <label><input type="radio" name="categoriePlat" value="allergie"> ⚠️ Allergie</label>
+                <label><input type="radio" name="categoriePlat" value="autre"> 📦 Autre</label>
+            </div>
+
+            <textarea id="commentaire" placeholder="Un petit mot pour le livre d'or ?"></textarea>
+            <button id="btnAjouter" onclick="ajouterPlat()" class="btn-valider">Valider</button>
+        </div>
+
+        <div class="stats-bar">
+            <span>👥 <strong id="stat-convives">0</strong> personnes</span> | 
+            <span>🍕 <strong id="stat-total">0</strong> parts</span>
+        </div>
+        <div id="listePresents" class="badges-presents"></div>
+
+        <div class="section-titre" style="color:#c0392b;">⚠️ Allergies & Régimes</div>
+        <div id="allergieListe"></div>
+
+        <div class="section-titre">🍹 Apéritif</div>
+        <div id="aperoListe"></div>
+
+        <div class="section-titre">🥗 Entrées</div>
+        <div id="entreeListe"></div>
+
+        <div class="section-titre">🥘 Plats Principaux</div>
+        <div id="platListe"></div>
+
+        <div class="section-titre">🍰 Desserts</div>
+        <div id="dessertListe"></div>
+
+        <div class="section-titre">📦 Autres</div>
+        <div id="autreListe"></div>
+
+        <h2 style="text-align:center; margin-top:40px;">📖 Livre d'Or</h2>
+        <div id="livreDor"></div>
+
+        <button onclick="ouvrirAdmin()" class="btn-admin">⚙️ Admin</button>
+    </div>
+
+    <div id="modalEdition" class="modal"><div class="modal-content">
+        <h3>Modifier</h3>
+        <input type="text" id="editPlatNom">
+        <input type="number" id="editPlatParts">
+        <select id="editPlatCat">
+            <option value="apero">Apéro</option>
+            <option value="entree">Entrée</option>
+            <option value="platPrincipal">Plat</option>
+            <option value="dessert">Dessert</option>
+            <option value="allergie">Allergie</option>
+            <option value="autre">Autre</option>
+        </select>
+        <button onclick="validerModifModale()">OK</button>
+        <button onclick="fermerModale()">Annuler</button>
+    </div></div>
+
+    <div id="modalConvives" class="modal"><div class="modal-content">
+        <h3>Convives</h3>
+        <input type="number" id="editNbConvives" step="0.5">
+        <button onclick="validerModifConvives()">OK</button>
+        <button onclick="fermerModaleConvives()">Annuler</button>
+    </div></div>
+
+    <div id="modalLivreDor" class="modal"><div class="modal-content">
+        <h3>Livre d'or</h3>
+        <textarea id="editCom"></textarea>
+        <button onclick="validerModifCom()">OK</button>
+        <button onclick="fermerModaleLivreDor()">Annuler</button>
+    </div></div>
+
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cousinade Bob 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
     <div id="modalEdition" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
         <div style="background:white; margin:10% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
             <h3 style="margin-top:0;">✏️ Modifier l'élément</h3>
