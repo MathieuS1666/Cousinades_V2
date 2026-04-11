@@ -88,7 +88,10 @@
         </div>
         <input type="number" id="nombreParts" placeholder="Nombre de portions">
 
-        <input type="text" id="commentaire" placeholder="Un petit mot doux ou une info importante ?">
+        <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?" 
+          style="width: 100%; min-height: 60px; padding: 12px; margin: 8px 0; border: 1px solid #ccc; 
+                 border-radius: 5px; box-sizing: border-box; font-family: inherit; resize: vertical;">
+</textarea>
         
         <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
@@ -201,7 +204,7 @@ function calculerStatsGlobales() {
         document.getElementById('livreDor').innerHTML = entries.map(([auteur, msg]) => `
             <div style="background: #fff9e6; padding: 15px; border-radius: 10px; border-left: 5px solid #feca57; position: relative; box-shadow: 2px 2px 10px rgba(0,0,0,0.05);">
                 <span style="position: absolute; top: 5px; left: 10px; font-size: 2em; color: rgba(254, 202, 87, 0.3); font-family: serif;">“</span>
-                <p style="margin: 5px 0 10px 15px; font-style: italic; color: #444;">${msg}</p>
+                <p style="margin: 5px 0 10px 15px; font-style: italic; color: #444;white-space: pre-wrap; word-break: break-word;">${msg}</p>
                 <p style="margin: 0; text-align: right; font-weight: bold; color: #2c3e50; font-size: 0.85em;">— ${auteur}</p>
             </div>
         `).join('');
