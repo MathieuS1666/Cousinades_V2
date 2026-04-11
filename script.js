@@ -93,10 +93,14 @@ verifierSiDejaInscrit();
 
 async function ouvrirModifConvives(id) {
     const p = plats.find(x => x.id === id);
-    const nouveau = prompt(`Modifier le nombre de personnes pour ${p.nom} :`, p.convives);
-    if (nouveau !== null && nouveau.trim() !== "") {
-        await envoyerUpdate(id, p.nom, nouveau, p.plat, p.parts, p.apero, p.entree, p.platPrincipal, p.dessert, p.autre);
+    let newNbConvives;
+    while(newNbConvives != null){
+        newNbConvives = parseFloat(prompt(`Modifier le nombre de personnes pour ${p.nom} :`, p.convives));
+        if(newNbConvives == NaN)
+            alert(`${newNbConvives} n'est pas un nombre connard!`);
     }
+
+    await envoyerUpdate(id, p.nom, newNbConvives, p.plat, p.parts, p.apero, p.entree, p.platPrincipal, p.dessert, p.autre);
 }
 
 async function ouvrirModifPlat(id) {
