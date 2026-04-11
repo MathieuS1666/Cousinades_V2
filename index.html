@@ -7,7 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<div id="modalEdition" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+    <div style="background:white; margin:10% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
+        <h3 style="margin-top:0;">Modifier le plat</h3>
+        
+        <label style="font-size:0.8em;">Nom du plat :</label>
+        <input type="text" id="editPlatNom">
+        
+        <label style="font-size:0.8em;">Nombre de parts :</label>
+        <input type="number" id="editPlatParts">
+        
+        <label style="font-size:0.8em;">Catégorie :</label>
+        <select id="editPlatCat" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc;">
+            <option value="apero">🍹 Apéro</option>
+            <option value="entree">🥗 Entrée</option>
+            <option value="platPrincipal">🥘 Plat</option>
+            <option value="dessert">🍰 Dessert</option>
+            <option value="autre">📦 Autre</option>
+        </select>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button onclick="validerModifModale()" style="background:#27ae60; color:white;">Enregistrer</button>
+            <button onclick="fermerModale()" style="background:#e74c3c; color:white;">Annuler</button>
+        </div>
+    </div>
+</div>
 <div class="header-info">
     <div id="countdown">Cousinade 2026 !</div>
     <div class="stats-bar">
