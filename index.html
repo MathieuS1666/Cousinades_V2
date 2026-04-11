@@ -123,7 +123,7 @@
 
 <script>
     // --- CONFIGURATION ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbwyu4JIZMU0cO9GUvepAn2CXtXW3urGI8ieOtLlHYakdqEbXdhjYQU_ESFOQrInmRTo/exec"; // Remplacez par votre URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbw6Qj368IaqzLavErPcpyjlXOEo4-l5iDbZs4XF7EYDwLIlc69Gj5yDNR1xLOKpT0Z5/exec"; // Remplacez par votre URL
     const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
     let plats = [];
@@ -223,7 +223,15 @@
 
         btn.disabled = true; btn.innerText = "Envoi...";
         try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) });
+            await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({
+                    ...fields,
+                    action: modeEdition ? "update" : "insert",
+                    rowId: idEnCoursEdition, 
+                    browserId: browserId 
+                }) 
+            });
             document.getElementById('nouveauPlat').value = "";
             document.getElementById('nombreParts').value = "";
             document.getElementById('commentaire').value = "";
