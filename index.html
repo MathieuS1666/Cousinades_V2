@@ -110,6 +110,12 @@
     <div id="listePresents"></div>
 </div>
 
+<div class="container" style="margin-top:20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align:center; color: #2c3e50; margin-bottom: 20px;">📖 Le Livre d'Or</h2>
+    <div id="livreDor" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        </div>
+</div>
+
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxxqwWIcFBu8P3FoFcZF-5YHhJGb_vG0TfPItBRuNAekBeP-lBw62ENVS5Wtj3ACMUC/exec"; 
     const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
@@ -145,37 +151,64 @@
         } catch (e) { console.error("Erreur chargement:", e); }
     }
 
-    function calculerStatsGlobales() {
-        const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-        
-        const vus = new Set(); let totalConvives = 0;
-        plats.forEach(p => {
-            if (!vus.has(p.ownerId)) { totalConvives += parseFloat(p.convives || 0); vus.add(p.ownerId); }
-        });
+function calculerStatsGlobales() {
+    // --- 1. CALCUL DES STATS DU BANDEAU ---
+    const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+    const vus = new Set(); 
+    let totalConvives = 0;
+    
+    plats.forEach(p => {
+        if (!vus.has(p.ownerId)) { 
+            totalConvives += parseFloat(p.convives || 0); 
+            vus.add(p.ownerId); 
+        }
+    });
 
-        document.getElementById('stat-total').innerText = totalParts;
-        document.getElementById('stat-convives').innerText = totalConvives;
-        document.getElementById('stat-apero').innerText = plats.filter(p => p.apero).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-        document.getElementById('stat-entrees').innerText = plats.filter(p => p.entree).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-        document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-        document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-        
-        const uniquePresents = {}; 
-        plats.forEach(p => { 
-            if (!uniquePresents[p.nom]) {
-                uniquePresents[p.nom] = { nb: p.convives, id: p.id, owner: p.ownerId, note: p.commentaire }; 
-            }
-        });
+    document.getElementById('stat-total').innerText = totalParts;
+    document.getElementById('stat-convives').innerText = totalConvives;
+    document.getElementById('stat-apero').innerText = plats.filter(p => p.apero).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+    document.getElementById('stat-entrees').innerText = plats.filter(p => p.entree).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+    document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+    document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+    
+    // --- 2. AFFICHAGE DES BADGES (PRÉSENTS) ---
+    const uniquePresents = {}; 
+    plats.forEach(p => { 
+        if (!uniquePresents[p.nom]) {
+            uniquePresents[p.nom] = { nb: p.convives, id: p.id, owner: p.ownerId }; 
+        }
+    });
 
-        document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
-            .map(([nom, data]) => {
-                const boutonModif = data.owner === browserId 
-                    ? `<button onclick="preparerModification(${data.id})" style="background:none;border:none;cursor:pointer;margin-left:5px;padding:0;display:inline;width:auto;font-size:1em;">✏️</button>` 
-                    : '';
-                const comText = data.note ? `<br><small style="color:#666; font-style:italic;">"${data.note}"</small>` : '';
-                return `<span class="badge-present"><strong>${nom}</strong> : ${data.nb} ${boutonModif}${comText}</span>`;
-            }).join('');
+    document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
+        .map(([nom, data]) => {
+            const boutonModif = data.owner === browserId 
+                ? `<button onclick="preparerModification(${data.id})" style="background:none;border:none;cursor:pointer;margin-left:5px;padding:0;display:inline;width:auto;font-size:1em;">✏️</button>` 
+                : '';
+            return `<span class="badge-present"><strong>${nom}</strong> : ${data.nb} ${boutonModif}</span>`;
+        }).join('');
+
+    // --- 3. AFFICHAGE DU LIVRE D'OR (MESSAGES) ---
+    // On récupère les messages uniques (un seul message par personne)
+    const messagesUniques = {};
+    plats.forEach(p => {
+        if (p.commentaire && p.commentaire.trim() !== "" && p.commentaire !== "undefined") {
+            messagesUniques[p.nom] = p.commentaire;
+        }
+    });
+
+    const entries = Object.entries(messagesUniques);
+    if (entries.length > 0) {
+        document.getElementById('livreDor').innerHTML = entries.map(([auteur, msg]) => `
+            <div style="background: #fff9e6; padding: 15px; border-radius: 10px; border-left: 5px solid #feca57; position: relative; box-shadow: 2px 2px 10px rgba(0,0,0,0.05);">
+                <span style="position: absolute; top: 5px; left: 10px; font-size: 2em; color: rgba(254, 202, 87, 0.3); font-family: serif;">“</span>
+                <p style="margin: 5px 0 10px 15px; font-style: italic; color: #444;">${msg}</p>
+                <p style="margin: 0; text-align: right; font-weight: bold; color: #2c3e50; font-size: 0.85em;">— ${auteur}</p>
+            </div>
+        `).join('');
+    } else {
+        document.getElementById('livreDor').innerHTML = `<p style="text-align:center; color: #95a5a6; grid-column: 1/-1;">Aucun message pour l'instant... Soyez le premier à féliciter les organisateurs !</p>`;
     }
+}
 
     async function ajouterPlat() {
         const btn = document.getElementById('btnAjouter');
