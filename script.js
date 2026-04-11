@@ -93,14 +93,38 @@ verifierSiDejaInscrit();
 
 async function ouvrirModifConvives(id) {
     const p = plats.find(x => x.id === id);
-    let newNbConvives;
-    while(newNbConvives != null){
-        newNbConvives = parseFloat(prompt(`Modifier le nombre de personnes pour ${p.nom} :`, p.convives));
-        if(newNbConvives == NaN)
-            alert(`${newNbConvives} n'est pas un nombre connard!`);
+    let saisi = prompt(`Modifier le nombre de personnes pour ${p.nom} :`, p.convives);
+
+    // 1. Si l'utilisateur clique sur "Annuler", on arrête tout proprement
+    if (saisi === null) return;
+
+    // 2. On transforme le texte en nombre
+    let newNbConvives = parseFloat(saisi.replace(',', '.')); // Gère les virgules au cas où
+
+    // 3. On vérifie si c'est bien un nombre
+    if (isNaN(newNbConvives)) {
+        alert(`${saisi} n'est pas un nombre !`);
+        // Optionnel : on peut relancer la fonction pour forcer une nouvelle saisie
+        return ouvrirModifConvives(id); 
     }
 
-    await envoyerUpdate(id, p.nom, newNbConvives, p.plat, p.parts, p.apero, p.entree, p.platPrincipal, p.dessert, p.autre);
+    // 4. Si c'est bon, on envoie au serveur
+    await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ 
+            action: "update", 
+            rowId: id, 
+            nom: p.nom, 
+            convives: newNbConvives, 
+            plat: p.plat, 
+            parts: p.parts, 
+            categorie: p.categorie, 
+            browserId: browserId 
+        })
+    });
+
+    // 5. On rafraîchit les données
+    await chargerPlats();
 }
 
 async function ouvrirModifPlat(id) {
