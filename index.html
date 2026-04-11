@@ -7,6 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div id="modalConvives" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
+    <div style="background:white; margin:15% auto; padding:20px; width:90%; max-width:350px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5); animation: slideUp 0.3s;">
+        <h3 style="margin-top:0;">👥 <span id="titreModalConvives"></span></h3>
+        <label style="font-size:0.8em; color:gray;">Nombre de personnes :</label>
+        <input type="number" id="editNbConvives" step="0.5" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc;">
+        <p style="font-size:0.75em; color:gray; margin-top:0;">Adulte=1, Enfant=0.5</p>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button onclick="validerModifConvives()" style="background:#d35400; color:white; flex:1;">Enregistrer</button>
+            <button onclick="fermerModaleConvives()" style="background:#95a5a6; color:white; flex:1;">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalLivreDor" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
+    <div style="background:white; margin:10% auto; padding:20px; width:95%; max-width:500px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5); animation: slideUp 0.3s;">
+        <h3 style="margin-top:0;">📖 Modifier votre message</h3>
+        <label style="font-size:0.8em; color:gray;">Votre petit mot :</label>
+        <textarea id="editCom" style="width:100%; height:150px; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-family:inherit; resize:vertical;"></textarea>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button onclick="validerModifCom()" style="background:#feca57; color:#2c3e50; flex:1; font-weight:bold;">Mettre à jour</button>
+            <button onclick="fermerModaleLivreDor()" style="background:#95a5a6; color:white; flex:1;">Annuler</button>
+        </div>
+    </div>
+</div>
 <div id="modalEdition" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
     <div style="background:white; margin:10% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
         <h3 style="margin-top:0;">Modifier le plat</h3>
