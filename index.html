@@ -18,7 +18,8 @@
         .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; position: sticky; top: 140px; height: fit-content; }
         .reponses { flex: 3; padding: 20px; }
         
-        input[type="text"], input[type="number"] { padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        input[type="text"], input[type="number"], textarea { padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+        textarea { resize: vertical; min-height: 60px; }
         .convives-box { background: #fdf2e9; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #e67e22; }
         
         .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -30,18 +31,12 @@
         
         .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .colonne { background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; border-top: 5px solid #ccc; }
-        #apero-col { border-top-color: var(--apero); } #entree-col { border-top-color: var(--entree); }
-        #plat-col { border-top-color: var(--plat); } #dessert-col { border-top-color: var(--dessert); }
-        #autre-col { border-top-color: var(--autre); }
-
-        .total-badge { background: #eee; color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: 5px; }
-
+        
         .plat-item { padding: 10px; background: white; margin: 8px 0; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 0.82em; border-left: 4px solid #27ae60; }
-        .supprimer-btn { background-color: #ff4757; color: white; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 10px; padding:0; }
-
-        .liste-presents { margin-top: 20px; background: white; padding: 20px; border-radius: 12px; text-align: center; }
-        .badge-present { display: inline-block; background: #f0f0f0; padding: 10px 15px; margin: 8px; border-radius: 12px; font-size: 0.9em; border: 1px solid #ddd; min-width: 150px; vertical-align: top; }
-
+        .badge-present { display: inline-block; background: #f0f0f0; padding: 10px 15px; margin: 5px; border-radius: 20px; font-size: 0.9em; border: 1px solid #ddd; }
+        
+        .liste-presents, .livre-dor-section { margin-top: 20px; background: white; padding: 20px; border-radius: 12px; text-align: center; }
+        
         @media (max-width: 1000px) { .container { flex-direction: column; } .formulaire { border-right: none; position: static; } }
     </style>
 </head>
@@ -61,37 +56,31 @@
 </div>
 
 <div class="container">
-    <div class="formulaire">
+    <div class="formulaire" id="form-scroll">
         <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
-        <p style="text-align:center; font-size:0.8em;">Afin de s'organiser au mieux, merci de donner quelques informations</p>
-        
         <input type="text" id="nomPersonne" placeholder="Votre prénom">
         
         <div id="boxConvives" class="convives-box">
-            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes venant à la fête:</label>
-            <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5">
-            <p style="font-size: 0.7em; color: #666; margin:0;">Adulte = 1 | Enfant (-10 ans) = 0.5</p>
+            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes :</label>
+            <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
         </div>
-        <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
-            ✅ Présence enregistrée
-        </p>
         
-        <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
-        <input type="text" id="nouveauPlat" placeholder="Nom du plat (optionnel)">
-        
-        <div class="plat-categories">
-            <label><input type="checkbox" id="apero"> Apéro</label>
-            <label><input type="checkbox" id="entree"> Entrée</label>
-            <label><input type="checkbox" id="platPrincipal"> Plat</label>
-            <label><input type="checkbox" id="dessert"> Dessert</label>
-            <label><input type="checkbox" id="autre"> Autre</label>
+        <div id="champsPlat">
+            <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous apportez !</p>
+            <input type="text" id="nouveauPlat" placeholder="Nom du plat">
+            <div class="plat-categories">
+                <label><input type="checkbox" id="apero"> Apéro</label>
+                <label><input type="checkbox" id="entree"> Entrée</label>
+                <label><input type="checkbox" id="platPrincipal"> Plat</label>
+                <label><input type="checkbox" id="dessert"> Dessert</label>
+                <label><input type="checkbox" id="autre"> Autre</label>
+            </div>
+            <input type="number" id="nombreParts" placeholder="Nombre de portions">
         </div>
-        <input type="number" id="nombreParts" placeholder="Nombre de portions">
 
-        <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?" 
-          style="width: 100%; min-height: 60px; padding: 12px; margin: 8px 0; border: 1px solid #ccc; 
-                 border-radius: 5px; box-sizing: border-box; font-family: inherit; resize: vertical;">
-</textarea>
+        <div id="champsCom">
+            <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
+        </div>
         
         <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
@@ -99,134 +88,74 @@
 
     <div class="reponses">
         <div class="colonnes">
-            <div class="colonne" id="apero-col"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
-            <div class="colonne" id="entree-col"><h3>🥗 Entrées <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
-            <div class="colonne" id="plat-col"><h3>🥘 Plats <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
-            <div class="colonne" id="dessert-col"><h3>🍰 Desserts <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
-            <div class="colonne" id="autre-col"><h3>📦 Autres <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
+            <div class="colonne" id="apero-col" style="border-top-color:var(--apero)"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
+            <div class="colonne" id="entree-col" style="border-top-color:var(--entree)"><h3>🥗 Entrée <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
+            <div class="colonne" id="plat-col" style="border-top-color:var(--plat)"><h3>🥘 Plat <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
+            <div class="colonne" id="dessert-col" style="border-top-color:var(--dessert)"><h3>🍰 Dessert <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
+            <div class="colonne" id="autre-col" style="border-top-color:var(--autre)"><h3>📦 Autre <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
         </div>
     </div>
 </div>
 
 <div class="container liste-presents">
-    <h2 style="margin-top:0;">👥 Liste des Présents</h2>
+    <h2>👥 Liste des Présents</h2>
     <div id="listePresents"></div>
 </div>
 
-<div class="container" style="margin-top:20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2 style="text-align:center; color: #2c3e50; margin-bottom: 20px;">📖 Le Livre d'Or</h2>
-    <div id="livreDor" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-        </div>
+<div class="container livre-dor-section">
+    <h2>📖 Le Livre d'Or</h2>
+    <div id="livreDor" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;"></div>
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxxqwWIcFBu8P3FoFcZF-5YHhJGb_vG0TfPItBRuNAekBeP-lBw62ENVS5Wtj3ACMUC/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbwNSXmw47sekkQYBdSJF4Q30jJPvgOi9ceM3vFoJQCbKw9Vuk75xwE4zMHTX2J9hoqi/exec"; 
     const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
-
     let plats = [];
     let modeEdition = false;
     let idEnCoursEdition = null;
     let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('cousinade_id', browserId);
 
-    function updateCountdown() {
-        const diff = DATE_COUSINADE - new Date();
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        document.getElementById('countdown').innerHTML = diff > 0 ? `⏳ J-${days} avant la Cousinade ! 🥂` : "🎉 C'est le jour J ! 🥳";
-    }
-    setInterval(updateCountdown, 60000); updateCountdown();
-
     async function chargerPlats() {
         try {
             const response = await fetch(`${API_URL}?action=getPlats`);
             plats = await response.json();
-            
-            const monProfil = plats.find(p => p.ownerId === browserId);
-            if (monProfil) {
-                document.getElementById('nomPersonne').value = monProfil.nom;
-                if (monProfil.convives && monProfil.convives > 0 && !modeEdition) {
-                    document.getElementById('boxConvives').style.display = "none";
-                    document.getElementById('msgConvivesOk').style.display = "block";
-                    document.getElementById('nbConvives').value = monProfil.convives;
-                }
-            }
             afficherPlats(); calculerStatsGlobales();
-        } catch (e) { console.error("Erreur chargement:", e); }
+        } catch (e) { console.error(e); }
     }
 
-function calculerStatsGlobales() {
-    // --- 1. CALCUL DES STATS DU BANDEAU ---
-    const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    const vus = new Set(); 
-    let totalConvives = 0;
-    
-    plats.forEach(p => {
-        if (!vus.has(p.ownerId)) { 
-            totalConvives += parseFloat(p.convives || 0); 
-            vus.add(p.ownerId); 
-        }
-    });
-
-    document.getElementById('stat-total').innerText = totalParts;
-    document.getElementById('stat-convives').innerText = totalConvives;
-    document.getElementById('stat-apero').innerText = plats.filter(p => p.apero).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-    document.getElementById('stat-entrees').innerText = plats.filter(p => p.entree).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-    document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-    document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-    
-    // --- 2. AFFICHAGE DES BADGES (PRÉSENTS) ---
-    const uniquePresents = {}; 
-    plats.forEach(p => { 
-        if (!uniquePresents[p.nom]) {
-            uniquePresents[p.nom] = { nb: p.convives, id: p.id, owner: p.ownerId }; 
-        }
-    });
-
-    document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
-        .map(([nom, data]) => {
-            const boutonModif = data.owner === browserId 
-                ? `<button onclick="preparerModification(${data.id})" style="background:none;border:none;cursor:pointer;margin-left:5px;padding:0;display:inline;width:auto;font-size:1em;">✏️</button>` 
-                : '';
-            return `<span class="badge-present"><strong>${nom}</strong> : ${data.nb} ${boutonModif}</span>`;
-        }).join('');
-
-   // --- 3. AFFICHAGE DU LIVRE D'OR (TOUS LES MESSAGES) ---
-    // On récupère tous les commentaires valides de la liste des plats
-    const tousLesMessages = plats
-        .filter(p => p.commentaire && p.commentaire.trim() !== "" && p.commentaire !== "undefined")
-        .map(p => ({ auteur: p.nom, msg: p.commentaire }));
-
-    if (tousLesMessages.length > 0) {
-        document.getElementById('livreDor').innerHTML = tousLesMessages.map(item => `
-            <div style="background: #fff9e6; padding: 15px; border-radius: 10px; border-left: 5px solid #feca57; position: relative; box-shadow: 2px 2px 10px rgba(0,0,0,0.05); min-height: 80px;">
-                <span style="position: absolute; top: 5px; left: 10px; font-size: 2em; color: rgba(254, 202, 87, 0.3); font-family: serif;">“</span>
-                <p style="margin: 5px 0 10px 15px; font-style: italic; color: #444; white-space: pre-wrap; word-break: break-word;">${item.msg}</p>
-                <p style="margin: 0; text-align: right; font-weight: bold; color: #2c3e50; font-size: 0.85em;">— ${item.auteur}</p>
-            </div>
+    function calculerStatsGlobales() {
+        // Stats bandeau
+        const vus = new Set(); let totalConv = 0;
+        plats.forEach(p => { if(!vus.has(p.ownerId)){ totalConv += parseFloat(p.convives||0); vus.add(p.ownerId); }});
+        document.getElementById('stat-convives').innerText = totalConv;
+        document.getElementById('stat-total').innerText = plats.reduce((s,p)=>s+parseInt(p.parts||0),0);
+        
+        // Liste présents
+        const unique = {};
+        plats.forEach(p => { if(!unique[p.nom]) unique[p.nom] = p; });
+        document.getElementById('listePresents').innerHTML = Object.values(unique).map(p => `
+            <span class="badge-present"><strong>${p.nom}</strong> : ${p.convives} 
+            ${p.ownerId===browserId ? `<button onclick="ouvrirModifConvives(${p.id})" style="background:none;border:none;cursor:pointer;width:auto;display:inline;">✏️</button>` : ''}</span>
         `).join('');
-    } else {
-        document.getElementById('livreDor').innerHTML = `<p style="text-align:center; color: #95a5a6; grid-column: 1/-1;">Aucun message pour l'instant... Soyez le premier !</p>`;
+
+        // Livre d'or
+        const messages = plats.filter(p => p.commentaire && p.commentaire.trim() !== "");
+        document.getElementById('livreDor').innerHTML = messages.map(m => `
+            <div style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative;">
+                ${m.ownerId===browserId ? `<button onclick="ouvrirModifCom('${m.nom}')" style="float:right;background:none;border:none;cursor:pointer;">✏️</button>` : ''}
+                <p style="margin:0; font-style:italic; white-space:pre-wrap;">"${m.commentaire}"</p>
+                <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em;">— ${m.nom}</p>
+            </div>
+        `).join('') || '<p style="grid-column:1/-1;text-align:center;">Aucun message...</p>';
     }
-}
 
     async function ajouterPlat() {
-        const btn = document.getElementById('btnAjouter');
-        const nom = document.getElementById('nomPersonne').value.trim();
-        const platNom = document.getElementById('nouveauPlat').value.trim();
-        const nbConv = document.getElementById('nbConvives').value;
-        const parts = document.getElementById('nombreParts').value;
-
-        if (!nom || !nbConv) return alert("Nom et Nombre de personnes obligatoires !");
-
-        const isPlatSaisi = platNom.length > 0;
-        const catCochee = document.querySelector('.plat-categories input:checked');
-        if (isPlatSaisi && (!parts || !catCochee)) return alert("Pour un plat, précisez la catégorie et les parts.");
-
         const fields = {
-            nom: nom,
-            convives: nbConv,
-            plat: platNom || "Présence uniquement",
-            parts: parts || 0,
+            nom: document.getElementById('nomPersonne').value.trim(),
+            convives: document.getElementById('nbConvives').value,
+            plat: document.getElementById('nouveauPlat').value.trim() || "Présence uniquement",
+            parts: document.getElementById('nombreParts').value || 0,
             apero: document.getElementById('apero').checked,
             entree: document.getElementById('entree').checked,
             platPrincipal: document.getElementById('platPrincipal').checked,
@@ -234,90 +163,75 @@ function calculerStatsGlobales() {
             autre: document.getElementById('autre').checked,
             commentaire: document.getElementById('commentaire').value.trim()
         };
+        if(!fields.nom || !fields.convives) return alert("Nom et Convives requis");
 
-        btn.disabled = true; btn.innerText = "Envoi...";
-        try {
-            await fetch(API_URL, { 
-                method: 'POST', 
-                body: JSON.stringify({
-                    ...fields,
-                    action: modeEdition ? "update" : "insert",
-                    rowId: idEnCoursEdition, 
-                    browserId: browserId 
-                }) 
-            });
-            document.getElementById('nouveauPlat').value = "";
-            document.getElementById('nombreParts').value = "";
-            document.getElementById('commentaire').value = "";
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-            if (modeEdition) annulerEdition();
-            btn.innerText = "Enregistré !";
-            setTimeout(() => { btn.innerText = "Valider"; btn.disabled = false; }, 2000);
-            await chargerPlats();
-        } catch (e) { alert("Erreur réseau"); btn.disabled = false; }
+        document.getElementById('btnAjouter').disabled = true;
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({...fields, action: modeEdition?"update":"insert", rowId: idEnCoursEdition, browserId: browserId})});
+        annulerEdition();
+        await chargerPlats();
+        document.getElementById('btnAjouter').disabled = false;
     }
 
-    function preparerModification(id) {
-        const p = plats.find(item => item.id === id);
-        if (!p) return;
+    function ouvrirModifConvives(id) {
+        const p = plats.find(x => x.id === id);
+        modeEdition = true; idEnCoursEdition = id;
         document.getElementById('nomPersonne').value = p.nom;
         document.getElementById('nbConvives').value = p.convives;
-        document.getElementById('boxConvives').style.display = "block";
-        document.getElementById('msgConvivesOk').style.display = "none";
-        document.getElementById('nouveauPlat').value = p.plat === "Présence uniquement" ? "" : p.plat;
-        document.getElementById('nombreParts').value = p.parts;
-        document.getElementById('apero').checked = p.apero;
-        document.getElementById('entree').checked = p.entree;
-        document.getElementById('platPrincipal').checked = p.platPrincipal;
-        document.getElementById('dessert').checked = p.dessert;
-        document.getElementById('autre').checked = p.autre;
-        document.getElementById('commentaire').value = p.commentaire || "";
-        modeEdition = true; idEnCoursEdition = id;
-        document.getElementById('btnAjouter').innerText = "Enregistrer";
+        document.getElementById('champsPlat').style.display = "none";
+        document.getElementById('champsCom').style.display = "none";
         document.getElementById('btnAnnuler').style.display = "block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    async function ouvrirModifCom(nom) {
+        const p = plats.find(x => x.nom === nom && x.commentaire);
+        const nouveau = prompt("Modifier votre message :", p ? p.commentaire : "");
+        if(nouveau === null) return;
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: "updateCommentaire", nom: nom, commentaire: nouveau, browserId: browserId})});
+        await chargerPlats();
     }
 
     function annulerEdition() {
         modeEdition = false; idEnCoursEdition = null;
-        document.getElementById('nouveauPlat').value = "";
-        document.getElementById('nombreParts').value = "";
-        document.getElementById('commentaire').value = "";
-        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-        document.getElementById('btnAjouter').innerText = "Valider";
+        document.querySelectorAll('input, textarea').forEach(i => { if(i.type==='checkbox') i.checked=false; else i.value=''; });
+        document.getElementById('champsPlat').style.display = "block";
+        document.getElementById('champsCom').style.display = "block";
         document.getElementById('btnAnnuler').style.display = "none";
-        chargerPlats();
     }
 
     async function supprimerPlat(id) {
-        if (!confirm("Supprimer cet élément ?")) return;
-        try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
-            await chargerPlats();
-        } catch (e) { alert("Erreur"); }
-    }
-
-    function ouvrirAdmin() {
-        const mdp = prompt("Mot de passe :");
-        if (mdp === "1234") window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit", '_blank');
+        if(!confirm("Supprimer ?")) return;
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({action:"delete", rowId:id, browserId:browserId})});
+        await chargerPlats();
     }
 
     function afficherPlats() {
-        const config = [{id:'aperoListe',k:'apero',i:'🍹'}, {id:'entreeListe',k:'entree',i:'🥗'}, {id:'platListe',k:'platPrincipal',i:'🥘'}, {id:'dessertListe',k:'dessert',i:'🍰'}, {id:'autreListe',k:'autre',i:'📦'}];
-        config.forEach(cat => {
-            const container = document.getElementById(cat.id);
-            const filtered = plats.filter(p => p[cat.k] && p.plat !== "Présence uniquement");
-            document.getElementById('total-' + cat.k).innerText = filtered.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-            container.innerHTML = filtered.length ? filtered.map(p => `
+        const cats = [['aperoListe','apero','🍹'],['entreeListe','entree','🥗'],['platListe','platPrincipal','🥘'],['dessertListe','dessert','🍰'],['autreListe','autre','📦']];
+        cats.forEach(([id, key, icon]) => {
+            const list = plats.filter(p => p[key] && p.plat !== "Présence uniquement");
+            document.getElementById('total-'+key).innerText = list.reduce((s,p)=>s+parseInt(p.parts||0),0);
+            document.getElementById(id).innerHTML = list.map(p => `
                 <div class="plat-item">
-                    <span>${cat.i} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                    <div class="actions">
-                        ${p.ownerId === browserId ? `<button onclick="preparerModification(${p.id})" style="background:none;border:none;cursor:pointer;">✏️</button><button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>` : ''}
-                    </div>
+                    <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                    ${p.ownerId===browserId ? `<button onclick="preparerModification(${p.id})">✏️</button><button onclick="supprimerPlat(${p.id})">✕</button>` : ''}
                 </div>
-            `).join('') : '<p style="color:gray;font-size:0.8em;text-align:center;">-</p>';
+            `).join('') || '-';
         });
     }
+
+    function preparerModification(id) {
+        const p = plats.find(x => x.id === id);
+        modeEdition = true; idEnCoursEdition = id;
+        document.getElementById('nomPersonne').value = p.nom;
+        document.getElementById('nbConvives').value = p.convives;
+        document.getElementById('nouveauPlat').value = p.plat === "Présence uniquement" ? "" : p.plat;
+        document.getElementById('nombreParts').value = p.parts;
+        ['apero','entree','platPrincipal','dessert','autre'].forEach(k => document.getElementById(k).checked = p[k]);
+        document.getElementById('btnAnnuler').style.display = "block";
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function ouvrirAdmin() { if(prompt("Pass :")==="1234") window.open("URL_DE_TON_SHEET"); }
     chargerPlats();
 </script>
 </body>
