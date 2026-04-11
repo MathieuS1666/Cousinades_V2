@@ -258,7 +258,9 @@ async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
-
+    const comVal = document.getElementById('commentaire').value.trim();
+    
+    // --- LA CORRECTION EST ICI ---
     // On définit allergieVal en allant chercher le nouveau champ
     const champAllergie = document.getElementById('allergieSaisie');
     const allergieVal = champAllergie ? champAllergie.value.trim() : "";
@@ -280,6 +282,7 @@ async function ajouterPlat() {
         plat: platVal || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
+        commentaire: comVal,
         allergies: allergieVal, // Maintenant allergieVal est bien défini !
         action: "insert",
         browserId: browserId
@@ -504,38 +507,7 @@ function mettreAJourCompteARebours() {
     const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
     document.getElementById("countdown").innerText = `J-${jours} avant la cousinade !`;
 }
-async function envoyerMessageSeul() {
-    const nomVal = document.getElementById('nomPersonne').value.trim();
-    const comVal = document.getElementById('commentaire').value.trim();
 
-    if (!nomVal) return alert("Le prénom est requis !");
-    if (!comVal) return alert("Saisissez un message !");
-
-    const btn = document.getElementById('btnMessage');
-    const texteOriginal = btn.innerText;
-    btn.disabled = true;
-    btn.innerText = "Envoi...";
-
-    try {
-        await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({
-                nom: nomVal,
-                commentaire: comVal,
-                action: "updateCommentaire",
-                browserId: browserId
-            }) 
-        });
-        document.getElementById('commentaire').value = ''; 
-        await chargerDonnees();
-        alert("Merci pour votre mot doux !");
-    } catch (e) {
-        alert("Erreur réseau, réessaye !");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = texteOriginal;
-    }
-}
 function ouvrirAdmin() {
     if (prompt("Pass :") === "1234") {
         window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing");
