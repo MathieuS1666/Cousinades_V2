@@ -118,7 +118,11 @@ function afficherPlats() {
 
         document.getElementById(elemId).innerHTML = list.map(p => `
             <div class="plat-item">
-                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                <span>
+                    ${icon} <strong>${p.nom}</strong>
+                    ${p.allergies ? `<span title="Attention : ${p.allergies}" style="cursor:help; background:#ff4757; color:white; padding:1px 5px; border-radius:50%; font-size:0.7em; margin-left:5px;">!</span>` : ''}
+                    <br>${p.plat} (${p.parts}p)
+                </span>
                 ${p.ownerId === browserId ? `
                     <div style="display:flex; gap:5px;">
                         <button onclick="ouvrirModifPlat(${p.id})" title="Modifier" class="btn-action">✏️</button>
