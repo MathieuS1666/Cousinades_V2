@@ -1,149 +1,226 @@
+/* ========================================== */
+/* COUSINADE BOB 2026 - STYLE        */
+/* ========================================== */
+
 :root {
-    --apero: #ff9f43;
-    --entree: #1dd1a1;
-    --plat: #ff6b6b;
-    --dessert: #feca57;
-    --autre: #48dbfb;
+    --primary: #d35400;
+    --secondary: #2c3e50;
+    --accent: #feca57;
+    --danger: #e74c3c;
+    --bg: #f4f7f6;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
+* { box-sizing: border-box; }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--secondary);
     margin: 0;
-    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
-    background-size: cover;
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: #333;
+    padding: 0;
+    line-height: 1.6;
 }
 
-.header-info {
-    background: rgba(44, 62, 80, 0.95);
+/* --- LE BANDEAU (HEADER) --- */
+header {
+    background: linear-gradient(135deg, var(--primary), #e67e22);
     color: white;
-    padding: 15px;
+    padding: 40px 20px;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
 }
 
-#countdown { font-weight: bold; color: #feca57; font-size: 1.2em; margin-bottom: 10px; }
+header h1 { margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px; }
 
-.stats-bar { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; font-size: 0.85em; align-items: center; }
-
-.stat-item {
-    background: rgba(255,255,255,0.1);
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.stat-item b { color: #feca57; }
-
-.container {
-    display: flex;
-    max-width: 1300px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.96);
-    border-radius: 12px;
-}
-
-.formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; position: sticky; top: 140px; height: fit-content; }
-
-.reponses { flex: 3; padding: 20px; }
-
-input[type="text"], input[type="number"], textarea {
-    padding: 12px;
-    margin: 8px 0;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-family: inherit;
-}
-
-textarea { resize: vertical; min-height: 60px; }
-
-.convives-box {
-    background: #fdf2e9;
-    padding: 10px;
-    border-radius: 8px;
-    margin: 10px 0;
-    border: 1px solid #e67e22;
-}
-
-.plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
-
-.plat-categories label {
-    display: flex;
-    align-items: center;
-    background: #f0f0f0;
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85em;
-}
-
-button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
+.countdown {
+    background: rgba(255,255,255,0.2);
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-top: 15px;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 100%;
+}
+
+/* --- CONTAINER GLOBAL --- */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px 50px 15px;
+}
+
+/* --- LES CARTES (CARDS) --- */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+    border: 1px solid #eee;
+}
+
+.card h2, .card h3 {
+    margin-top: 0;
+    color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+}
+
+/* --- FORMULAIRE --- */
+label {
     display: block;
-    font-size: 1.1em;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+input[type="text"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+textarea { height: 80px; resize: vertical; }
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
     margin-top: 10px;
 }
 
-#btnAjouter { background-color: #27ae60; color: white; }
-
-#btnAnnuler { background-color: #95a5a6; color: white; display: none; margin-top: 5px; }
-
-.colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-
-.colonne {
-    background: #fdfdfd;
+.categories label {
+    background: #f9f9f9;
     padding: 10px;
     border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
     border: 1px solid #eee;
-    border-top: 5px solid #ccc;
+    font-weight: normal;
+    margin: 0;
+    transition: 0.3s;
+}
+
+.categories input { margin-right: 5px; }
+
+.categories label:hover { background: #fff3e0; }
+
+/* --- BOUTONS --- */
+button {
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.btn-principal {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    margin-top: 20px;
+}
+
+.btn-principal:hover { background: #a04000; transform: translateY(-2px); }
+
+.btn-action {
+    background: #f1f2f6;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.btn-action:hover { background: #dfe4ea; }
+
+/* --- LISTES ET APPORTS --- */
+.liste-plats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .plat-item {
-    padding: 10px;
-    background: white;
-    margin: 8px 0;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.82em;
-    border-left: 4px solid #27ae60;
+    padding: 12px 15px;
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.plat-item span { font-size: 1em; }
+
+/* --- STATISTIQUES --- */
+.grid-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.85em;
+    border-bottom: 3px solid var(--accent);
+}
+
+.stat-item strong { display: block; font-size: 1.4em; color: var(--primary); }
+
+.presents-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
 }
 
 .badge-present {
-    display: inline-block;
-    background: #f0f0f0;
-    padding: 10px 15px;
-    margin: 5px;
+    background: #ecf0f1;
+    padding: 5px 12px;
     border-radius: 20px;
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-edit-small {
+    background: none;
     font-size: 0.9em;
-    border: 1px solid #ddd;
+    padding: 0;
 }
 
-.liste-presents, .livre-dor-section {
-    margin-top: 20px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
+/* --- LIVRE D'OR --- */
+.com-card {
+    border-left: 5px solid var(--accent);
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
 }
 
-@media (max-width: 1000px) {
-    .container { flex-direction: column; }
-    .formulaire { border-right: none; position: static; }
+.com-card p { margin: 5px 0; }
+
+/* --- FOOTER --- */
+footer { text-align: center; margin-top: 40px; }
+
+.btn-admin {
+    background: none;
+    color: #95a5a6;
+    font-size: 0.8em;
+    text-decoration: underline;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+    header h1 { font-size: 1.8em; }
+    .card { padding: 15px; }
+    .categories { grid-template-columns: 1fr 1fr; }
 }
