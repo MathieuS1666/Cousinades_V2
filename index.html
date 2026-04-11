@@ -75,6 +75,7 @@
     <div class="header-info">
         <div id="countdown">Chargement du compte à rebours...</div>
           <div class="stats-bar">
+              <div class="stat-item" style="background: #d35400; color: white;">🔥 Total Convives : <span id="stat-convives">0</span></div>
             <div class="stat-item">👥 Total Parts : <span id="stat-total">0</span></div>
             <div class="stat-item">🍹 Apéro : <span id="stat-apero">0</span></div>
             <div class="stat-item">🥗 Entrées : <span id="stat-entrees">0</span></div>
@@ -89,6 +90,11 @@
             <h1>Cousinade 2026</h1>
             <p id="instruction" style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
             <input type="text" id="nomPersonne" placeholder="Votre nom">
+            <div style="background: #fdf2e9; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #e67e22;">
+    <label style="font-size: 0.85em; font-weight: bold; color: #d35400;">Nombre de personnes présentes :</label>
+    <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5" style="margin-top: 5px;">
+    <p style="font-size: 0.75em; color: #666; margin: 5px 0 0 0;">💡 Note : Adulte = 1 | Enfant (-10 ans) = 0.5</p>
+</div>
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
             <div class="plat-categories">
                 <label><input type="checkbox" id="apero"> Apéro</label>
@@ -114,10 +120,14 @@
             </div>
         </div>
     </div>
-
+<div class="container" style="margin-top: 20px; display: block;">
+    <h2 style="text-align: center; color: #2c3e50;">👥 Liste des Présents</h2>
+    <div id="listePresents" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+        </div>
+</div>
 <script>
     // --- CONFIGURATION ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbzeLVHKgQHhRpsh47MKBY5r5dcgZgWxkfrtdL1CfIR4xmHnLxFPNpWjvdfqvi_r-o29/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwwJxpxmfAQFgo-o2lfck-8kCv721WIpkM4Z6a2lqvGtrnx3JN9dSb6KxlYGEiYwjV_/exec";
     const DATE_COUSINADE = new Date("2026-05-09T12:00:00"); // MODIFIEZ LA DATE ICI
 
     let plats = [];
@@ -131,7 +141,7 @@
         const now = new Date();
         const diff = DATE_COUSINADE - now;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        //const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         
         const el = document.getElementById('countdown');
         if (diff > 0) {
@@ -156,7 +166,8 @@
 function calculerStatsGlobales() {
     // Calcul du total général des parts
     const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    
+    // On calcule le total des convives (on utilise parseFloat car il peut y avoir des 0.5)
+    const totalConvives = plats.reduce((sum, p) => sum + parseFloat(p.convives || 0), 0);
     // Calcul du nombre de parts par catégorie
     const totalApero = plats.filter(p => p.apero).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
     const totalEntrees = plats.filter(p => p.entree).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
@@ -164,15 +175,36 @@ function calculerStatsGlobales() {
     const totalDesserts = plats.filter(p => p.dessert).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
     
     // Affichage dans le bandeau
+    document.getElementById('stat-convives').innerText = totalConvives;
     document.getElementById('stat-total').innerText = totalParts;
     document.getElementById('stat-apero').innerText = totalApero;
     document.getElementById('stat-entrees').innerText = totalEntrees;
     document.getElementById('stat-plats').innerText = totalPlats;
     document.getElementById('stat-desserts').innerText = totalDesserts;
+    afficherListePresents();
 }
+function afficherListePresents() {
+    const container = document.getElementById('listePresents');
+    container.innerHTML = "";
 
+    // On crée une liste unique par nom pour ne pas compter deux fois si quelqu'un amène deux plats
+    const presents = {};
+    plats.forEach(p => {
+        if (!presents[p.nom]) {
+            presents[p.nom] = p.convives;
+        }
+    });
+
+    for (const [nom, nb] of Object.entries(presents)) {
+        const div = document.createElement('div');
+        div.style.cssText = "background:white; padding:8px 15px; border-radius:20px; box-shadow:0 2px 4px rgba(0,0,0,0.1); font-size:0.9em; border:1px solid #ddd;";
+        div.innerHTML = `<strong>${nom}</strong> : <span style="color:#d35400; font-weight:bold;">${nb}</span>`;
+        container.appendChild(div);
+    }
+}
     async function ajouterPlat() {
         const btn = document.getElementById('btnAjouter');
+        const convives = document.getElementById('nbConvives').value;
         const fields = {
             nom: document.getElementById('nomPersonne').value.trim(),
             plat: document.getElementById('nouveauPlat').value.trim(),
@@ -182,6 +214,7 @@ function calculerStatsGlobales() {
             platPrincipal: document.getElementById('platPrincipal').checked,
             dessert: document.getElementById('dessert').checked,
             autre: document.getElementById('autre').checked
+            
         };
 
         if (!fields.nom || !fields.plat || !fields.parts) return alert("Champs obligatoires !");
