@@ -145,18 +145,23 @@ async function supprimerPlat(id) {
 }
 
 function afficherPlats() {
-    const cats = [['aperoListe','apero','🍹'],['entreeListe','entree','🥗'],['platListe','platPrincipal','🥘'],['dessertListe','dessert','🍰'],['autreListe','autre','📦']];
-    cats.forEach(([id, key, icon]) => {
-        const list = plats.filter(p => p[key] && p.plat !== "Présence uniquement");
-        document.getElementById('total-'+key).innerText = list.reduce((s,p)=>s+parseInt(p.parts||0),0);
-        document.getElementById(id).innerHTML = list.map(p => `
+    const categories = [
+        { id: 'aperoListe', key: 'apero', icon: '🍹' },
+        { id: 'entreeListe', key: 'entree', icon: '🥗' },
+        { id: 'platListe', key: 'platPrincipal', icon: '🥘' },
+        { id: 'dessertListe', key: 'dessert', icon: '🍰' },
+        { id: 'autreListe', key: 'autre', icon: '📦' }
+    ];
+
+    categories.forEach(cat => {
+        // On filtre simplement sur la colonne .categorie
+        const list = plats.filter(p => p.categorie === cat.key && p.plat !== "Présence uniquement");
+        
+        document.getElementById('total-' + cat.key).innerText = list.reduce((s,p) => s + parseInt(p.parts || 0), 0);
+        document.getElementById(cat.id).innerHTML = list.map(p => `
             <div class="plat-item">
-                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                ${p.ownerId===browserId ? `
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="ouvrirModifPlat(${p.id})" style="background:none;border:none;cursor:pointer;width:auto;margin:0;padding:5px;">✏️</button>
-                        <button onclick="supprimerPlat(${p.id})" style="background:none;border:none;cursor:pointer;width:auto;margin:0;padding:5px;">✕</button>
-                    </div>` : ''}
+                <span>${cat.icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                ${p.ownerId === browserId ? `<button onclick="ouvrirModifPlat(${p.id})">✏️</button>` : ''}
             </div>
         `).join('') || '-';
     });
