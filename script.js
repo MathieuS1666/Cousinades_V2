@@ -183,7 +183,7 @@ function afficherPlats() {
     });
 }
 
-function ouvrirAdmin() { if(prompt("Pass :")==="1234") window.open("https://docs.google.com/spreadsheets/d/TON_ID_SHEET"); }
+function ouvrirAdmin() { if(prompt("Pass :")==="1234") window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing"); }
 function mettreAJourCompteARebours() {
     const maintenant = new Date();
     const difference = DATE_COUSINADE - maintenant;
