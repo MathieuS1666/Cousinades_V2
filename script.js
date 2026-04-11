@@ -11,7 +11,10 @@ let commentaires = [];
 let idEnEditionModale = null;
 let modeEdition = false;
 let idEnCoursEdition = null;
-
+// Variables pour suivre ce qu'on est en train de modifier
+let platEnEditionModale = null; // Contiendra l'objet plat complet
+let comNomEnEdition = null;    // Pour le livre d'or
+let comMessageOrigine = null;  // Pour le livre d'or
 // Identification du navigateur
 let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('cousinade_id', browserId);
@@ -211,21 +214,58 @@ async function validerModifModale() {
     await chargerDonnees();
 }
 
-async function ouvrirModifConvives(id) {
-    const p = plats.find(x => x.id === id);
-    let saisi = prompt(`Modifier le nombre de personnes pour ${p.nom} :`, p.convives);
-    if (saisi === null) return;
-    let num = parseFloat(saisi.replace(',', '.'));
-    if (isNaN(num)) return alert("Nombre invalide !");
+// --- MODALE CONVIVES ---
 
+function ouvrirModifConvives(id) {
+    const p = plats.find(x => x.id === id);
+    if (!p) return;
+
+    platEnEditionModale = p; // On stocke le plat
+    
+    // On remplit la modale
+    document.getElementById('titreModalConvives').innerText = p.nom;
+    document.getElementById('editNbConvives').value = p.convives;
+
+    // On affiche
+    document.getElementById('modalConvives').style.display = "block";
+}
+
+function fermerModaleConvives() {
+    document.getElementById('modalConvives').style.display = "none";
+    platEnEditionModale = null;
+}
+
+async function validerModifConvives() {
+    if (!platEnEditionModale) return;
+    
+    const saisi = document.getElementById('editNbConvives').value;
+    const newNbConvives = parseFloat(saisi.replace(',', '.')); // Gère virgule/point
+
+    // Validation simple
+    if (isNaN(newNbConvives) || newNbConvives < 0) {
+        alert("Veuillez saisir un nombre valide (ex: 1 ou 1.5)");
+        return;
+    }
+
+    fermerModaleConvives(); // Effet visuel immédiat
+
+    // Envoi au Sheet
     await fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({ 
-            action: "update", rowId: id, nom: p.nom, convives: num, 
-            plat: p.plat, parts: p.parts, categorie: p.categorie, browserId: browserId 
+            action: "update", 
+            rowId: platEnEditionModale.id, 
+            nom: platEnEditionModale.nom, 
+            convives: newNbConvives, // La nouvelle valeur
+            // On garde les infos du plat inchangées
+            plat: platEnEditionModale.plat, 
+            parts: platEnEditionModale.parts, 
+            categorie: platEnEditionModale.categorie, 
+            browserId: browserId 
         })
     });
-    await chargerDonnees();
+
+    await chargerDonnees(); // Rafraîchit tout
 }
 
 async function supprimerPlat(id) {
@@ -236,33 +276,70 @@ async function supprimerPlat(id) {
 
 // --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
 
-async function ouvrirModifCom(nom, ancienMessage) {
-    const nouveau = prompt("Modifier votre message :", ancienMessage);
-    if (nouveau === null || nouveau === ancienMessage) return;
+// --- MODALE LIVRE D'OR ---
+
+function ouvrirModifCom(nom, ancienMessage) {
+    comNomEnEdition = nom;
+    comMessageOrigine = ancienMessage;
+
+    // On remplit le textarea
+    document.getElementById('editCom').value = ancienMessage;
+
+    // On affiche
+    document.getElementById('modalLivreDor').style.display = "block";
+}
+
+function fermerModaleLivreDor() {
+    document.getElementById('modalLivreDor').style.display = "none";
+    comNomEnEdition = null;
+    comMessageOrigine = null;
+}
+
+async function validerModifCom() {
+    const nouveauMessage = document.getElementById('editCom').value.trim();
     
+    // Si pas de changement, on ferme juste
+    if (nouveauMessage === comMessageOrigine) {
+        fermerModaleLivreDor();
+        return;
+    }
+
+    // Si le message est vide, on considère que c'est une suppression
+    if (nouveauMessage === "") {
+        supprimerCommentaire(comNomEnEdition); // Appelle la fonction existante
+        fermerModaleLivreDor();
+        return;
+    }
+
+    fermerModaleLivreDor(); // Effet visuel immédiat
+
+    // Envoi au Sheet
     await fetch(API_URL, { 
         method: 'POST', 
         body: JSON.stringify({ 
             action: "updateCommentaire", 
-            nom: nom, 
-            commentaire: nouveau, 
+            nom: comNomEnEdition, 
+            commentaire: nouveauMessage, // Le nouveau message
             browserId: browserId 
         })
     });
+    
     await chargerDonnees();
 }
 
 async function supprimerCommentaire(nom) {
-    if (!confirm("Voulez-vous supprimer ce message ?")) return;
+    if (!confirm("Voulez-vous supprimer ce message du livre d'or ?")) return;
+
     await fetch(API_URL, { 
         method: 'POST', 
         body: JSON.stringify({ 
             action: "updateCommentaire", 
             nom: nom, 
-            commentaire: "", // Envoi vide pour masquer
+            commentaire: "", // Envoi vide pour masquer/supprimer
             browserId: browserId 
         })
     });
+    
     await chargerDonnees();
 }
 
