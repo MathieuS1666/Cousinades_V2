@@ -192,26 +192,33 @@ async function supprimerPlat(id) {
     await chargerPlats();
 }
 
-function afficherPlats() {
-    const categories = [
-        { id: 'aperoListe', key: 'apero', icon: '🍹' },
-        { id: 'entreeListe', key: 'entree', icon: '🥗' },
-        { id: 'platListe', key: 'platPrincipal', icon: '🥘' },
-        { id: 'dessertListe', key: 'dessert', icon: '🍰' },
-        { id: 'autreListe', key: 'autre', icon: '📦' }
+ffunction afficherPlats() {
+    const cats = [
+        ['aperoListe','apero','🍹'],
+        ['entreeListe','entree','🥗'],
+        ['platListe','platPrincipal','🥘'],
+        ['dessertListe','dessert','🍰'],
+        ['autreListe','autre','📦']
     ];
 
-    categories.forEach(cat => {
-        // On filtre simplement sur la colonne .categorie
-        const list = plats.filter(p => p.categorie === cat.key && p.plat !== "Présence uniquement");
+    cats.forEach(([elemId, key, icon]) => {
+        const list = plats.filter(p => p.categorie === key && p.plat !== "Présence uniquement");
         
-        document.getElementById('total-' + cat.key).innerText = list.reduce((s,p) => s + parseInt(p.parts || 0), 0);
-        document.getElementById(cat.id).innerHTML = list.map(p => `
+        // Mise à jour du petit compteur dans le titre de la colonne
+        const badge = document.getElementById('total-' + key);
+        if(badge) badge.innerText = list.reduce((s,p) => s + parseInt(p.parts || 0), 0);
+
+        document.getElementById(elemId).innerHTML = list.map(p => `
             <div class="plat-item">
-                <span>${cat.icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                ${p.ownerId === browserId ? `<button onclick="ouvrirModifPlat(${p.id})">✏️</button>` : ''}
+                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                
+                ${p.ownerId === browserId ? `
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="ouvrirModifPlat(${p.id})" title="Modifier" style="background:none;border:none;cursor:pointer;width:auto;margin:0;padding:5px;font-size:1.2em;">✏️</button>
+                        <button onclick="supprimerPlat(${p.id})" title="Supprimer" style="background:none;border:none;cursor:pointer;width:auto;margin:0;padding:5px;font-size:1.2em;">🗑️</button>
+                    </div>` : ''}
             </div>
-        `).join('') || '-';
+        `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
     });
 }
 
