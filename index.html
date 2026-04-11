@@ -173,10 +173,24 @@
         document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
         document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
         
-        const uniquePresents = {}; plats.forEach(p => { uniquePresents[p.nom] = p.convives; });
-        document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
-            .map(([nom, nb]) => `<span class="badge-present"><strong>${nom}</strong> : ${nb}</span>`).join('');
-    }
+        const uniquePresents = {}; 
+    // On récupère l'ID du premier plat trouvé pour chaque nom pour pouvoir le modifier
+    plats.forEach(p => { 
+        if (!uniquePresents[p.nom]) {
+            uniquePresents[p.nom] = { nb: p.convives, id: p.id, owner: p.ownerId }; 
+        }
+    });
+
+    document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
+        .map(([nom, data]) => {
+            // On n'affiche le bouton modifier que si c'est l'utilisateur actuel
+            const boutonModif = data.owner === browserId 
+                ? `<button onclick="preparerModification(${data.id})" style="background:none;border:none;cursor:pointer;margin-left:5px;padding:0;display:inline;width:auto;font-size:1em;">✏️</button>` 
+                : '';
+            
+            return `<span class="badge-present"><strong>${nom}</strong> : ${data.nb} ${boutonModif}</span>`;
+        }).join('');
+}
 
     // --- ACTIONS ---
     async function ajouterPlat() {
