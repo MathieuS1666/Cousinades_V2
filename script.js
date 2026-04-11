@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyraUppoQVpxpk-xL1eQc0YAaRD5c8kbu3Gj237K9ZQlGXKEAsVfSVyoqjiTJyHGEXM/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzjlqhhSMd8PY5cr0dEJcqHF5qaxthkWX0EOGfmCwo-Vb1P8YJMF_H4VuMEublO4l6Q/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -270,7 +270,7 @@ async function validerModifConvives() {
     if (!platEnEditionModale) return;
 
     const saisi = document.getElementById('editNbConvives').value;
-    const newNbConvives = parseFloat(saisi.replace(',', '.')); // Gère virgule/point
+    const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0; // Gère virgule/point
 
     // Validation simple
     if (isNaN(newNbConvives) || newNbConvives < 0) {
