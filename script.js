@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxqK_B1qhmpPRl7HRVlzx-4qRjp5wUGOfhV3XZLMS-cvKcQhE5aVbcLOH8SraJrlJ0R/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwwhW9cFyxJoCOHHErW8SBKB9r2sAKs1o1EdNDcpJdO2eOWvJ_qtUO8KJF6qoz2gokK/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 let plats = [];
 let modeEdition = false;
