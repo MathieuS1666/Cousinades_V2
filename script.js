@@ -112,7 +112,7 @@ function calculerStatsGlobales() {
         'apero': 'stat-apero',
         'entree': 'stat-entrees',
         'platPrincipal': 'stat-plats',
-        'dessert': 'stat-desserts,'
+        'dessert': 'stat-desserts',
         'autre': 'stat-autre'
     };
 
