@@ -51,6 +51,7 @@
             <option value="platPrincipal">🥘 Plat</option>
             <option value="dessert">🍰 Dessert</option>
             <option value="autre">📦 Autre</option>
+            <option value="allergies">⚠️ Allergies</option>
         </select>
         
         <div style="display:flex; gap:10px; margin-top:15px;">
@@ -102,7 +103,10 @@
         <div id="champsCom">
             <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
         </div>
-
+<div style="margin-top:10px;">
+    <label style="font-weight:bold; color:#e67e22;">⚠️ Allergies ou régimes (optionnel) :</label>
+    <input type="text" id="allergies" placeholder="Ex: Sans gluten, Noix, Végétarien..." style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
+</div>
         <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
     </div>
