@@ -258,13 +258,10 @@ async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
-    const comVal = document.getElementById('commentaire').value.trim();
-    
-    // --- LA CORRECTION EST ICI ---
+
     // On définit allergieVal en allant chercher le nouveau champ
     const champAllergie = document.getElementById('allergieSaisie');
     const allergieVal = champAllergie ? champAllergie.value.trim() : "";
-    // ----------------------------
 
     const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
 
@@ -282,7 +279,6 @@ async function ajouterPlat() {
         plat: platVal || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
-        commentaire: comVal,
         allergies: allergieVal, // Maintenant allergieVal est bien défini !
         action: "insert",
         browserId: browserId
