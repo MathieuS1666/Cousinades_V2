@@ -121,31 +121,52 @@ async function ajouterPlat() {
     const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
     const catChoisie = radioCoche ? radioCoche.value : "autre";
 
+    // On récupère les valeurs
+    const nomVal = document.getElementById('nomPersonne').value.trim();
+    const convVal = document.getElementById('nbConvives').value;
+    const platVal = document.getElementById('nouveauPlat').value.trim();
+    const comVal = document.getElementById('commentaire').value.trim();
+
+    // --- LA CORRECTION ICI ---
+    // On n'alerte QUE si le nom est vide. 
+    // Le nombre de convives n'est requis que si on n'est pas encore inscrit (donc si le champ est visible)
+    const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
+    
+    if (!nomVal) return alert("Le prénom est requis !");
+    if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis pour votre première inscription !");
+    
+    // Si tout est vide (pas de plat ET pas de commentaire), on ne fait rien
+    if (!platVal && !comVal && platVal !== "Présence uniquement") {
+        return alert("Veuillez saisir un plat ou un petit mot !");
+    }
+    // --------------------------
+
     const fields = {
-        nom: document.getElementById('nomPersonne').value.trim(),
-        convives: document.getElementById('nbConvives').value,
-        plat: document.getElementById('nouveauPlat').value.trim() || "Présence uniquement",
+        nom: nomVal,
+        convives: convVal || 0, // On envoie 0 ou l'ancienne valeur si masqué
+        plat: platVal || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
-        commentaire: document.getElementById('commentaire').value.trim(),
+        commentaire: comVal,
         action: modeEdition ? "update" : "insert",
         rowId: idEnCoursEdition,
         browserId: browserId
     };
 
-    if (!fields.nom || !fields.convives) return alert("Nom et Convives requis");
-
     const btn = document.getElementById('btnAjouter');
     btn.disabled = true;
     btn.innerText = "Envoi...";
 
-    await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
-
-    annulerEdition();
-    await chargerPlats();
-    
-    btn.disabled = false;
-    btn.innerText = "Valider";
+    try {
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
+        annulerEdition();
+        await chargerPlats();
+    } catch (e) {
+        alert("Erreur lors de l'envoi, réessaye !");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Valider";
+    }
 }
 
 function annulerEdition() {
