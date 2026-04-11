@@ -192,7 +192,7 @@ async function supprimerPlat(id) {
     await chargerPlats();
 }
 
-ffunction afficherPlats() {
+function afficherPlats() {
     const cats = [
         ['aperoListe','apero','🍹'],
         ['entreeListe','entree','🥗'],
