@@ -81,6 +81,9 @@
         <div id="boxConvives" class="convives-box">
             <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes :</label>
             <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
+
+            <label style="font-size: 0.8em; font-weight: bold; color: #d35400; margin-top:10px; display:block;">Allergies / Régimes :</label>
+            <input type="text" id="allergieSaisie" placeholder="Ex: Sans gluten, Végétarien...">
         </div>
        <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
            ✅ Présence enregistrée
@@ -101,9 +104,7 @@
         <div id="champsCom">
             <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
         </div>
-        <div id="champsAllergies" style="margin-top: 10px;">
-    <input type="text" id="allergieSaisie" placeholder="Allergies ou régimes (ex: Sans gluten, Arachides...)">
-</div>
+      
 
         <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
@@ -117,8 +118,9 @@
             <div class="colonne" id="dessert-col" style="border-top-color:var(--dessert)"><h3>🍰 Dessert <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
             <div class="colonne" id="autre-col" style="border-top-color:var(--autre)"><h3>📦 Autre <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
             <div class="colonne" id="allergie-col" style="border-top-color: #e74c3c;">
-    <h3>🚫 Allergies <span id="total-allergies" class="total-badge">0</span></h3>
-    <div id="allergieListe"></div>
+                <h3>🚫 Allergies <span id="total-allergies" class="total-badge">0</span></h3>
+            <div id="allergieListe"></div>
+</div>
 </div>  
         </div>
     </div>
