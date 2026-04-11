@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyraUppoQVpxpk-xL1eQc0YAaRD5c8kbu3Gj237K9ZQlGXKEAsVfSVyoqjiTJyHGEXM/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxRCMxR-ph73PNXNzp6dDsue2YCD5Nc7iAMdbgoSDANack6zDb97VLeG3I4AXW16hi5/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -134,7 +134,7 @@ function afficherPlats() {
 async function ajouterPlat() {
     const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
     const catChoisie = radioCoche ? radioCoche.value : "autre";
-
+    const allergiesVal = document.getElementById('allergies').value.trim(); // <--- ICI
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
@@ -153,6 +153,7 @@ async function ajouterPlat() {
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
         commentaire: comVal,
+        allergies: allergiesVal,
         action: "insert",
         browserId: browserId
     };
@@ -191,6 +192,7 @@ function ouvrirModifPlat(id) {
     document.getElementById('editPlatNom').value = p.plat;
     document.getElementById('editPlatParts').value = p.parts;
     document.getElementById('editPlatCat').value = p.categorie;
+    ocument.getElementById('editPlatAllergies').value = p.allergies || "";
     document.getElementById('modalEdition').style.display = "block";
 }
 
@@ -208,6 +210,7 @@ async function validerModifModale() {
         plat: document.getElementById('editPlatNom').value.trim(),
         parts: document.getElementById('editPlatParts').value,
         categorie: document.getElementById('editPlatCat').value,
+        allergies: document.getElementById('editPlatAllergies').value.trim(),
         browserId: browserId
     };
     fermerModale();
