@@ -132,7 +132,7 @@ function calculerStatsGlobales() {
     verifierSiDejaInscrit();
 }
 
-function afficherPlats() {
+/** function afficherPlats() {
     const cats = [
         ['aperoListe', 'apero', '🍹'],
         ['entreeListe', 'entree', '🥗'],
@@ -158,7 +158,53 @@ function afficherPlats() {
         `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
     });
 }
+**/
+function afficherPlats() { // avec allergies
+    const cats = [
+        ['aperoListe', 'apero', '🍹'],
+        ['entreeListe', 'entree', '🥗'],
+        ['platListe', 'platPrincipal', '🥘'],
+        ['dessertListe', 'dessert', '🍰'],
+        ['autreListe', 'autre', '📦']
+    ];
 
+    // 1. Affichage des catégories classiques
+    cats.forEach(([elemId, key, icon]) => {
+        const list = plats.filter(p => p.categorie === key && p.plat !== "Présence uniquement");
+        const badge = document.getElementById('total-' + key);
+        if (badge) badge.innerText = list.reduce((s, p) => s + parseInt(p.parts || 0), 0);
+
+        document.getElementById(elemId).innerHTML = list.map(p => `
+            <div class="plat-item">
+                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                ${p.ownerId === browserId ? `
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="ouvrirModifPlat(${p.id})" title="Modifier" class="btn-action">✏️</button>
+                        <button onclick="supprimerPlat(${p.id})" title="Supprimer" class="btn-action">🗑️</button>
+                    </div>` : ''}
+            </div>
+        `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
+    });
+
+    // 2. Affichage spécifique de la colonne ALLERGIES (Unique par personne)
+    const vus = new Set();
+    const listeAllergies = plats.filter(p => {
+        if (p.allergies && p.allergies.trim() !== "" && !vus.has(p.ownerId)) {
+            vus.add(p.ownerId);
+            return true;
+        }
+        return false;
+    });
+
+    const badgeAllergie = document.getElementById('total-allergies');
+    if (badgeAllergie) badgeAllergie.innerText = listeAllergies.length;
+
+    document.getElementById('allergieListe').innerHTML = listeAllergies.map(p => `
+        <div class="plat-item" style="border-left-color: #e74c3c;">
+            <span>🚫 <strong>${p.nom}</strong><br>${p.allergies}</span>
+        </div>
+    `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Aucune allergie</div>';
+}
 // --- 4. GESTION DU FORMULAIRE (AJOUT) ---
 
 async function ajouterPlat() {
@@ -183,6 +229,7 @@ async function ajouterPlat() {
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
         commentaire: comVal,
+        allergies: allergieVal,
         action: "insert",
         browserId: browserId
     };
