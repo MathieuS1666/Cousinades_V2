@@ -8,132 +8,155 @@
 </head>
 <body>
 
-    <div id="modalConvives" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
-    <div style="background:white; margin:15% auto; padding:20px; width:90%; max-width:350px; border-radius:10px;">
-        <h3 style="margin-top:0;">👥 <span id="titreModalConvives"></span></h3>
-        
-        <label style="font-size:0.8em; color:gray;">Nombre de personnes :</label>
-        <input type="number" id="editNbConvives" step="0.5" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;">
-        
-        <label style="font-size:0.8em; color:gray;">⚠️ Vos allergies / Régime :</label>
-        <input type="text" id="editAllergiesGlobal" placeholder="Ex: Sans porc, Noix..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
-        
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button onclick="validerModifConvives()" style="background:#d35400; color:white; flex:1;">Enregistrer</button>
-            <button onclick="fermerModaleConvives()" style="background:#95a5a6; color:white; flex:1;">Annuler</button>
-        </div>
-    </div>
-</div>
-<div id="modalLivreDor" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); animation: fadeIn 0.3s;">
-    <div style="background:white; margin:10% auto; padding:20px; width:95%; max-width:500px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5); animation: slideUp 0.3s;">
-        <h3 style="margin-top:0;">📖 Modifier votre message</h3>
-        <label style="font-size:0.8em; color:gray;">Votre petit mot :</label>
-        <textarea id="editCom" style="width:100%; height:150px; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-family:inherit; resize:vertical;"></textarea>
-        
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button onclick="validerModifCom()" style="background:#feca57; color:#2c3e50; flex:1; font-weight:bold;">Mettre à jour</button>
-            <button onclick="fermerModaleLivreDor()" style="background:#95a5a6; color:white; flex:1;">Annuler</button>
-        </div>
-    </div>
-</div>
-<div id="modalEdition" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
-    <div style="background:white; margin:10% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
-        <h3 style="margin-top:0;">Modifier le plat</h3>
-        
-        <label style="font-size:0.8em;">Nom du plat :</label>
-        <input type="text" id="editPlatNom">
-        
-        <label style="font-size:0.8em;">Nombre de parts :</label>
-        <input type="number" id="editPlatParts">
-        
-        <label style="font-size:0.8em;">Catégorie :</label>
-        <select id="editPlatCat" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc;">
-            <option value="apero">🍹 Apéro</option>
-            <option value="entree">🥗 Entrée</option>
-            <option value="platPrincipal">🥘 Plat</option>
-            <option value="dessert">🍰 Dessert</option>
-            <option value="autre">📦 Autre</option>
-            <option value="allergies">⚠️ Allergies</option>
-        </select>
-        
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button onclick="validerModifModale()" style="background:#27ae60; color:white;">Enregistrer</button>
-            <button onclick="fermerModale()" style="background:#e74c3c; color:white;">Annuler</button>
-        </div>
-    </div>
-</div>
-<div class="header-info">
-    <div id="countdown">Cousinade 2026 !</div>
-    <div class="stats-bar">
-        <div class="stat-item">🧍 Convives : <b id="stat-convives">0</b></div>
-        <div class="stat-item">👥 Parts : <b id="stat-total">0</b></div>
-        <div class="stat-item">🍹 Apéro : <b id="stat-apero">0</b></div>
-        <div class="stat-item">🥗 Entrées : <b id="stat-entrees">0</b></div>
-        <div class="stat-item">🥘 Plats : <b id="stat-plats">0</b></div>
-        <div class="stat-item">🍰 Desserts : <b id="stat-desserts">0</b></div>
-        <div class="stat-item">📦 Autre : <b id="stat-autre">0</b></div>
-        <button onclick="ouvrirAdmin()" style="background:#444; color:white; padding:5px 12px; font-size:0.85em; border-radius:15px; flex:none; width:auto;">⚙️ Admin</button>
-    </div>
-</div>
+    <div id="modalEdition" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+        <div style="background:white; margin:10% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5);">
+            <h3 style="margin-top:0;">✏️ Modifier l'élément</h3>
+            <label style="font-size:0.8em; color:gray;">Nom de l'apport :</label>
+            <input type="text" id="editPlatNom" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;">
+            
+            <label style="font-size:0.8em; color:gray;">Nombre de parts :</label>
+            <input type="number" id="editPlatParts" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;">
+            
+            <label style="font-size:0.8em; color:gray;">Catégorie :</label>
+            <select id="editPlatCat" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;">
+                <option value="apero">🍹 Apéro</option>
+                <option value="entree">🥗 Entrée</option>
+                <option value="platPrincipal">🥘 Plat Principal</option>
+                <option value="dessert">🍰 Dessert</option>
+                <option value="allergie">⚠️ Allergie / Régime</option>
+                <option value="autre">📦 Autre</option>
+            </select>
 
-<div class="container">
-    <div class="formulaire" id="form-scroll">
-        <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
-        <p style="text-align:center;">Quelle branche Bobillier êtes-vous ?</p>
-        <input type="text" id="nomPersonne" placeholder="Votre prénom">
-
-        <div id="boxConvives" class="convives-box">
-            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes :</label>
-            <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
-        </div>
-       <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
-           ✅ Présence enregistrée
-       </p>
-        <div id="champsPlat">
-            <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous apportez !</p>
-            <input type="text" id="nouveauPlat" placeholder="Nom du plat">
-            <div class="plat-categories">
-                <label><input type="radio" name="categoriePlat" value="apero" id="apero"> Apéro</label>
-                <label><input type="radio" name="categoriePlat" value="entree" id="entree"> Entrée</label>
-                <label><input type="radio" name="categoriePlat" value="platPrincipal" id="platPrincipal"> Plat</label>
-                <label><input type="radio" name="categoriePlat" value="dessert" id="dessert"> Dessert</label>
-                <label><input type="radio" name="categoriePlat" value="autre" id="autre" checked> Autre</label>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="validerModifModale()" style="background:#27ae60; color:white; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;">Enregistrer</button>
+                <button onclick="fermerModale()" style="background:#95a5a6; color:white; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;">Annuler</button>
             </div>
-            <input type="number" id="nombreParts" placeholder="Nombre de portions">
-        </div>
-
-        <div id="champsCom">
-            <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
-        </div>
-<div style="margin-top:10px;">
-    <label style="font-weight:bold; color:#e67e22;">⚠️ Allergies ou régimes (optionnel) :</label>
-    <input type="text" id="allergies" placeholder="Ex: Sans gluten, Noix, Végétarien..." style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc;">
-</div>
-        <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
-        <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
-    </div>
-
-    <div class="reponses">
-        <div class="colonnes">
-            <div class="colonne" id="apero-col" style="border-top-color:var(--apero)"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
-            <div class="colonne" id="entree-col" style="border-top-color:var(--entree)"><h3>🥗 Entrée <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
-            <div class="colonne" id="plat-col" style="border-top-color:var(--plat)"><h3>🥘 Plat <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
-            <div class="colonne" id="dessert-col" style="border-top-color:var(--dessert)"><h3>🍰 Dessert <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
-            <div class="colonne" id="autre-col" style="border-top-color:var(--autre)"><h3>📦 Autre <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
         </div>
     </div>
-</div>
 
-<div class="container liste-presents">
-    <h2>👥 Liste des Présents</h2>
-    <div id="listePresents"></div>
-</div>
+    <div id="modalConvives" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+        <div style="background:white; margin:15% auto; padding:20px; width:90%; max-width:350px; border-radius:10px;">
+            <h3 style="margin-top:0;">👥 <span id="titreModalConvives"></span></h3>
+            <label style="font-size:0.8em; color:gray;">Nombre de personnes présentes :</label>
+            <input type="number" id="editNbConvives" step="0.5" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc;">
+            <p style="font-size:0.75em; color:gray;">Adulte = 1 | Enfant = 0.5</p>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="validerModifConvives()" style="background:#d35400; color:white; flex:1; padding:10px; border:none; border-radius:5px;">Enregistrer</button>
+                <button onclick="fermerModaleConvives()" style="background:#95a5a6; color:white; flex:1; padding:10px; border:none; border-radius:5px;">Annuler</button>
+            </div>
+        </div>
+    </div>
 
-<div class="container livre-dor-section">
-    <h2>📖 Le Livre d'Or</h2>
-    <div id="livreDor" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left;"></div>
-</div>
+    <div id="modalLivreDor" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+        <div style="background:white; margin:10% auto; padding:20px; width:95%; max-width:500px; border-radius:10px;">
+            <h3 style="margin-top:0;">📖 Modifier votre message</h3>
+            <textarea id="editCom" style="width:100%; height:150px; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-family:inherit;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="validerModifCom()" style="background:#feca57; color:#2c3e50; flex:1; font-weight:bold; padding:10px; border:none; border-radius:5px;">Mettre à jour</button>
+                <button onclick="fermerModaleLivreDor()" style="background:#95a5a6; color:white; flex:1; padding:10px; border:none; border-radius:5px;">Annuler</button>
+            </div>
+        </div>
+    </div>
 
-<script src="script.js"></script>
+    <div class="container">
+        <header>
+            <h1>Cousinade Bob 2026</h1>
+            <p id="countdown" class="countdown">Chargement du compte à rebours...</p>
+        </header>
+
+        <section class="card">
+            <h2>🥗 Inscription & Apports</h2>
+            
+            <label>Votre Prénom :</label>
+            <input type="text" id="nomPersonne" placeholder="Ex: Bob">
+
+            <div id="boxConvives">
+                <label>Combien serez-vous ? (Adulte=1, Enfant=0.5)</label>
+                <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5">
+            </div>
+            <p id="msgConvivesOk" style="display:none; color: green; font-weight: bold;">✅ Présence enregistrée !</p>
+
+            <hr>
+
+            <label>Que ramenez-vous ? (Optionnel)</label>
+            <input type="text" id="nouveauPlat" placeholder="Ex: Quiche Lorraine">
+
+            <label>Nombre de parts :</label>
+            <input type="number" id="nombreParts" placeholder="Ex: 8">
+
+            <label>Catégorie :</label>
+            <div class="categories">
+                <label><input type="radio" name="categoriePlat" value="apero"> 🍹 Apéro</label>
+                <label><input type="radio" name="categoriePlat" value="entree"> 🥗 Entrée</label>
+                <label><input type="radio" name="categoriePlat" value="platPrincipal"> 🥘 Plat</label>
+                <label><input type="radio" name="categoriePlat" value="dessert"> 🍰 Dessert</label>
+                <label><input type="radio" name="categoriePlat" value="allergie"> ⚠️ Allergie</label>
+                <label><input type="radio" name="categoriePlat" value="autre"> 📦 Autre</label>
+            </div>
+
+            <label>Un petit mot pour le livre d'or ? (Optionnel)</label>
+            <textarea id="commentaire" placeholder="Votre message ici..."></textarea>
+
+            <button id="btnAjouter" onclick="ajouterPlat()" class="btn-principal">Valider</button>
+            <button id="btnAnnuler" onclick="annulerEdition()" style="display:none; background:#95a5a6;">Annuler</button>
+        </section>
+
+        <section class="card stats">
+            <h2>📊 État des lieux</h2>
+            <div class="grid-stats">
+                <div class="stat-item">👥 Convives : <strong id="stat-convives">0</strong></div>
+                <div class="stat-item">🍕 Total Parts : <strong id="stat-total">0</strong></div>
+                <div class="stat-item">🍹 Apéro : <strong id="stat-apero">0</strong></div>
+                <div class="stat-item">🥗 Entrées : <strong id="stat-entrees">0</strong></div>
+                <div class="stat-item">🥘 Plats : <strong id="stat-plats">0</strong></div>
+                <div class="stat-item">🍰 Desserts : <strong id="stat-desserts">0</strong></div>
+                <div class="stat-item">⚠️ Régimes : <strong id="stat-allergies">0</strong></div>
+            </div>
+            <div id="listePresents" class="presents-list"></div>
+        </section>
+
+        <div id="accordions">
+            <div class="card">
+                <h3 style="color:#c0392b;">⚠️ Allergies & Régimes Spécifiques (<span id="total-allergie">0</span>)</h3>
+                <div id="allergieListe" class="liste-plats"></div>
+            </div>
+
+            <div class="card">
+                <h3>🍹 Apéritif (<span id="total-apero">0</span> parts)</h3>
+                <div id="aperoListe" class="liste-plats"></div>
+            </div>
+
+            <div class="card">
+                <h3>🥗 Entrées (<span id="total-entree">0</span> parts)</h3>
+                <div id="entreeListe" class="liste-plats"></div>
+            </div>
+
+            <div class="card">
+                <h3>🥘 Plats Principaux (<span id="total-platPrincipal">0</span> parts)</h3>
+                <div id="platListe" class="liste-plats"></div>
+            </div>
+
+            <div class="card">
+                <h3>🍰 Desserts (<span id="total-dessert">0</span> parts)</h3>
+                <div id="dessertListe" class="liste-plats"></div>
+            </div>
+
+            <div class="card">
+                <h3>📦 Autres / Boissons (<span id="total-autre">0</span>)</h3>
+                <div id="autreListe" class="liste-plats"></div>
+            </div>
+        </div>
+
+        <section class="card">
+            <h2>📖 Livre d'Or</h2>
+            <div id="livreDor"></div>
+        </section>
+
+        <footer>
+            <button onclick="ouvrirAdmin()" class="btn-admin">⚙️ Administration</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
