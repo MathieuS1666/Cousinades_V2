@@ -62,35 +62,36 @@
 
 <div class="container">
     <div class="formulaire">
-    <h1>Cousinade 2026</h1>
-    <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
-    
-    <input type="text" id="nomPersonne" placeholder="Votre nom">
-    
-    <div id="boxConvives" class="convives-box">
-        <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes présentes :</label>
-        <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5">
-        <p style="font-size: 0.7em; color: #666; margin:0;">Adulte = 1 | Enfant (-10 ans) = 0.5</p>
-    </div>
-    <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.8em; text-align: center; font-weight: bold;">
-        ✅ Présence enregistrée
-    </p>
+        <h1>Cousinade 2026</h1>
+        <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
+        
+        <input type="text" id="nomPersonne" placeholder="Votre nom">
+        
+        <div id="boxConvives" class="convives-box">
+            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes présentes :</label>
+            <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5">
+            <p style="font-size: 0.7em; color: #666; margin:0;">Adulte = 1 | Enfant (-10 ans) = 0.5</p>
+        </div>
+        <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
+            ✅ Présence enregistrée
+        </p>
 
-    <input type="text" id="nouveauPlat" placeholder="Nom du plat (optionnel)">
-    
-    <div class="plat-categories">
-        <label><input type="checkbox" id="apero"> Apéro</label>
-        <label><input type="checkbox" id="entree"> Entrée</label>
-        <label><input type="checkbox" id="platPrincipal"> Plat</label>
-        <label><input type="checkbox" id="dessert"> Dessert</label>
-        <label><input type="checkbox" id="autre"> Autre</label>
+        <input type="text" id="nouveauPlat" placeholder="Nom du plat (optionnel)">
+        
+        <div class="plat-categories">
+            <label><input type="checkbox" id="apero"> Apéro</label>
+            <label><input type="checkbox" id="entree"> Entrée</label>
+            <label><input type="checkbox" id="platPrincipal"> Plat</label>
+            <label><input type="checkbox" id="dessert"> Dessert</label>
+            <label><input type="checkbox" id="autre"> Autre</label>
+        </div>
+        
+        <input type="number" id="nombreParts" placeholder="Nombre de portions">
+        
+        <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
+        <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
     </div>
-    
-    <input type="number" id="nombreParts" placeholder="Nombre de portions">
-    
-    <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
-    <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
-</div>
+
     <div class="reponses">
         <div class="colonnes">
             <div class="colonne" id="apero-col"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
@@ -108,7 +109,8 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbySsKNyX3-ir85r5q65ycQsFmJCiJ5xGV8n4zT7C4kMAXN9LHtzwkAjz1OTtDG2Kwrg/exec";
+    // --- CONFIGURATION ---
+    const API_URL = "VOTRE_URL_SCRIPT_GOOGLE"; // Remplacez par votre URL
     const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
     let plats = [];
@@ -117,6 +119,7 @@
     let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('cousinade_id', browserId);
 
+    // --- COMPTE À REBOURS ---
     function updateCountdown() {
         const diff = DATE_COUSINADE - new Date();
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -124,28 +127,29 @@
     }
     setInterval(updateCountdown, 60000); updateCountdown();
 
-   async function chargerPlats() {
-    try {
-        const response = await fetch(`${API_URL}?action=getPlats`);
-        plats = await response.json();
-        
-        const monProfil = plats.find(p => p.ownerId === browserId);
-        if (monProfil) {
-            document.getElementById('nomPersonne').value = monProfil.nom;
-            // Si on a déjà saisi les convives, on masque la boîte
-            if (monProfil.convives && monProfil.convives > 0) {
-                document.getElementById('boxConvives').style.display = "none";
-                document.getElementById('msgConvivesOk').style.display = "block";
-                document.getElementById('nbConvives').value = monProfil.convives;
+    // --- CHARGEMENT ---
+    async function chargerPlats() {
+        try {
+            const response = await fetch(`${API_URL}?action=getPlats`);
+            plats = await response.json();
+            
+            const monProfil = plats.find(p => p.ownerId === browserId);
+            if (monProfil) {
+                document.getElementById('nomPersonne').value = monProfil.nom;
+                if (monProfil.convives && monProfil.convives > 0 && !modeEdition) {
+                    document.getElementById('boxConvives').style.display = "none";
+                    document.getElementById('msgConvivesOk').style.display = "block";
+                    document.getElementById('nbConvives').value = monProfil.convives;
+                }
             }
-        }
-        afficherPlats(); calculerStatsGlobales();
-    } catch (e) { console.error(e); }
-}
+            afficherPlats(); calculerStatsGlobales();
+        } catch (e) { console.error(e); }
+    }
+
+    // --- CALCULS ---
     function calculerStatsGlobales() {
         const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
         
-        // Calcul intelligent des convives (uniquement 1 fois par navigateur)
         const vus = new Set(); let totalConvives = 0;
         plats.forEach(p => {
             if (!vus.has(p.ownerId)) { totalConvives += parseFloat(p.convives || 0); vus.add(p.ownerId); }
@@ -158,64 +162,58 @@
         document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
         document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
         
-        const presentsDiv = document.getElementById('listePresents');
         const uniquePresents = {}; plats.forEach(p => { uniquePresents[p.nom] = p.convives; });
-        presentsDiv.innerHTML = Object.entries(uniquePresents).map(([nom, nb]) => `<span class="badge-present"><strong>${nom}</strong> : ${nb}</span>`).join('');
+        document.getElementById('listePresents').innerHTML = Object.entries(uniquePresents)
+            .map(([nom, nb]) => `<span class="badge-present"><strong>${nom}</strong> : ${nb}</span>`).join('');
     }
 
+    // --- ACTIONS ---
     async function ajouterPlat() {
-    const btn = document.getElementById('btnAjouter');
-    const nom = document.getElementById('nomPersonne').value.trim();
-    const platNom = document.getElementById('nouveauPlat').value.trim();
-    const nbConv = document.getElementById('nbConvives').value;
-    const parts = document.getElementById('nombreParts').value;
+        const btn = document.getElementById('btnAjouter');
+        const nom = document.getElementById('nomPersonne').value.trim();
+        const platNom = document.getElementById('nouveauPlat').value.trim();
+        const nbConv = document.getElementById('nbConvives').value;
+        const parts = document.getElementById('nombreParts').value;
 
-    // Validation minimale
-    if (!nom) return alert("Veuillez entrer votre nom.");
-    if (!nbConv) return alert("Veuillez indiquer le nombre de personnes.");
+        if (!nom || !nbConv) return alert("Nom et Nombre de personnes obligatoires !");
 
-    // Si un nom de plat est mis, on vérifie la catégorie et les parts
-    const isPlatSaisi = platNom.length > 0;
-    const catCochee = document.querySelector('.plat-categories input:checked');
-    
-    if (isPlatSaisi && (!parts || !catCochee)) {
-        return alert("Pour ajouter un plat, précisez la catégorie et le nombre de parts.");
+        const isPlatSaisi = platNom.length > 0;
+        const catCochee = document.querySelector('.plat-categories input:checked');
+        if (isPlatSaisi && (!parts || !catCochee)) return alert("Pour un plat, précisez la catégorie et les parts.");
+
+        const fields = {
+            nom: nom,
+            convives: nbConv,
+            plat: platNom || "Présence uniquement",
+            parts: parts || 0,
+            apero: document.getElementById('apero').checked,
+            entree: document.getElementById('entree').checked,
+            platPrincipal: document.getElementById('platPrincipal').checked,
+            dessert: document.getElementById('dessert').checked,
+            autre: document.getElementById('autre').checked
+        };
+
+        btn.disabled = true; btn.innerText = "Envoi...";
+        try {
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) });
+            document.getElementById('nouveauPlat').value = "";
+            document.getElementById('nombreParts').value = "";
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            if (modeEdition) annulerEdition();
+            btn.innerText = "Enregistré !";
+            setTimeout(() => { btn.innerText = "Valider"; btn.disabled = false; }, 2000);
+            await chargerPlats();
+        } catch (e) { alert("Erreur réseau"); btn.disabled = false; }
     }
-
-    const fields = {
-        nom: nom,
-        convives: nbConv,
-        plat: platNom || "Présence uniquement", // Texte par défaut si pas de plat
-        parts: parts || 0,
-        apero: document.getElementById('apero').checked,
-        entree: document.getElementById('entree').checked,
-        platPrincipal: document.getElementById('platPrincipal').checked,
-        dessert: document.getElementById('dessert').checked,
-        autre: document.getElementById('autre').checked
-    };
-
-    btn.disabled = true; btn.innerText = "Envoi...";
-    try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) });
-        
-        // On ne vide PAS le nom ni les convives pour le prochain ajout
-        document.getElementById('nouveauPlat').value = "";
-        document.getElementById('nombreParts').value = "";
-        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-        
-        btn.innerText = "C'est tout bon !";
-        setTimeout(() => { btn.innerText = "Ajouter un autre plat"; btn.disabled = false; }, 2000);
-        
-        await chargerPlats();
-    } catch (e) { alert("Erreur réseau"); btn.disabled = false; }
-}
 
     function preparerModification(id) {
         const p = plats.find(item => item.id === id);
         if (!p) return;
         document.getElementById('nomPersonne').value = p.nom;
         document.getElementById('nbConvives').value = p.convives;
-        document.getElementById('nouveauPlat').value = p.plat;
+        document.getElementById('boxConvives').style.display = "block";
+        document.getElementById('msgConvivesOk').style.display = "none";
+        document.getElementById('nouveauPlat').value = p.plat === "Présence uniquement" ? "" : p.plat;
         document.getElementById('nombreParts').value = p.parts;
         document.getElementById('apero').checked = p.apero;
         document.getElementById('entree').checked = p.entree;
@@ -233,12 +231,13 @@
         document.getElementById('nouveauPlat').value = "";
         document.getElementById('nombreParts').value = "";
         document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-        document.getElementById('btnAjouter').innerText = "Ajouter mon plat";
+        document.getElementById('btnAjouter').innerText = "Valider";
         document.getElementById('btnAnnuler').style.display = "none";
+        chargerPlats(); // Pour remettre l'affichage des convives propre
     }
 
     async function supprimerPlat(id) {
-        if (!confirm("Supprimer ce plat ?")) return;
+        if (!confirm("Supprimer cet élément ?")) return;
         try {
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
             await chargerPlats();
@@ -254,18 +253,17 @@
         const config = [{id:'aperoListe',k:'apero',i:'🍹'}, {id:'entreeListe',k:'entree',i:'🥗'}, {id:'platListe',k:'platPrincipal',i:'🥘'}, {id:'dessertListe',k:'dessert',i:'🍰'}, {id:'autreListe',k:'autre',i:'📦'}];
         config.forEach(cat => {
             const container = document.getElementById(cat.id);
-            const filtered = plats.filter(p => p[cat.k]);
+            const filtered = plats.filter(p => p[cat.k] && p.plat !== "Présence uniquement");
             document.getElementById('total-' + cat.k).innerText = filtered.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-            container.innerHTML = filtered.length ? filtered
-    .filter(p => p.plat !== "Présence uniquement") // On masque les lignes sans plat
-    .map(p => `
-        <div class="plat-item">
-            <span>${cat.i} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-            <div class="actions">
-                ${p.ownerId === browserId ? `<button onclick="preparerModification(${p.id})" style="background:none;border:none;cursor:pointer;">✏️</button><button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>` : ''}
-            </div>
-        </div>
-    `).join('') : '<p style="color:gray;font-size:0.8em;text-align:center;">-</p>';
+            container.innerHTML = filtered.length ? filtered.map(p => `
+                <div class="plat-item">
+                    <span>${cat.i} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
+                    <div class="actions">
+                        ${p.ownerId === browserId ? `<button onclick="preparerModification(${p.id})" style="background:none;border:none;cursor:pointer;">✏️</button><button class="supprimer-btn" onclick="supprimerPlat(${p.id})">✕</button>` : ''}
+                    </div>
+                </div>
+            `).join('') : '<p style="color:gray;font-size:0.8em;text-align:center;">-</p>';
+        });
     }
     chargerPlats();
 </script>
