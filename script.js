@@ -7,7 +7,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzUsk14jdy9mPflgQ-ICZi9
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
-let commentaires = []; // Nouvelle liste dédiée au Livre d'Or
+let commentaires = []; 
 let idEnEditionModale = null;
 let modeEdition = false;
 let idEnCoursEdition = null;
@@ -20,7 +20,6 @@ localStorage.setItem('cousinade_id', browserId);
 
 async function chargerDonnees() {
     try {
-        // On récupère les deux listes en parallèle pour plus de rapidité
         const [resPlats, resComs] = await Promise.all([
             fetch(`${API_URL}?action=getPlats`),
             fetch(`${API_URL}?action=getCommentaires`)
@@ -37,7 +36,6 @@ async function chargerDonnees() {
     }
 }
 
-// Alias pour garder la compatibilité avec tes appels existants
 function chargerPlats() { chargerDonnees(); }
 
 // --- 2. AFFICHAGE DU LIVRE D'OR ---
@@ -51,7 +49,7 @@ function afficherLivreDor() {
             
             ${m.ownerId === browserId ? `
                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.nom}')" title="Modifier" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">✏️</button>
+                    <button onclick="ouvrirModifCom('${m.nom}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">✏️</button>
                     <button onclick="supprimerCommentaire('${m.nom}')" title="Supprimer" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">🗑️</button>
                 </div>
             ` : ''}
@@ -151,7 +149,7 @@ async function ajouterPlat() {
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
         commentaire: comVal,
-        action: "insert", // On reste sur insert pour permettre plusieurs messages
+        action: "insert",
         browserId: browserId
     };
 
@@ -236,7 +234,39 @@ async function supprimerPlat(id) {
     await chargerDonnees();
 }
 
-// --- 6. UTILITAIRES ---
+// --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
+
+async function ouvrirModifCom(nom, ancienMessage) {
+    const nouveau = prompt("Modifier votre message :", ancienMessage);
+    if (nouveau === null || nouveau === ancienMessage) return;
+    
+    await fetch(API_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ 
+            action: "updateCommentaire", 
+            nom: nom, 
+            commentaire: nouveau, 
+            browserId: browserId 
+        })
+    });
+    await chargerDonnees();
+}
+
+async function supprimerCommentaire(nom) {
+    if (!confirm("Voulez-vous supprimer ce message ?")) return;
+    await fetch(API_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ 
+            action: "updateCommentaire", 
+            nom: nom, 
+            commentaire: "", // Envoi vide pour masquer
+            browserId: browserId 
+        })
+    });
+    await chargerDonnees();
+}
+
+// --- 7. UTILITAIRES ---
 
 function verifierSiDejaInscrit() {
     const monInscription = plats.find(p => p.ownerId === browserId);
