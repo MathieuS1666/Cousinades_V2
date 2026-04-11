@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzQM7CymOxpOA3ZU-6XMVua4Q0S1j5l7oLx-_ratsPmLl2UZhXkfr6BTY9fTHO88T0p/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwAX37zoR6SSi5jhdODRmICoDIm56mJMp1tCHOYoXHsEnbxs9yIrIKnMRxI1cMi2TKj/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
