@@ -17,7 +17,7 @@ function verifierSiDejaInscrit() {
         // Si je suis déjà inscrit :
         // 1. On cache la boite orange du nombre de personnes
         boxConvives.style.display = "none";
-        msgConviviesOk.style.display = "block"; // ON AFFICHE LE MESSAGE ✅
+        msgConvivesOk.style.display = "block"; // ON AFFICHE LE MESSAGE ✅
         // 2. On pré-remplit le nom et le nombre (pour les envois de plats suivants)
         inputNom.value = monInscription.nom;
         inputNbConvives.value = monInscription.convives;
@@ -44,17 +44,33 @@ async function chargerPlats() {
 
 function calculerStatsGlobales() {
     // 1. Stats globales
-    const vus = new Set(); let totalConv = 0;
-    plats.forEach(p => { if(!vus.has(p.ownerId)){ totalConv += parseFloat(p.convives||0); vus.add(p.ownerId); }});
+    const vus = new Set(); 
+    let totalConv = 0;
+    plats.forEach(p => { 
+        if(!vus.has(p.ownerId)){ 
+            totalConv += parseFloat(p.convives||0);
+            vus.add(p.ownerId);
+        }
+    });
     document.getElementById('stat-convives').innerText = totalConv;
     document.getElementById('stat-total').innerText = plats.reduce((s,p)=>s+parseInt(p.parts||0),0);
 
     // 2. Stats par catégories (Bandeau)
-    document.getElementById('stat-apero').innerText = plats.filter(p => p.apero).reduce((s,p)=>s+parseInt(p.parts||0),0);
-    document.getElementById('stat-entrees').innerText = plats.filter(p => p.entree).reduce((s,p)=>s+parseInt(p.parts||0),0);
-    document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s,p)=>s+parseInt(p.parts||0),0);
-    document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s,p)=>s+parseInt(p.parts||0),0);
-
+    document.getElementById('stat-apero').innerText = plats
+        .filter(p => p.categorie === 'apero')
+        .reduce((s,p) => s + parseInt(p.parts || 0), 0);
+        
+    document.getElementById('stat-entrees').innerText = plats
+        .filter(p => p.categorie === 'entree')
+        .reduce((s,p) => s + parseInt(p.parts || 0), 0);
+        
+    document.getElementById('stat-plats').innerText = plats
+        .filter(p => p.categorie === 'platPrincipal')
+        .reduce((s,p) => s + parseInt(p.parts || 0), 0);
+        
+    document.getElementById('stat-desserts').innerText = plats
+        .filter(p => p.categorie === 'dessert')
+        .reduce((s,p) => s + parseInt(p.parts || 0), 0);
     // 3. Liste présents
     const unique = {};
     plats.forEach(p => { if(!unique[p.nom]) unique[p.nom] = p; });
