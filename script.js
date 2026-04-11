@@ -134,6 +134,22 @@ function afficherPlats() {
 }
 
 function ouvrirAdmin() { if(prompt("Pass :")==="1234") window.open("https://docs.google.com/spreadsheets/d/TON_ID_SHEET"); }
+function mettreAJourCompteARebours() {
+    const maintenant = new Date();
+    const difference = DATE_COUSINADE - maintenant;
 
+    if (difference <= 0) {
+        document.getElementById("countdown").innerText = "C'est le jour J ! 🎉";
+        return;
+    }
+
+    const jours = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    document.getElementById("countdown").innerText = 
+        `J-${jours} avant la cousinade !`;
+}
+
+// On lance le calcul immédiatement
+mettreAJourCompteARebours();
 // Lancement au chargement
 chargerPlats();
