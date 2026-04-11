@@ -154,14 +154,18 @@ async function ouvrirModifCom(nom) {
 }
 
 async function ajouterPlat() {
-    const catChoisie = document.querySelector('input[name="categoriePlat"]:checked')?.value || "autre";
+    // On cherche l'élément coché par son attribut 'name'
+    const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
+    
+    // Si on trouve un bouton coché, on prend sa 'value', sinon on met "autre"
+    const catChoisie = radioCoche ? radioCoche.value : "autre";
 
     const fields = {
         nom: document.getElementById('nomPersonne').value.trim(),
         convives: document.getElementById('nbConvives').value,
         plat: document.getElementById('nouveauPlat').value.trim() || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
-        categorie: catChoisie, // On envoie juste le nom de la catégorie
+        categorie: catChoisie, // C'est cette valeur qui sera envoyée au Sheet
         commentaire: document.getElementById('commentaire').value.trim(),
         action: modeEdition ? "update" : "insert",
         rowId: idEnCoursEdition,
