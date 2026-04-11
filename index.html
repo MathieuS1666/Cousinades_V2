@@ -98,6 +98,8 @@
         </div>
         <p style="text-align:center; font-size:0.9em;">Ce plat est pour combien de personne ?</p>
         <input type="number" id="nombreParts" placeholder="Nombre de portions">
+
+<input type="text" id="commentaire" placeholder="Un petit mot doux ou une info importante ?">
         
         <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
@@ -216,6 +218,7 @@
             platPrincipal: document.getElementById('platPrincipal').checked,
             dessert: document.getElementById('dessert').checked,
             autre: document.getElementById('autre').checked
+            commentaire: document.getElementById('commentaire').value.trim() // On récupère le mot
         };
 
         btn.disabled = true; btn.innerText = "Envoi...";
@@ -223,11 +226,13 @@
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) });
             document.getElementById('nouveauPlat').value = "";
             document.getElementById('nombreParts').value = "";
+            document.getElementById('commentaire').value = "";
             document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
             if (modeEdition) annulerEdition();
             btn.innerText = "Enregistré !";
             setTimeout(() => { btn.innerText = "Valider"; btn.disabled = false; }, 2000);
             await chargerPlats();
+            
         } catch (e) { alert("Erreur réseau"); btn.disabled = false; }
     }
 
