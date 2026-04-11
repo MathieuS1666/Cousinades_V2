@@ -6,6 +6,31 @@ let idEnCoursEdition = null;
 let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('cousinade_id', browserId);
 
+function verifierSiDejaInscrit() {
+    // On cherche si un plat possède ton browserId
+    const monInscription = plats.find(p => p.ownerId === browserId);
+    const boxConvives = document.getElementById('boxConvives');
+    const inputNom = document.getElementById('nomPersonne');
+    const inputNbConvives = document.getElementById('nbConvives');
+
+    if (monInscription) {
+        // Si je suis déjà inscrit :
+        // 1. On cache la boite orange du nombre de personnes
+        boxConvives.style.display = "none";
+        // 2. On pré-remplit le nom et le nombre (pour les envois de plats suivants)
+        inputNom.value = monInscription.nom;
+        inputNbConvives.value = monInscription.convives;
+        // 3. On peut éventuellement griser le nom pour ne pas le changer
+        inputNom.readOnly = true;
+        inputNom.style.background = "#f0f0f0";
+    } else {
+        // Si je ne suis pas inscrit, on affiche tout normalement
+        boxConvives.style.display = "block";
+        inputNom.readOnly = false;
+        inputNom.style.background = "white";
+    }
+}
+
 async function chargerPlats() {
     try {
         const response = await fetch(`${API_URL}?action=getPlats`);
@@ -45,6 +70,7 @@ function calculerStatsGlobales() {
             <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#2c3e50;">— ${m.nom}</p>
         </div>
     `).join('') || '<p style="grid-column:1/-1;text-align:center;color:gray;">Aucun message pour le moment...</p>';
+verifierSiDejaInscrit();
 }
 
 async function ouvrirModifConvives(id) {
