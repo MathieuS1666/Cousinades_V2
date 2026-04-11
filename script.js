@@ -127,14 +127,49 @@ async function ouvrirModifConvives(id) {
     await chargerPlats();
 }
 
-async function ouvrirModifPlat(id) {
-    const p = plats.find(x => x.id === id);
-    const nouveauNom = prompt("Nom du plat :", p.plat === "Présence uniquement" ? "" : p.plat);
-    if (nouveauNom === null) return;
-    const nouvellesParts = prompt("Pour combien de personnes ?", p.parts);
-    if (nouvellesParts === null) return;
+let idEnEditionModale = null;
 
-    await envoyerUpdate(id, p.nom, p.convives, nouveauNom, nouvellesParts, p.apero, p.entree, p.platPrincipal, p.dessert, p.autre);
+function ouvrirModifPlat(id) {
+    const p = plats.find(x => x.id === id);
+    if (!p) return;
+
+    idEnEditionModale = id;
+    
+    // On remplit les champs de la modale
+    document.getElementById('editPlatNom').value = p.plat;
+    document.getElementById('editPlatParts').value = p.parts;
+    document.getElementById('editPlatCat').value = p.categorie;
+
+    // On affiche la modale
+    document.getElementById('modalEdition').style.display = "block";
+}
+
+function fermerModale() {
+    document.getElementById('modalEdition').style.display = "none";
+}
+
+async function validerModifModale() {
+    const p = plats.find(x => x.id === idEnEditionModale);
+    
+    const nouveauxChamps = {
+        action: "update",
+        rowId: idEnEditionModale,
+        nom: p.nom, // Le prénom de la personne ne change pas ici
+        convives: p.convives,
+        plat: document.getElementById('editPlatNom').value.trim(),
+        parts: document.getElementById('editPlatParts').value,
+        categorie: document.getElementById('editPlatCat').value,
+        browserId: browserId
+    };
+
+    fermerModale(); // On ferme vite pour l'effet visuel
+    
+    await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(nouveauxChamps)
+    });
+
+    await chargerPlats(); // On rafraîchit la page
 }
 
 async function envoyerUpdate(id, nom, conv, plat, parts, apero, entree, pp, dess, aut) {
