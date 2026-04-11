@@ -206,7 +206,7 @@ function afficherPlats() { // avec allergies
     `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Aucune allergie</div>';
 }
 // --- 4. GESTION DU FORMULAIRE (AJOUT) ---
-
+/**
 async function ajouterPlat() {
     const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
     const catChoisie = radioCoche ? radioCoche.value : "autre";
@@ -243,6 +243,61 @@ async function ajouterPlat() {
         annulerEdition();
         await chargerDonnees();
     } catch (e) {
+        alert("Erreur réseau, réessaye !");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Valider";
+    }
+}
+**/
+
+async function ajouterPlat() {
+    const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
+    const catChoisie = radioCoche ? radioCoche.value : "autre";
+
+    const nomVal = document.getElementById('nomPersonne').value.trim();
+    const convVal = document.getElementById('nbConvives').value;
+    const platVal = document.getElementById('nouveauPlat').value.trim();
+    const comVal = document.getElementById('commentaire').value.trim();
+    
+    // --- LA CORRECTION EST ICI ---
+    // On définit allergieVal en allant chercher le nouveau champ
+    const champAllergie = document.getElementById('allergieSaisie');
+    const allergieVal = champAllergie ? champAllergie.value.trim() : "";
+    // ----------------------------
+
+    const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
+
+    if (!nomVal) return alert("Le prénom est requis !");
+    if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
+    
+    // On autorise la validation si au moins un des trois champs est rempli
+    if (!platVal && !comVal && !allergieVal) {
+        return alert("Saisissez un plat, un message ou une allergie !");
+    }
+
+    const fields = {
+        nom: nomVal,
+        convives: convVal || 0,
+        plat: platVal || "Présence uniquement",
+        parts: document.getElementById('nombreParts').value || 0,
+        categorie: catChoisie,
+        commentaire: comVal,
+        allergies: allergieVal, // Maintenant allergieVal est bien défini !
+        action: "insert",
+        browserId: browserId
+    };
+
+    const btn = document.getElementById('btnAjouter');
+    btn.disabled = true;
+    btn.innerText = "Envoi...";
+
+    try {
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
+        annulerEdition();
+        await chargerDonnees();
+    } catch (e) {
+        console.error(e);
         alert("Erreur réseau, réessaye !");
     } finally {
         btn.disabled = false;
