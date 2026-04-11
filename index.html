@@ -5,130 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cousinade Bob 2026</title>
     <style>
-        :root {
-            --apero: #ff9f43; --entree: #1dd1a1; --plat: #ff6b6b; --dessert: #feca57; --autre: #48dbfb;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-attachment: fixed; min-height: 100vh; color: #333;
-        }
+        :root { --apero: #ff9f43; --entree: #1dd1a1; --plat: #ff6b6b; --dessert: #feca57; --autre: #48dbfb; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-attachment: fixed; min-height: 100vh; color: #333; }
         
-        /* BANDEAU TOP (Compte à rebours & Stats) */
-        .header-info {
-            background: rgba(44, 62, 80, 0.95); color: white; padding: 15px;
-            text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            position: sticky; top: 0; z-index: 1000;
-        }
+        .header-info { background: rgba(44, 62, 80, 0.95); color: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 1000; }
         #countdown { font-weight: bold; color: #feca57; font-size: 1.2em; margin-bottom: 10px; }
-        .stats-bar {
-            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 0.9em;
-        }
-        .stat-item { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+        .stats-bar { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; font-size: 0.85em; align-items: center; }
+        .stat-item { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+        .stat-item b { color: #feca57; }
 
-        .container {
-            display: flex; max-width: 1300px; margin: 20px auto; padding: 20px;
-            background-color: rgba(255, 255, 255, 0.96); border-radius: 12px;
-        }
-        
-        .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; position: sticky; top: 120px; height: fit-content; }
+        .container { display: flex; max-width: 1300px; margin: 20px auto; padding: 20px; background-color: rgba(255, 255, 255, 0.96); border-radius: 12px; }
+        .formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; position: sticky; top: 140px; height: fit-content; }
         .reponses { flex: 3; padding: 20px; }
         
-        h1 { color: #2c3e50; text-align: center; margin-top: 0; }
         input[type="text"], input[type="number"] { padding: 12px; margin: 8px 0; width: 100%; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .convives-box { background: #fdf2e9; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #e67e22; }
         
         .plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
         .plat-categories label { display: flex; align-items: center; background: #f0f0f0; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85em; }
 
-        .boutons-groupe { display: flex; gap: 10px; margin-top: 10px; }
         button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; flex: 1; }
         #btnAjouter { background-color: #27ae60; color: white; }
-        #btnAnnuler { background-color: #95a5a6; color: white; display: none; }
+        #btnAnnuler { background-color: #95a5a6; color: white; display: none; margin-top: 5px; }
         
         .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .colonne { background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; border-top-width: 5px; border-top-style: solid; }
-        .colonne h3 { margin-top: 0; font-size: 1em; border-bottom: 2px solid #eee; padding-bottom: 5px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 5px; }
-        
-        /* Couleurs colonnes */
+        .colonne { background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; border-top: 5px solid #ccc; }
         #apero-col { border-top-color: var(--apero); } #entree-col { border-top-color: var(--entree); }
         #plat-col { border-top-color: var(--plat); } #dessert-col { border-top-color: var(--dessert); }
         #autre-col { border-top-color: var(--autre); }
 
-        .total-badge { background: #eee; color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; }
+        .total-badge { background: #eee; color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: 5px; }
 
-        .plat-item {
-            padding: 10px; background: white; margin: 8px 0; border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.82em; border-left: 4px solid #27ae60;
-        }
-        .actions { display: flex; align-items: center; gap: 8px; }
-        .supprimer-btn { 
-            background-color: #ff4757; color: white; border: none; width: 22px; height: 22px; 
-            border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 10px;
-        }
+        .plat-item { padding: 10px; background: white; margin: 8px 0; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 0.82em; border-left: 4px solid #27ae60; }
+        .supprimer-btn { background-color: #ff4757; color: white; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 10px; padding:0; }
+
+        .liste-presents { margin-top: 20px; background: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .badge-present { display: inline-block; background: #f0f0f0; padding: 5px 15px; margin: 5px; border-radius: 20px; font-size: 0.9em; border: 1px solid #ddd; }
 
         @media (max-width: 1000px) { .container { flex-direction: column; } .formulaire { border-right: none; position: static; } }
     </style>
 </head>
 <body>
 
-    <div class="header-info">
-        <div id="countdown">Chargement du compte à rebours...</div>
-          <div class="stats-bar">
-              <div class="stat-item" style="background: #d35400; color: white;">🔥 Total Convives : <span id="stat-convives">0</span></div>
-            <div class="stat-item">👥 Total Parts : <span id="stat-total">0</span></div>
-            <div class="stat-item">🍹 Apéro : <span id="stat-apero">0</span></div>
-            <div class="stat-item">🥗 Entrées : <span id="stat-entrees">0</span></div>
-            <div class="stat-item">🥘 Plats : <span id="stat-plats">0</span></div>
-            <div class="stat-item">🍰 Desserts : <span id="stat-desserts">0</span></div>
-              <button onclick="ouvrirAdmin()" style="background:#444; color:white; padding:5px 12px; font-size:0.8em; border-radius:15px; flex:none; width:auto;">⚙️ Admin</button>
-        </div>
+<div class="header-info">
+    <div id="countdown">Calcul en cours...</div>
+    <div class="stats-bar">
+        <div class="stat-item">🔥 Convives : <b id="stat-convives">0</b></div>
+        <div class="stat-item">👥 Parts : <b id="stat-total">0</b></div>
+        <div class="stat-item">🍹 Apéro : <b id="stat-apero">0</b></div>
+        <div class="stat-item">🥗 Entrées : <b id="stat-entrees">0</b></div>
+        <div class="stat-item">🥘 Plats : <b id="stat-plats">0</b></div>
+        <div class="stat-item">🍰 Desserts : <b id="stat-desserts">0</b></div>
+        <button onclick="ouvrirAdmin()" style="background:#444; color:white; padding:5px 12px; font-size:0.85em; border-radius:15px; flex:none; width:auto;">⚙️ Admin</button>
     </div>
-
-    <div class="container">
-        <div class="formulaire">
-            <h1>Cousinade 2026</h1>
-            <p id="instruction" style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
-            <input type="text" id="nomPersonne" placeholder="Votre nom">
-            <div style="background: #fdf2e9; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #e67e22;">
-    <label style="font-size: 0.85em; font-weight: bold; color: #d35400;">Nombre de personnes présentes :</label>
-    <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5" style="margin-top: 5px;">
-    <p style="font-size: 0.75em; color: #666; margin: 5px 0 0 0;">💡 Note : Adulte = 1 | Enfant (-10 ans) = 0.5</p>
 </div>
-            <input type="text" id="nouveauPlat" placeholder="Nom du plat">
-            <div class="plat-categories">
-                <label><input type="checkbox" id="apero"> Apéro</label>
-                <label><input type="checkbox" id="entree"> Entrée</label>
-                <label><input type="checkbox" id="platPrincipal"> Plat</label>
-                <label><input type="checkbox" id="dessert"> Dessert</label>
-                <label><input type="checkbox" id="autre"> Autre</label>
-            </div>
-            <input type="number" id="nombreParts" placeholder="Nombre de portions">
-            <div class="boutons-groupe">
-                <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
-                <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
-            </div>
+
+<div class="container">
+    <div class="formulaire">
+        <h1>Cousinade 2026</h1>
+        <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
+        
+        <input type="text" id="nomPersonne" placeholder="Votre nom">
+        
+        <div class="convives-box">
+            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes présentes :</label>
+            <input type="number" id="nbConvives" step="0.5" placeholder="Ex: 2.5">
+            <p style="font-size: 0.7em; color: #666; margin:0;">Adulte = 1 | Enfant (-10 ans) = 0.5</p>
         </div>
 
-        <div class="reponses">
-            <div class="colonnes">
-                <div class="colonne" id="apero-col"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
-                <div class="colonne" id="entree-col"><h3>🥗 Entrées <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
-                <div class="colonne" id="plat-col"><h3>🥘 Plats <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
-                <div class="colonne" id="dessert-col"><h3>🍰 Desserts <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
-                <div class="colonne" id="autre-col"><h3>📦 Autres <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
-            </div>
+        <input type="text" id="nouveauPlat" placeholder="Nom du plat">
+        
+        <div class="plat-categories">
+            <label><input type="checkbox" id="apero"> Apéro</label>
+            <label><input type="checkbox" id="entree"> Entrée</label>
+            <label><input type="checkbox" id="platPrincipal"> Plat</label>
+            <label><input type="checkbox" id="dessert"> Dessert</label>
+            <label><input type="checkbox" id="autre"> Autre</label>
+        </div>
+        
+        <input type="number" id="nombreParts" placeholder="Nombre de portions">
+        
+        <button onclick="ajouterPlat()" id="btnAjouter">Ajouter mon plat</button>
+        <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
+    </div>
+
+    <div class="reponses">
+        <div class="colonnes">
+            <div class="colonne" id="apero-col"><h3>🍹 Apéro <span id="total-apero" class="total-badge">0</span></h3><div id="aperoListe"></div></div>
+            <div class="colonne" id="entree-col"><h3>🥗 Entrées <span id="total-entree" class="total-badge">0</span></h3><div id="entreeListe"></div></div>
+            <div class="colonne" id="plat-col"><h3>🥘 Plats <span id="total-platPrincipal" class="total-badge">0</span></h3><div id="platListe"></div></div>
+            <div class="colonne" id="dessert-col"><h3>🍰 Desserts <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
+            <div class="colonne" id="autre-col"><h3>📦 Autres <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
         </div>
     </div>
-<div class="container" style="margin-top: 20px; display: block;">
-    <h2 style="text-align: center; color: #2c3e50;">👥 Liste des Présents</h2>
-    <div id="listePresents" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-        </div>
 </div>
+
+<div class="container liste-presents">
+    <h2 style="margin-top:0;">👥 Liste des Présents</h2>
+    <div id="listePresents"></div>
+</div>
+
 <script>
-    // --- CONFIGURATION ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbwwJxpxmfAQFgo-o2lfck-8kCv721WIpkM4Z6a2lqvGtrnx3JN9dSb6KxlYGEiYwjV_/exec";
-    const DATE_COUSINADE = new Date("2026-05-09T12:00:00"); // MODIFIEZ LA DATE ICI
+    const API_URL = "https://script.google.com/macros/library/d/1Ae-m7MtgoeaLZNLO4yCq47b6R7dllwFwLkTODi689tEI2aZsiA1N-2to/12";
+    const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
     let plats = [];
     let modeEdition = false;
@@ -136,77 +115,53 @@
     let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('cousinade_id', browserId);
 
-    // --- COMPTE À REBOURS ---
     function updateCountdown() {
-        const now = new Date();
-        const diff = DATE_COUSINADE - now;
+        const diff = DATE_COUSINADE - new Date();
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        //const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        
-        const el = document.getElementById('countdown');
-        if (diff > 0) {
-            el.innerHTML = `⏳ J-${days} avant la Cousinade ! 🥂`;
-        } else {
-            el.innerHTML = "🎉 C'est le jour J ! Amusez-vous bien ! 🥳";
-        }
+        document.getElementById('countdown').innerHTML = diff > 0 ? `⏳ J-${days} avant la Cousinade ! 🥂` : "🎉 C'est le jour J ! 🥳";
     }
-    setInterval(updateCountdown, 60000);
-    updateCountdown();
+    setInterval(updateCountdown, 60000); updateCountdown();
 
-    // --- LOGIQUE DATA ---
     async function chargerPlats() {
         try {
             const response = await fetch(`${API_URL}?action=getPlats`);
             plats = await response.json();
-            afficherPlats();
-            calculerStatsGlobales();
+            
+            const monProfil = plats.find(p => p.ownerId === browserId);
+            if (monProfil && !modeEdition) {
+                document.getElementById('nomPersonne').value = monProfil.nom;
+                document.getElementById('nbConvives').value = monProfil.convives;
+            }
+            afficherPlats(); calculerStatsGlobales();
         } catch (e) { console.error(e); }
     }
 
-function calculerStatsGlobales() {
-    // Calcul du total général des parts
-    const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    // On calcule le total des convives (on utilise parseFloat car il peut y avoir des 0.5)
-    const totalConvives = plats.reduce((sum, p) => sum + parseFloat(p.convives || 0), 0);
-    // Calcul du nombre de parts par catégorie
-    const totalApero = plats.filter(p => p.apero).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    const totalEntrees = plats.filter(p => p.entree).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    const totalPlats = plats.filter(p => p.platPrincipal).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    const totalDesserts = plats.filter(p => p.dessert).reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
-    
-    // Affichage dans le bandeau
-    document.getElementById('stat-convives').innerText = totalConvives;
-    document.getElementById('stat-total').innerText = totalParts;
-    document.getElementById('stat-apero').innerText = totalApero;
-    document.getElementById('stat-entrees').innerText = totalEntrees;
-    document.getElementById('stat-plats').innerText = totalPlats;
-    document.getElementById('stat-desserts').innerText = totalDesserts;
-    afficherListePresents();
-}
-function afficherListePresents() {
-    const container = document.getElementById('listePresents');
-    container.innerHTML = "";
+    function calculerStatsGlobales() {
+        const totalParts = plats.reduce((sum, p) => sum + parseInt(p.parts || 0), 0);
+        
+        // Calcul intelligent des convives (uniquement 1 fois par navigateur)
+        const vus = new Set(); let totalConvives = 0;
+        plats.forEach(p => {
+            if (!vus.has(p.ownerId)) { totalConvives += parseFloat(p.convives || 0); vus.add(p.ownerId); }
+        });
 
-    // On crée une liste unique par nom pour ne pas compter deux fois si quelqu'un amène deux plats
-    const presents = {};
-    plats.forEach(p => {
-        if (!presents[p.nom]) {
-            presents[p.nom] = p.convives;
-        }
-    });
-
-    for (const [nom, nb] of Object.entries(presents)) {
-        const div = document.createElement('div');
-        div.style.cssText = "background:white; padding:8px 15px; border-radius:20px; box-shadow:0 2px 4px rgba(0,0,0,0.1); font-size:0.9em; border:1px solid #ddd;";
-        div.innerHTML = `<strong>${nom}</strong> : <span style="color:#d35400; font-weight:bold;">${nb}</span>`;
-        container.appendChild(div);
+        document.getElementById('stat-total').innerText = totalParts;
+        document.getElementById('stat-convives').innerText = totalConvives;
+        document.getElementById('stat-apero').innerText = plats.filter(p => p.apero).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+        document.getElementById('stat-entrees').innerText = plats.filter(p => p.entree).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+        document.getElementById('stat-plats').innerText = plats.filter(p => p.platPrincipal).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+        document.getElementById('stat-desserts').innerText = plats.filter(p => p.dessert).reduce((s, p) => s + parseInt(p.parts || 0), 0);
+        
+        const presentsDiv = document.getElementById('listePresents');
+        const uniquePresents = {}; plats.forEach(p => { uniquePresents[p.nom] = p.convives; });
+        presentsDiv.innerHTML = Object.entries(uniquePresents).map(([nom, nb]) => `<span class="badge-present"><strong>${nom}</strong> : ${nb}</span>`).join('');
     }
-}
+
     async function ajouterPlat() {
         const btn = document.getElementById('btnAjouter');
-        const convives = document.getElementById('nbConvives').value;
         const fields = {
             nom: document.getElementById('nomPersonne').value.trim(),
+            convives: document.getElementById('nbConvives').value,
             plat: document.getElementById('nouveauPlat').value.trim(),
             parts: document.getElementById('nombreParts').value,
             apero: document.getElementById('apero').checked,
@@ -214,24 +169,23 @@ function afficherListePresents() {
             platPrincipal: document.getElementById('platPrincipal').checked,
             dessert: document.getElementById('dessert').checked,
             autre: document.getElementById('autre').checked
-            
         };
 
-        if (!fields.nom || !fields.plat || !fields.parts) return alert("Champs obligatoires !");
+        if (!fields.nom || !fields.plat || !fields.parts || !fields.convives) return alert("Remplissez tous les champs !");
         if (!(fields.apero || fields.entree || fields.platPrincipal || fields.dessert || fields.autre)) return alert("Cochez une catégorie !");
         
         btn.disabled = true; btn.innerText = "Envoi...";
         try {
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ ...fields, action: modeEdition ? "update" : "insert", rowId: idEnCoursEdition, browserId: browserId }) });
-            annulerEdition();
-            await chargerPlats();
-        } catch (e) { alert("Erreur"); } finally { btn.disabled = false; }
+            annulerEdition(); await chargerPlats();
+        } catch (e) { alert("Erreur réseau"); } finally { btn.disabled = false; }
     }
 
     function preparerModification(id) {
         const p = plats.find(item => item.id === id);
         if (!p) return;
         document.getElementById('nomPersonne').value = p.nom;
+        document.getElementById('nbConvives').value = p.convives;
         document.getElementById('nouveauPlat').value = p.plat;
         document.getElementById('nombreParts').value = p.parts;
         document.getElementById('apero').checked = p.apero;
@@ -241,46 +195,38 @@ function afficherListePresents() {
         document.getElementById('autre').checked = p.autre;
         modeEdition = true; idEnCoursEdition = id;
         document.getElementById('btnAjouter').innerText = "Enregistrer";
-        document.getElementById('btnAjouter').style.backgroundColor = "#f39c12";
         document.getElementById('btnAnnuler').style.display = "block";
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function annulerEdition() {
         modeEdition = false; idEnCoursEdition = null;
-        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(i => i.value="");
+        document.getElementById('nouveauPlat').value = "";
+        document.getElementById('nombreParts').value = "";
         document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
         document.getElementById('btnAjouter').innerText = "Ajouter mon plat";
-        document.getElementById('btnAjouter').style.backgroundColor = "#27ae60";
         document.getElementById('btnAnnuler').style.display = "none";
     }
 
     async function supprimerPlat(id) {
-        if (!confirm("Supprimer ?")) return;
+        if (!confirm("Supprimer ce plat ?")) return;
         try {
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
             await chargerPlats();
         } catch (e) { alert("Erreur"); }
     }
-function ouvrirAdmin() {
-    const motDePasseAttendu = "1234"; // <-- MODIFIE TON MOT DE PASSE ICI
-    const urlSheet = "https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing"; // <-- TON LIEN SHEET
-    
-    const saisie = prompt("Entrez le mot de passe administrateur :");
-    
-    if (saisie === motDePasseAttendu) {
-        window.open(urlSheet, '_blank');
-    } else if (saisie !== null) {
-        alert("Mot de passe incorrect !");
+
+    function ouvrirAdmin() {
+        const mdp = prompt("Mot de passe :");
+        if (mdp === "1234") window.open("https://docs.google.com/spreadsheets/d/VOTRE_ID_SHEET/edit", '_blank');
     }
-}
+
     function afficherPlats() {
         const config = [{id:'aperoListe',k:'apero',i:'🍹'}, {id:'entreeListe',k:'entree',i:'🥗'}, {id:'platListe',k:'platPrincipal',i:'🥘'}, {id:'dessertListe',k:'dessert',i:'🍰'}, {id:'autreListe',k:'autre',i:'📦'}];
         config.forEach(cat => {
             const container = document.getElementById(cat.id);
             const filtered = plats.filter(p => p[cat.k]);
-            const total = filtered.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-            document.getElementById('total-' + cat.k).innerText = total;
+            document.getElementById('total-' + cat.k).innerText = filtered.reduce((s, p) => s + parseInt(p.parts || 0), 0);
             container.innerHTML = filtered.length ? filtered.map(p => `
                 <div class="plat-item">
                     <span>${cat.i} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
