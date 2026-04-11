@@ -65,6 +65,22 @@ input[type="text"], input[type="number"], textarea {
 
 textarea { resize: vertical; min-height: 60px; }
 
+/* --- Nouveaux styles pour la séparation des blocs --- */
+.form-section-repas {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.5);
+}
+
+.form-section-livredor {
+    border: 1px solid #feca57;
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(254, 202, 87, 0.05);
+}
+
 .convives-box {
     background: #fdf2e9;
     padding: 10px;
@@ -98,9 +114,14 @@ button {
     margin-top: 10px;
 }
 
+/* --- Styles des boutons distincts --- */
 #btnAjouter { background-color: #27ae60; color: white; }
+#btnAjouter:hover { background-color: #219150; }
 
-#btnAnnuler { background-color: #95a5a6; color: white; display: none; margin-top: 5px; }
+#btnMessage { background-color: #feca57; color: #2c3e50; }
+#btnMessage:hover { background-color: #f9ca24; }
+
+#btnAnnuler { background-color: #95a5a6; color: white; display: none; margin-top: 15px; }
 
 .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
 
