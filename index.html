@@ -80,13 +80,14 @@
             <div class="stat-item">🥗 Entrées : <span id="stat-entrees">0</span></div>
             <div class="stat-item">🥘 Plats : <span id="stat-plats">0</span></div>
             <div class="stat-item">🍰 Desserts : <span id="stat-desserts">0</span></div>
+              <button onclick="ouvrirAdmin()" style="background:#444; color:white; padding:5px 12px; font-size:0.8em; border-radius:15px; flex:none; width:auto;">⚙️ Admin</button>
         </div>
     </div>
 
     <div class="container">
         <div class="formulaire">
             <h1>Cousinade 2026</h1>
-            <p id="instruction" style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter :</p>
+            <p id="instruction" style="text-align:center; font-size:0.9em;">Dites-nous ce que vous allez apporter !</p>
             <input type="text" id="nomPersonne" placeholder="Votre nom">
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
             <div class="plat-categories">
@@ -228,7 +229,18 @@ function calculerStatsGlobales() {
             await chargerPlats();
         } catch (e) { alert("Erreur"); }
     }
-
+function ouvrirAdmin() {
+    const motDePasseAttendu = "1234"; // <-- MODIFIE TON MOT DE PASSE ICI
+    const urlSheet = "docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?gid=0#gid=0"; // <-- TON LIEN SHEET
+    
+    const saisie = prompt("Entrez le mot de passe administrateur :");
+    
+    if (saisie === motDePasseAttendu) {
+        window.open(urlSheet, '_blank');
+    } else if (saisie !== null) {
+        alert("Mot de passe incorrect !");
+    }
+}
     function afficherPlats() {
         const config = [{id:'aperoListe',k:'apero',i:'🍹'}, {id:'entreeListe',k:'entree',i:'🥗'}, {id:'platListe',k:'platPrincipal',i:'🥘'}, {id:'dessertListe',k:'dessert',i:'🍰'}, {id:'autreListe',k:'autre',i:'📦'}];
         config.forEach(cat => {
