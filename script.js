@@ -17,6 +17,7 @@ function verifierSiDejaInscrit() {
         // Si je suis déjà inscrit :
         // 1. On cache la boite orange du nombre de personnes
         boxConvives.style.display = "none";
+        msgOk.style.display = "block"; // ON AFFICHE LE MESSAGE ✅
         // 2. On pré-remplit le nom et le nombre (pour les envois de plats suivants)
         inputNom.value = monInscription.nom;
         inputNbConvives.value = monInscription.convives;
@@ -26,6 +27,7 @@ function verifierSiDejaInscrit() {
     } else {
         // Si je ne suis pas inscrit, on affiche tout normalement
         boxConvives.style.display = "block";
+        msgOk.style.display = "none"; // ON CACHE LE MESSAGE
         inputNom.readOnly = false;
         inputNom.style.background = "white";
     }
