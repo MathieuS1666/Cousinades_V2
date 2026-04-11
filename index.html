@@ -74,41 +74,48 @@
 
 <div class="container">
     <div class="formulaire" id="form-scroll">
-        <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
-        <p style="text-align:center;">Quelle branche Bobillier êtes-vous ?</p>
+    <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
+    <p style="text-align:center;">Quelle branche Bobillier êtes-vous ?</p>
+    
+    <div id="section-repas">
         <input type="text" id="nomPersonne" placeholder="Votre prénom">
 
         <div id="boxConvives" class="convives-box">
             <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes :</label>
             <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
-
             <label style="font-size: 0.8em; font-weight: bold; color: #d35400; margin-top:10px; display:block;">Allergies / Régimes :</label>
             <input type="text" id="allergieSaisie" placeholder="Ex: Sans gluten, Végétarien...">
         </div>
-       <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
-           ✅ Présence enregistrée
-       </p>
+
+        <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
+            ✅ Présence enregistrée
+        </p>
+
         <div id="champsPlat">
             <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous apportez !</p>
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
             <div class="plat-categories">
-                <label><input type="radio" name="categoriePlat" value="apero" id="apero"> Apéro</label>
-                <label><input type="radio" name="categoriePlat" value="entree" id="entree"> Entrée</label>
-                <label><input type="radio" name="categoriePlat" value="platPrincipal" id="platPrincipal"> Plat</label>
-                <label><input type="radio" name="categoriePlat" value="dessert" id="dessert"> Dessert</label>
-                <label><input type="radio" name="categoriePlat" value="autre" id="autre" checked> Autre</label>
+                <label><input type="radio" name="categoriePlat" value="apero"> Apéro</label>
+                <label><input type="radio" name="categoriePlat" value="entree"> Entrée</label>
+                <label><input type="radio" name="categoriePlat" value="platPrincipal"> Plat</label>
+                <label><input type="radio" name="categoriePlat" value="dessert"> Dessert</label>
+                <label><input type="radio" name="categoriePlat" value="autre" checked> Autre</label>
             </div>
             <input type="number" id="nombreParts" placeholder="Nombre de portions">
         </div>
-
-        <div id="champsCom">
-            <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
-        </div>
-      
-
-        <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
-        <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
+        <button onclick="ajouterPlat()" id="btnAjouter">Valider mon plat</button>
     </div>
+
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
+    <div id="section-livredor">
+        <p style="text-align:center; font-size:0.9em;">Un petit mot doux ou une info importante ?</p>
+        <textarea id="commentaire" placeholder="Votre message..."></textarea>
+        <button onclick="envoyerMessageSeul()" id="btnMessage" style="background-color: #feca57; color: #2c3e50;">Publier dans le Livre d'Or</button>
+    </div>
+
+    <button onclick="annulerEdition()" id="btnAnnuler" style="margin-top: 15px;">Annuler l'édition</button>
+</div>
 
     <div class="reponses">
         <div class="colonnes">
