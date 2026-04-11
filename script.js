@@ -83,6 +83,7 @@ function calculerStatsGlobales() {
         'entree': 'stat-entrees',
         'platPrincipal': 'stat-plats',
         'dessert': 'stat-desserts'
+        'autre': 'stat-autre'
     };
 
     Object.keys(statsMapping).forEach(key => {
