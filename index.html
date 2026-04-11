@@ -37,11 +37,11 @@
             <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous apportez !</p>
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
             <div class="plat-categories">
-                <label><input type="checkbox" id="apero"> Apéro</label>
-                <label><input type="checkbox" id="entree"> Entrée</label>
-                <label><input type="checkbox" id="platPrincipal"> Plat</label>
-                <label><input type="checkbox" id="dessert"> Dessert</label>
-                <label><input type="checkbox" id="autre"> Autre</label>
+                <label><input type="radio" name="categoriePlat" value="apero" id="apero"> Apéro</label>
+                <label><input type="radio" name="categoriePlat" value="entree" id="entree"> Entrée</label>
+                <label><input type="radio" name="categoriePlat" value="platPrincipal" id="platPrincipal"> Plat</label>
+                <label><input type="radio" name="categoriePlat" value="dessert" id="dessert"> Dessert</label>
+                <label><input type="radio" name="categoriePlat" value="autre" id="autre"> Autre</label>
             </div>
             <input type="number" id="nombreParts" placeholder="Nombre de portions">
         </div>
