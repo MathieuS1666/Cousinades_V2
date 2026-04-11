@@ -48,19 +48,49 @@ function afficherLivreDor() {
     if (!container) return;
 
     container.innerHTML = commentaires.map(m => `
-        <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); margin-bottom:10px;">
+        <div class="com-card" style="background:#fff9e6;
+        padding:15px;
+        border-radius:10px;
+        border-left:5px solid #feca57;
+        position:relative;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        margin-bottom:10px;">
             
             ${m.ownerId === browserId ? `
-                <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.nom}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">✏️</button>
-                    <button onclick="supprimerCommentaire('${m.nom}')" title="Supprimer" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">🗑️</button>
+                <div style="position:absolute;
+                top:10px;
+                right:10px;
+                display:flex;
+                gap:5px;">
+                    <button onclick="ouvrirModifCom('${m.nom}',
+                    '${m.commentaire.replace(/'/g, "\\'")}')" 
+                    title="Modifier" style="background:none;
+                    border:none;
+                    cursor:pointer;
+                    font-size:1.1em;
+                    padding:0;">✏️</button>
+                    <button onclick="supprimerCommentaire('${m.nom}')" 
+                    title="Supprimer" 
+                    style="background:none;
+                    border:none;cursor:
+                    pointer;
+                    font-size:1.1em;
+                    padding:0;">🗑️</button>
                 </div>
             ` : ''}
 
-            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444; padding-right:40px;">"${m.commentaire}"</p>
-            <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#2c3e50;">— ${m.nom}</p>
+            <p style="margin:0;
+            font-style:italic;
+            white-space:pre-wrap;
+            color:#444;
+            padding-right:40px;">"${m.commentaire}"</p>
+            <p style="margin:10px 0 0 0;
+            text-align:right;
+            font-weight:bold; 
+            font-size:0.8em;
+            color:#2c3e50;">— ${m.nom}</p>
         </div>
-    `).reverse().join('') || '<p style="text-align:center;color:gray;">Aucun message pour le moment...</p>';
+    `).reverse().join('') ||  '<p style="text-align:center;color:gray;">Aucun message pour le moment...</p>';
 }
 
 // --- 3. STATISTIQUES ET AFFICHAGE DES PLATS ---
@@ -82,8 +112,7 @@ function calculerStatsGlobales() {
         'apero': 'stat-apero',
         'entree': 'stat-entrees',
         'platPrincipal': 'stat-plats',
-        'dessert': 'stat-desserts'
-        'dessert': 'stat-desserts',
+        'dessert': 'stat-desserts,'
         'autre': 'stat-autre'
     };
 
