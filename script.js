@@ -192,7 +192,7 @@ function ouvrirModifPlat(id) {
     document.getElementById('editPlatNom').value = p.plat;
     document.getElementById('editPlatParts').value = p.parts;
     document.getElementById('editPlatCat').value = p.categorie;
-    ocument.getElementById('editPlatAllergies').value = p.allergies || "";
+    document.getElementById('editPlatAllergies').value = p.allergies || "";
     document.getElementById('modalEdition').style.display = "block";
 }
 
