@@ -67,16 +67,23 @@ function calculerStatsGlobales() {
         ${p.ownerId === browserId ? `<button onclick="ouvrirModifConvives(${p.id})" class="btn-edit-small">✏️</button>` : ''}</span>
     `).join('');
 
-    // E. Livre d'or
+// E. Livre d'or (Avec bouton supprimer)
     const messages = plats.filter(p => p.commentaire && p.commentaire.trim() !== "");
     document.getElementById('livreDor').innerHTML = messages.map(m => `
         <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);">
-            ${m.ownerId === browserId ? `<button onclick="ouvrirModifCom('${m.nom}')" style="float:right;background:none;border:none;cursor:pointer;font-size:1.2em;">✏️</button>` : ''}
-            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444;">"${m.commentaire}"</p>
+            
+            ${m.ownerId === browserId ? `
+                <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
+                    <button onclick="ouvrirModifCom('${m.nom}')" title="Modifier" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">✏️</button>
+                    <button onclick="supprimerCommentaire('${m.nom}')" title="Supprimer" style="background:none;border:none;cursor:pointer;font-size:1.1em;padding:0;">🗑️</button>
+                </div>
+            ` : ''}
+
+            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444; padding-right:40px;">"${m.commentaire}"</p>
             <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#2c3e50;">— ${m.nom}</p>
         </div>
     `).join('') || '<p style="grid-column:1/-1;text-align:center;color:gray;">Aucun message pour le moment...</p>';
-
+    
     verifierSiDejaInscrit();
 }
 
@@ -267,7 +274,21 @@ function ouvrirAdmin() {
         window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing");
     }
 }
+async function supprimerCommentaire(nom) {
+    if (!confirm("Voulez-vous supprimer votre message du livre d'or ?")) return;
 
+    await fetch(API_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ 
+            action: "updateCommentaire", 
+            nom: nom, 
+            commentaire: "", // Envoyer un texte vide pour "supprimer"
+            browserId: browserId 
+        })
+    });
+    
+    await chargerPlats();
+}
 // --- LANCEMENT ---
 mettreAJourCompteARebours();
 chargerPlats();
