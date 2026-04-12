@@ -226,7 +226,7 @@ async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
-    const comVal = document.getElementById('commentaire').value.trim();
+    const comVal = "";
     
     // --- LA CORRECTION EST ICI ---
     // On définit allergieVal en allant chercher le nouveau champ
@@ -261,7 +261,10 @@ async function ajouterPlat() {
     btn.innerText = "Envoi...";
 
     try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
+        await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify(fields) 
+        });
         annulerEdition();
         await chargerDonnees();
     } catch (e) {
