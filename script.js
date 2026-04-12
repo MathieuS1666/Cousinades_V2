@@ -2,7 +2,7 @@
  * COUSINADE BOB 2026 - LOGIQUE FRONTEND
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyM5E0aU1qdhFQyerBidbOq8B6UM4EP176p9rkb6-q1d_75w9_azDZ1KQQ1BYObmSmR/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbznZlmSWqyOrjs1e0wsaASKaAJw8qltFrDYb5AjrGjzA8v-2z7kzs5G56ZKcxMYBtQk/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -33,6 +33,7 @@ async function chargerDonnees() {
 
 // --- 2. AFFICHAGE ---
 
+/**
 function afficherLivreDor() {
     const container = document.getElementById('livreDor');
     if (!container) return;
@@ -49,6 +50,32 @@ function afficherLivreDor() {
             <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em;">— ${m.nom}</p>
         </div>
     `).reverse().join('') || '<p style="text-align:center;color:gray;">Aucun message...</p>';
+}
+**/
+// --- MODIF : Affichage pour gérer plusieurs messages ---
+function afficherLivreDor() {
+    const container = document.getElementById('livreDor');
+    if (!container) return;
+
+    // On trie par date (le plus récent en premier)
+    container.innerHTML = commentaires.map(m => {
+        // On crée un ID unique basé sur l'horodatage pour le JS
+        const messageId = m.date; 
+
+        return `
+        <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; margin-bottom:10px;">
+            ${m.ownerId === browserId ? `
+                <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
+                    <button onclick="ouvrirModifCom('${messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer;">✏️</button>
+                    <button onclick="supprimerCommentaire('${messageId}')" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                </div>
+            ` : ''}
+            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444;">"${m.commentaire}"</p>
+            <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#999;">
+                Le ${new Date(m.date).toLocaleDateString('fr-FR')} par ${m.nom}
+            </p>
+        </div>
+    `}).join('') || '<p style="text-align:center;color:gray;">Aucun message...</p>';
 }
 
 function afficherPlats() {
@@ -219,6 +246,20 @@ function ouvrirModifPlat(id) {
     document.getElementById('modalEdition').style.display = "block";
 }
 function fermerModale() { document.getElementById('modalEdition').style.display = "none"; }
+// --- MODIF : Suppression par Timestamp ---
+async function supprimerCommentaire(timestamp) {
+    if (!confirm("Voulez-vous supprimer ce message ?")) return;
+    await fetch(API_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ 
+            action: "updateCommentaire", 
+            timestamp: timestamp, // On envoie l'heure exacte du message
+            commentaire: "", 
+            browserId: browserId 
+        })
+    });
+    await chargerDonnees();
+}
 
 // Lancement
 chargerDonnees();
