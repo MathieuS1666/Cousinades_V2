@@ -2,7 +2,7 @@
  * COUSINADE BOB 2026 - LOGIQUE FRONTEND
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw1NHal6MgmbwGtl9w1PpwH4-2apL63bchnwYsB6PSUs12C5PSgtgPFWcTlz44ygBvj/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby6mZtTpmD5yi4aP3yx1rWbQ8H0jtEWTqaUghZpHU86IteUAaAWEDM4dJyImmPh6t6_/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -57,24 +57,18 @@ function afficherLivreDor() {
     const container = document.getElementById('livreDor');
     if (!container) return;
 
-    container.innerHTML = commentaires.map(m => {
-        // On transforme la date en nombre (millisecondes) pour éviter les erreurs de format
-        const messageTimestamp = new Date(m.date).getTime(); 
-
-        return `
-        <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; margin-bottom:10px;">
+    container.innerHTML = commentaires.map(m => `
+        <div class="com-card" style="...">
             ${m.ownerId === browserId ? `
                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${messageTimestamp}', '${m.commentaire.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer;">✏️</button>
-                    <button onclick="supprimerCommentaire('${messageTimestamp}')" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                    <button onclick="ouvrirModifCom('${m.messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" class="...">✏️</button>
+                    <button onclick="supprimerCommentaire('${m.messageId}')" class="...">🗑️</button>
                 </div>
             ` : ''}
-            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444;">"${m.commentaire}"</p>
-            <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#999;">
-                Le ${new Date(m.date).toLocaleDateString('fr-FR')} par ${m.nom}
-            </p>
+            <p>"${m.commentaire}"</p>
+            <p>— ${m.nom}</p>
         </div>
-    `}).join('') || '<p style="text-align:center;color:gray;">Aucun message...</p>';
+    `).reverse().join('');
 }
 
 function afficherPlats() {
@@ -260,11 +254,11 @@ async function supprimerCommentaire(timestamp) {
     await chargerDonnees();
 }
 // Variables pour mémoriser ce qu'on modifie
-let comTimestampEnEdition = null;
+let comIdEnEdition = null;
 let comMessageOrigine = null;
 
 // Cette fonction ouvre la modale avec le bon message
-function ouvrirModifCom(timestamp, ancienMessage) {
+/**function ouvrirModifCom(timestamp, ancienMessage) {
     comTimestampEnEdition = timestamp;
     comMessageOrigine = ancienMessage;
 
@@ -276,8 +270,15 @@ function ouvrirModifCom(timestamp, ancienMessage) {
     const modale = document.getElementById('modalLivreDor');
     if (modale) modale.style.display = "block";
 }
+**/
+function ouvrirModifCom(id, ancienMessage) {
+    comIdEnEdition = id;
+    document.getElementById('editCom').value = ancienMessage;
+    document.getElementById('modalLivreDor').style.display = "block";
+}
 
 // Cette fonction envoie la modification au Google Sheet
+/**
 async function validerModifCom() {
     const nouveauMessage = document.getElementById('editCom').value.trim();
 
@@ -304,6 +305,22 @@ async function validerModifCom() {
         alert("Erreur lors de la modification");
         console.error(e);
     }
+}
+**/
+async function validerModifCom() {
+    const nouveauMessage = document.getElementById('editCom').value.trim();
+    fermerModaleLivreDor();
+
+    await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: "updateCommentaire",
+            messageId: comIdEnEdition,
+            commentaire: nouveauMessage,
+            browserId: browserId
+        })
+    });
+    await chargerDonnees();
 }
 
 function fermerModaleLivreDor() {
