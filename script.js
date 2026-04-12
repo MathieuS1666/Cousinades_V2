@@ -210,7 +210,7 @@ function ouvrirModifConvives(id) {
     document.getElementById('modalConvives').style.display = "block";
 }
 
-async function validerModifConvives() {
+/**async function validerModifConvives() {
     if (!platEnEditionModale) return;
     const p = platEnEditionModale;
     const newNb = parseFloat(document.getElementById('editNbConvives').value.replace(',', '.')) || 0;
@@ -236,6 +236,50 @@ async function validerModifConvives() {
                 browserId: browserId 
             })
         });
+        await chargerDonnees();
+    } catch (e) { console.error(e); }
+}
+**/
+async function validerModifConvives() {
+    if (!platEnEditionModale) return;
+    
+    const newNb = parseFloat(document.getElementById('editNbConvives').value.replace(',', '.')) || 0;
+    const isMidi = document.getElementById('editCheckMidi').checked;
+    const isSoir = document.getElementById('editCheckSoir').checked;
+
+    document.getElementById('modalConvives').style.display = "none";
+
+    // ON PRÉPARE LES DONNÉES
+    const data = { 
+        action: "update", 
+        rowId: platEnEditionModale.id,
+        nom: platEnEditionModale.nom, 
+        convives: newNb,
+        midi: isMidi,
+        soir: isSoir,
+        plat: platEnEditionModale.plat, 
+        parts: platEnEditionModale.parts, 
+        categorie: platEnEditionModale.categorie,
+        allergies: platEnEditionModale.allergies,
+        browserId: browserId // Très important pour le script Google
+    };
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        
+        // PETITE ASTUCE : On met à jour localement les données immédiatement 
+        // pour que le calcul des stats soit instantané après le fetch
+        plats.forEach(p => {
+            if (p.ownerId === browserId) {
+                p.convives = newNb;
+                p.midi = isMidi;
+                p.soir = isSoir;
+            }
+        });
+
         await chargerDonnees();
     } catch (e) { console.error(e); }
 }
