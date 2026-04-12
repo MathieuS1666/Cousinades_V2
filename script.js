@@ -1,6 +1,5 @@
 /**
  * COUSINADE BOB 2026 - LOGIQUE FRONTEND
- * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyzeMEwWpGYdwp2K7txDifgFQDXxSqj6OmEens9P7I8lg0xMEkNxT-qgTZJIDnPqVw_/exec";
@@ -9,13 +8,7 @@ const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 let plats = [];
 let commentaires = []; 
 let idEnEditionModale = null;
-let modeEdition = false;
-let idEnCoursEdition = null;
-// Variables pour suivre ce qu'on est en train de modifier
-let platEnEditionModale = null; // Contiendra l'objet plat complet
-let comNomEnEdition = null;    // Pour le livre d'or
-let comMessageOrigine = null;  // Pour le livre d'or
-// Identification du navigateur
+let platEnEditionModale = null; 
 let browserId = localStorage.getItem('cousinade_id') || ('user_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('cousinade_id', browserId);
 
@@ -39,80 +32,38 @@ async function chargerDonnees() {
     }
 }
 
-function chargerPlats() { chargerDonnees(); }
-
-// --- 2. AFFICHAGE DU LIVRE D'OR ---
-
-function afficherLivreDor() {
-    const container = document.getElementById('livreDor');
-    if (!container) return;
-
-    container.innerHTML = commentaires.map(m => {
-        // Sécurité : on récupère l'ID qu'il soit écrit 'messageId' ou 'MessageID'
-        const idUnique = m.messageId || m.MessageID;
-        
-        // Le bouton n'apparaît que si l'ownerId correspond ET qu'il y a un ID de message
-        const peutModifier = (m.ownerId === browserId && idUnique);
-
-        return `
-            <div class="com-card" style="position:relative;">
-                ${peutModifier ? `
-                    <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                        <button onclick="ouvrirModifCom('${idUnique}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
-                        <button onclick="supprimerCommentaire('${idUnique}')" title="Supprimer">🗑️</button>
-                    </div>
-                ` : ''}
-                <p>"${m.commentaire}"</p>
-                <p>— ${m.nom}</p>
-            </div>
-        `;
-    }).reverse().join('');
-}
-
-// --- 3. STATISTIQUES ET AFFICHAGE DES PLATS ---
+// --- 2. STATISTIQUES ET AFFICHAGE ---
 
 function calculerStatsGlobales() {
-    const vus = new Set();
-    let totalConv = 0;
     let totalMidi = 0;
     let totalSoir = 0;
+    let totalConv = 0;
     const vus = new Set();
     
     plats.forEach(p => {
         if (!vus.has(p.ownerId)) {
-            totalConv += parseFloat(p.convives || 0);
-            if (p.midi) totalMidi += nb;
-            if (p.soir) totalSoir += nb;
+            const nb = parseFloat(p.convives || 0);
+            // Vérification souple (booléen ou string "true")
+            if (p.midi === true || p.midi === "true") totalMidi += nb;
+            if (p.soir === true || p.soir === "true") totalSoir += nb;
+            totalConv += nb;
             vus.add(p.ownerId);
         }
     });
 
-    document.getElementById('stat-convives').innerText = totalConv;
-    document.getElementById('stat-total').innerText = plats.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-    document.getElementById('stat-midi').innerText = totalMidi;
-    document.getElementById('stat-soir').innerText = totalSoir;
+    if(document.getElementById('stat-convives')) document.getElementById('stat-convives').innerText = totalConv;
+    if(document.getElementById('stat-midi')) document.getElementById('stat-midi').innerText = totalMidi;
+    if(document.getElementById('stat-soir')) document.getElementById('stat-soir').innerText = totalSoir;
+    if(document.getElementById('stat-total')) document.getElementById('stat-total').innerText = plats.reduce((s, p) => s + parseInt(p.parts || 0), 0);
     
-    const statsMapping = {
-        'apero': 'stat-apero',
-        'entree': 'stat-entrees',
-        'platPrincipal': 'stat-plats',
-        'dessert': 'stat-desserts',
-        'autre': 'stat-autre'
-    };
-
-    Object.keys(statsMapping).forEach(key => {
-        const total = plats.filter(p => p.categorie === key).reduce((s, p) => s + parseInt(p.parts || 0), 0);
-        const element = document.getElementById(statsMapping[key]);
-        if (element) element.innerText = total;
-    });
-
+    // Affichage Liste des Présents
     const unique = {};
     plats.forEach(p => { if (!unique[p.nom]) unique[p.nom] = p; });
     
     document.getElementById('listePresents').innerHTML = Object.values(unique).map(p => {
         let labels = [];
-        if (p.midi) labels.push("☀️M");
-        if (p.soir) labels.push("🌙S");
+        if (p.midi === true || p.midi === "true") labels.push("☀️M");
+        if (p.soir === true || p.soir === "true") labels.push("🌙S");
         
         return `
             <span class="badge-present">
@@ -126,7 +77,7 @@ function calculerStatsGlobales() {
     verifierSiDejaInscrit();
 }
 
-function afficherPlats() { // avec allergies
+function afficherPlats() {
     const cats = [
         ['aperoListe', 'apero', '🍹'],
         ['entreeListe', 'entree', '🥗'],
@@ -135,12 +86,8 @@ function afficherPlats() { // avec allergies
         ['autreListe', 'autre', '📦']
     ];
 
-    // 1. Affichage des catégories classiques
     cats.forEach(([elemId, key, icon]) => {
         const list = plats.filter(p => p.categorie === key && p.plat !== "Présence uniquement");
-        const badge = document.getElementById('total-' + key);
-        if (badge) badge.innerText = list.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-
         document.getElementById(elemId).innerHTML = list.map(p => `
             <div class="plat-item">
                 <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
@@ -153,19 +100,14 @@ function afficherPlats() { // avec allergies
         `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
     });
 
-    // 2. Affichage spécifique de la colonne ALLERGIES (Unique par personne)
-    const vus = new Set();
+    // Allergies
+    const vusAll = new Set();
     const listeAllergies = plats.filter(p => {
-        if (p.allergies && p.allergies.trim() !== "" && !vus.has(p.ownerId)) {
-            vus.add(p.ownerId);
-            return true;
+        if (p.allergies && p.allergies.trim() !== "" && !vusAll.has(p.ownerId)) {
+            vusAll.add(p.ownerId); return true;
         }
         return false;
     });
-
-    const badgeAllergie = document.getElementById('total-allergies');
-    if (badgeAllergie) badgeAllergie.innerText = listeAllergies.length;
-
     document.getElementById('allergieListe').innerHTML = listeAllergies.map(p => `
         <div class="plat-item" style="border-left-color: #e74c3c;">
             <span>🚫 <strong>${p.nom}</strong><br>${p.allergies}</span>
@@ -173,74 +115,56 @@ function afficherPlats() { // avec allergies
     `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Aucune allergie</div>';
 }
 
-// --- 4. GESTION DU FORMULAIRE (AJOUT) ---
-async function ajouterPlat() {
-    const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
-    const catChoisie = radioCoche ? radioCoche.value : "autre";
+// --- 3. ACTIONS FORMULAIRE ---
 
+async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
-    const comVal = "";
-
-    // On définit allergieVal en allant chercher le nouveau champ
-    const champAllergie = document.getElementById('allergieSaisie');
-    const allergieVal = champAllergie ? champAllergie.value.trim() : "";
+    const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
+    const catChoisie = radioCoche ? radioCoche.value : "autre";
+    
+    // Sécurité : on vérifie si les éléments existent avant de lire .checked
+    const midiVal = document.getElementById('checkMidi') ? document.getElementById('checkMidi').checked : false;
+    const soirVal = document.getElementById('checkSoir') ? document.getElementById('checkSoir').checked : false;
+    const allergieVal = document.getElementById('allergieSaisie') ? document.getElementById('allergieSaisie').value.trim() : "";
 
     const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
 
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
-    
-   // On autorise la validation si au moins un des trois champs est rempli
-    if (!platVal && !allergieVal) {
-        return alert("Saisissez un plat ou une allergie !");
-    } 
-
-    const fields = {
-        nom: nomVal,
-        convives: convVal || 0,
-        midi: document.getElementById('checkMidi').checked,
-        soir: document.getElementById('checkSoir').checked,
-        plat: platVal || "Présence uniquement",
-        parts: document.getElementById('nombreParts').value || 0,
-        categorie: catChoisie,
-        commentaire: comVal,
-        allergies: allergieVal, 
-        action: "insert",
-        browserId: browserId
-    };
+    if (!platVal && !allergieVal) return alert("Saisissez un plat ou une allergie !");
 
     const btn = document.getElementById('btnAjouter');
     btn.disabled = true;
     btn.innerText = "Envoi...";
 
+    const fields = {
+        nom: nomVal,
+        convives: convVal || 0,
+        midi: midiVal,
+        soir: soirVal,
+        plat: platVal || "Présence uniquement",
+        parts: document.getElementById('nombreParts').value || 0,
+        categorie: catChoisie,
+        allergies: allergieVal,
+        action: "insert",
+        browserId: browserId
+    };
+
     try {
-        await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify(fields) 
-        });
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
         annulerEdition();
         await chargerDonnees();
     } catch (e) {
-        console.error(e);
-        alert("Erreur réseau, réessayez !");
+        alert("Erreur de connexion");
     } finally {
         btn.disabled = false;
         btn.innerText = "Valider";
     }
 }
 
-function annulerEdition() {
-    modeEdition = false; 
-    idEnCoursEdition = null;
-    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
-    document.querySelectorAll('input[name="categoriePlat"]').forEach(r => r.checked = false);
-    document.getElementById('btnAnnuler').style.display = "none";
-    verifierSiDejaInscrit();
-}
-
-// --- 5. MODALE & MODIFS ---
+// --- 4. MODALES MODIFICATIONS ---
 
 function ouvrirModifPlat(id) {
     const p = plats.find(x => x.id === id);
@@ -252,10 +176,6 @@ function ouvrirModifPlat(id) {
     document.getElementById('modalEdition').style.display = "block";
 }
 
-function fermerModale() {
-    document.getElementById('modalEdition').style.display = "none";
-}
-
 async function validerModifModale() {
     const p = plats.find(x => x.id === idEnEditionModale);
     const data = {
@@ -263,237 +183,107 @@ async function validerModifModale() {
         rowId: idEnEditionModale,
         nom: p.nom,
         convives: p.convives,
+        midi: p.midi,
+        soir: p.soir,
         plat: document.getElementById('editPlatNom').value.trim(),
         parts: document.getElementById('editPlatParts').value,
         categorie: document.getElementById('editPlatCat').value,
+        allergies: p.allergies,
         browserId: browserId
     };
-    fermerModale();
+    document.getElementById('modalEdition').style.display = "none";
     await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
     await chargerDonnees();
 }
 
-// --- MODALE CONVIVES ---
-
 function ouvrirModifConvives(id) {
-    // 1. On trouve le plat
-    const p = plats.find(x => x.id == id); // Utilise == pour plus de souplesse
-    if (!p) return console.error("ID introuvable:", id);
-
-    // 2. On mémorise quand même (sécurité)
-    platEnEditionModale = p;
-
-    // 3. MISE À JOUR DYNAMIQUE DU BOUTON
-    // On force l'ID dans l'appel de la fonction de validation
-    const btnEnregistrer = document.querySelector("#modalConvives button[onclick^='validerModifConvives']");
-    if (btnEnregistrer) {
-        btnEnregistrer.setAttribute("onclick", `validerModifConvives(${id})`);
-    }
-
-    document.getElementById('titreModalConvives').innerText = p.nom;
-    document.getElementById('editNbConvives').value = p.convives;
-    document.getElementById('modalConvives').style.display = "block";
-}
-// FERMER MODAL CONVIVIES
-
-function fermerModaleConvives() {
-    document.getElementById('modalConvives').style.display = "none";
-    platEnEditionModale = null;
-}
-
-async function validerModifConvives(idForce) {
-    // Si idForce n'est pas là, on essaie de récupérer la globale
-    const id = idForce || (platEnEditionModale ? platEnEditionModale.id : null);
-    
-    if (!id) {
-        alert("Erreur technique : ID du plat perdu.");
-        return;
-    }
-
-    // On récupère l'objet plat correspondant à cet ID
     const p = plats.find(x => x.id == id);
     if (!p) return;
+    platEnEditionModale = p;
+    document.getElementById('titreModalConvives').innerText = p.nom;
+    document.getElementById('editNbConvives').value = p.convives;
+    
+    // Cocher les cases de la modale selon les data
+    if(document.getElementById('editCheckMidi')) document.getElementById('editCheckMidi').checked = (p.midi === true || p.midi === "true");
+    if(document.getElementById('editCheckSoir')) document.getElementById('editCheckSoir').checked = (p.soir === true || p.soir === "true");
+    
+    document.getElementById('modalConvives').style.display = "block";
+}
 
-    const saisi = document.getElementById('editNbConvives').value;
-    const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0;
+async function validerModifConvives() {
+    if (!platEnEditionModale) return;
+    const p = platEnEditionModale;
+    const newNb = parseFloat(document.getElementById('editNbConvives').value.replace(',', '.')) || 0;
+    const isMidi = document.getElementById('editCheckMidi').checked;
+    const isSoir = document.getElementById('editCheckSoir').checked;
 
-    fermerModaleConvives();
+    document.getElementById('modalConvives').style.display = "none";
 
     try {
         await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ 
                 action: "update", 
-                rowId: id, // Utilisation de l'ID direct
+                rowId: p.id,
                 nom: p.nom, 
-                convives: newNbConvives, 
+                convives: newNb,
+                midi: isMidi,
+                soir: isSoir,
                 plat: p.plat, 
                 parts: p.parts, 
-                categorie: p.categorie, 
+                categorie: p.categorie,
+                allergies: p.allergies,
                 browserId: browserId 
             })
         });
         await chargerDonnees();
-    } catch (e) {
-        console.error("Erreur lors de l'envoi :", e);
-    }
+    } catch (e) { console.error(e); }
 }
 
+// --- LIVRE D'OR ---
 
-// SUPPRIMER UN PLAT ----------------------------------------------
-async function supprimerPlat(id) {
-    if (!confirm("Supprimer ce plat ?")) return;
-    await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
-    await chargerDonnees();
+function afficherLivreDor() {
+    const container = document.getElementById('livreDor');
+    if (!container) return;
+    container.innerHTML = commentaires.map(m => {
+        const idUnique = m.messageId || m.MessageID;
+        const peutModifier = (m.ownerId === browserId && idUnique);
+        return `
+            <div class="com-card">
+                ${peutModifier ? `<button onclick="ouvrirModifCom('${idUnique}', '${m.commentaire.replace(/'/g, "\\'")}')">✏️</button>` : ''}
+                <p>"${m.commentaire}"</p><p>— ${m.nom}</p>
+            </div>`;
+    }).reverse().join('');
 }
 
-// --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
-
-// --- MODALE LIVRE D'OR ---
-// --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
-
-let idMessageEnCours = null; 
-
-function ouvrirModifCom(idUnique, ancienMessage) {
-    // On utilise bien l'idUnique passé par le bouton
-    idMessageEnCours = idUnique; 
-    comMessageOrigine = ancienMessage;
-
-    // On remplit le textarea
-    document.getElementById('editCom').value = ancienMessage;
-
-    // On affiche la modale
-    document.getElementById('modalLivreDor').style.display = "block";
-}
-
-function fermerModaleLivreDor() {
-    document.getElementById('modalLivreDor').style.display = "none";
-    idMessageEnCours = null;
-    comMessageOrigine = null;
-}
-
-async function validerModifCom() {
-    const nouveauMessage = document.getElementById('editCom').value.trim();
-    console.log("Envoi de la modif :", idMessageEnCours, nouveauMessage); // <--- AJOUTE ÇA
-    if (nouveauMessage === comMessageOrigine) {
-        fermerModaleLivreDor();
-        return;
-    }
-
-    if (nouveauMessage === "") {
-        fermerModaleLivreDor();
-        supprimerCommentaire(idMessageEnCours); 
-        return;
-    }
-
-    fermerModaleLivreDor(); 
-
-    try {
-        await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ 
-                action: "updateCommentaire", 
-                messageId: idMessageEnCours, 
-                commentaire: nouveauMessage,
-                browserId: browserId 
-            }) 
-        });
-        await chargerDonnees();
-    } catch (e) {
-        console.error("Erreur modification commentaire:", e);
-    }
-}
-
-async function supprimerCommentaire(id) {
-    const targetId = id || idMessageEnCours;
-    
-    if (!confirm("Voulez-vous supprimer ce message du livre d'or ?")) return;
-
-    try {
-        await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ 
-                action: "updateCommentaire", 
-                messageId: targetId,
-                commentaire: "", 
-                browserId: browserId 
-            }) 
-        });
-        await chargerDonnees();
-    } catch (e) {
-        console.error("Erreur suppression commentaire:", e);
-    }
-}
-
-// --- 7. UTILITAIRES ---
-
+// --- RESTE DES FONCTIONS (Statiques) ---
+function fermerModale() { document.getElementById('modalEdition').style.display = "none"; }
+function fermerModaleConvives() { document.getElementById('modalConvives').style.display = "none"; }
 function verifierSiDejaInscrit() {
     const monInscription = plats.find(p => p.ownerId === browserId);
     const box = document.getElementById('boxConvives');
     const msgOk = document.getElementById('msgConvivesOk');
     const inputNom = document.getElementById('nomPersonne');
-
     if (monInscription) {
         box.style.display = "none";
         msgOk.style.display = "block";
         inputNom.value = monInscription.nom;
         inputNom.readOnly = true;
-        inputNom.style.background = "#f0f0f0";
     } else {
         box.style.display = "block";
         msgOk.style.display = "none";
         inputNom.readOnly = false;
-        inputNom.style.background = "white";
     }
 }
-
+function annulerEdition() {
+    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
+    chargerDonnees();
+}
 function mettreAJourCompteARebours() {
     const diff = DATE_COUSINADE - new Date();
-    if (diff <= 0) {
-        document.getElementById("countdown").innerText = "C'est le jour J ! 🎉";
-        return;
-    }
     const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("countdown").innerText = `J-${jours} avant la cousinade !`;
+    document.getElementById("countdown").innerText = diff > 0 ? `J-${jours} avant la cousinade !` : "C'est le jour J ! 🎉";
 }
 
-function ouvrirAdmin() {
-    if (prompt("Pass :") === "1234") {
-        window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing");
-    }
-}
-async function ajouterCommentaireDirect() {
-    const nomVal = document.getElementById('nomPersonne').value.trim();
-    const comVal = document.getElementById('commentaireSaisieSeule').value.trim();
-
-    if (!nomVal || !comVal) {
-        alert("Merci de saisir votre nom et un message !");
-        return;
-    }
-
-    const btn = document.getElementById('btnCom');
-    btn.disabled = true;
-    btn.innerText = "Publication...";
-
-    const fields = {
-        nom: nomVal,
-        commentaire: comVal,
-        action: "insert",
-        browserId: browserId,
-        plat: "Message Livre d'Or" // Indispensable pour que le GAS sache que c'est un message
-    };
-
-    try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
-        document.getElementById('commentaireSaisieSeule').value = "";
-        await chargerDonnees();
-    } catch (e) {
-        alert("Erreur de publication");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Publier mon message";
-    }
-}
-// --- LANCEMENT ---
 mettreAJourCompteARebours();
 chargerDonnees();
