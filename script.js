@@ -108,33 +108,6 @@ function calculerStatsGlobales() {
     verifierSiDejaInscrit();
 }
 
-/** function afficherPlats() {
-    const cats = [
-        ['aperoListe', 'apero', '🍹'],
-        ['entreeListe', 'entree', '🥗'],
-        ['platListe', 'platPrincipal', '🥘'],
-        ['dessertListe', 'dessert', '🍰'],
-        ['autreListe', 'autre', '📦']
-    ];
-
-    cats.forEach(([elemId, key, icon]) => {
-        const list = plats.filter(p => p.categorie === key && p.plat !== "Présence uniquement");
-        const badge = document.getElementById('total-' + key);
-        if (badge) badge.innerText = list.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-
-        document.getElementById(elemId).innerHTML = list.map(p => `
-            <div class="plat-item">
-                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                ${p.ownerId === browserId ? `
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="ouvrirModifPlat(${p.id})" title="Modifier" class="btn-action">✏️</button>
-                        <button onclick="supprimerPlat(${p.id})" title="Supprimer" class="btn-action">🗑️</button>
-                    </div>` : ''}
-            </div>
-        `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
-    });
-}
-**/
 function afficherPlats() { // avec allergies
     const cats = [
         ['aperoListe', 'apero', '🍹'],
@@ -181,52 +154,8 @@ function afficherPlats() { // avec allergies
         </div>
     `).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Aucune allergie</div>';
 }
+
 // --- 4. GESTION DU FORMULAIRE (AJOUT) ---
-/**
-async function ajouterPlat() {
-    const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
-    const catChoisie = radioCoche ? radioCoche.value : "autre";
-
-    const nomVal = document.getElementById('nomPersonne').value.trim();
-    const convVal = document.getElementById('nbConvives').value;
-    const platVal = document.getElementById('nouveauPlat').value.trim();
-    const comVal = document.getElementById('commentaire').value.trim();
-
-    const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
-
-    if (!nomVal) return alert("Le prénom est requis !");
-    if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
-    if (!platVal && !comVal) return alert("Saisissez un plat ou un message !");
-
-    const fields = {
-        nom: nomVal,
-        convives: convVal || 0,
-        plat: platVal || "Présence uniquement",
-        parts: document.getElementById('nombreParts').value || 0,
-        categorie: catChoisie,
-        commentaire: comVal,
-        allergies: allergieVal,
-        action: "insert",
-        browserId: browserId
-    };
-
-    const btn = document.getElementById('btnAjouter');
-    btn.disabled = true;
-    btn.innerText = "Envoi...";
-
-    try {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
-        annulerEdition();
-        await chargerDonnees();
-    } catch (e) {
-        alert("Erreur réseau, réessaye !");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Valider";
-    }
-}
-**/
-
 async function ajouterPlat() {
     const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
     const catChoisie = radioCoche ? radioCoche.value : "autre";
@@ -235,22 +164,20 @@ async function ajouterPlat() {
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
     const comVal = "";
-    
-    // --- LA CORRECTION EST ICI ---
+
     // On définit allergieVal en allant chercher le nouveau champ
     const champAllergie = document.getElementById('allergieSaisie');
     const allergieVal = champAllergie ? champAllergie.value.trim() : "";
-    // ----------------------------
 
     const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
 
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
     
-   /** // On autorise la validation si au moins un des trois champs est rempli
-    if (!platVal && !comVal && !allergieVal) {
-        return alert("Saisissez un plat, un message ou une allergie !");
-    } **/
+   // On autorise la validation si au moins un des trois champs est rempli
+    if (!platVal && !allergieVal) {
+        return alert("Saisissez un plat ou une allergie !");
+    } 
 
     const fields = {
         nom: nomVal,
@@ -259,7 +186,7 @@ async function ajouterPlat() {
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
         commentaire: comVal,
-        allergies: allergieVal, // Maintenant allergieVal est bien défini !
+        allergies: allergieVal, 
         action: "insert",
         browserId: browserId
     };
@@ -277,7 +204,7 @@ async function ajouterPlat() {
         await chargerDonnees();
     } catch (e) {
         console.error(e);
-        alert("Erreur réseau, réessaye !");
+        alert("Erreur réseau, réessayez !");
     } finally {
         btn.disabled = false;
         btn.innerText = "Valider";
@@ -327,21 +254,7 @@ async function validerModifModale() {
 }
 
 // --- MODALE CONVIVES ---
-/**
-function ouvrirModifConvives(id) {
-    const p = plats.find(x => x.id === id);
-    if (!p) return;
 
-    platEnEditionModale = p; // On stocke le plat
-
-    // On remplit la modale
-    document.getElementById('titreModalConvives').innerText = p.nom;
-    document.getElementById('editNbConvives').value = p.convives;
-
-    // On affiche
-    document.getElementById('modalConvives').style.display = "block";
-}
-**/
 function ouvrirModifConvives(id) {
     // 1. On trouve le plat
     const p = plats.find(x => x.id == id); // Utilise == pour plus de souplesse
@@ -367,44 +280,6 @@ function fermerModaleConvives() {
     document.getElementById('modalConvives').style.display = "none";
     platEnEditionModale = null;
 }
-/**
-async function validerModifConvives() {
-    if (!platEnEditionModale) return;
-
-    const saisi = document.getElementById('editNbConvives').value;
-    const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0; // Gère virgule/point
-
-    // Validation simple
-    if (isNaN(newNbConvives) || newNbConvives < 0) {
-        alert("Veuillez saisir un nombre valide (ex: 1 ou 1.5)");
-        return;
-    }
-
-    fermerModaleConvives(); // Effet visuel immédiat
-
-    // Envoi au Sheet
-    try {
-    await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ 
-            action: "update", 
-            rowId: platEnEditionModale.id, 
-            nom: platEnEditionModale.nom, 
-            convives: newNbConvives,
-            plat: platEnEditionModale.plat, 
-            parts: platEnEditionModale.parts, 
-            categorie: platEnEditionModale.categorie, 
-            browserId: browserId 
-        })
-    });
-setTimeout(async () => {
-    await chargerDonnees(); // Rafraîchit tout
-    }, 500);
-} catch (e) {
-        alert("Erreur lors de la sauvegarde...");
-    }
-}
-**/
 
 async function validerModifConvives(idForce) {
     // Si idForce n'est pas là, on essaie de récupérer la globale
@@ -455,9 +330,10 @@ async function supprimerPlat(id) {
 // --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
 
 // --- MODALE LIVRE D'OR ---
+let idMessageEnCours = null; // Variable pour stocker l'ID unique du message en cours
 
 function ouvrirModifCom(nom, ancienMessage) {
-    comNomEnEdition = nom;
+    idMessageEnCours = id; // On stocke l'ID (ex: msg_86du6usbr)
     comMessageOrigine = ancienMessage;
 
     // On remplit le textarea
@@ -469,7 +345,7 @@ function ouvrirModifCom(nom, ancienMessage) {
 
 function fermerModaleLivreDor() {
     document.getElementById('modalLivreDor').style.display = "none";
-    comNomEnEdition = null;
+    idMessageEnCours = null;
     comMessageOrigine = null;
 }
 
@@ -484,7 +360,7 @@ async function validerModifCom() {
 
     // Si le message est vide, on considère que c'est une suppression
     if (nouveauMessage === "") {
-        supprimerCommentaire(comNomEnEdition); // Appelle la fonction existante
+        supprimerCommentaire(idMessageEnCours); // Appelle la fonction existante
         fermerModaleLivreDor();
         return;
     }
@@ -496,7 +372,7 @@ async function validerModifCom() {
         method: 'POST', 
         body: JSON.stringify({ 
             action: "updateCommentaire", 
-            nom: comNomEnEdition, 
+            messageId: idMessageEnCours, // ENVOI DE L'ID UNIQUE (Crucial) 
             commentaire: nouveauMessage, // Le nouveau message
             browserId: browserId 
         })
@@ -505,14 +381,17 @@ async function validerModifCom() {
     await chargerDonnees();
 }
 
-async function supprimerCommentaire(nom) {
+async function supprimerCommentaire(id) {
+// Si l'id n'est pas passé (appel direct via bouton), on utilise idMessageEnCours
+    const targetId = id || idMessageEnCours;
+    
     if (!confirm("Voulez-vous supprimer ce message du livre d'or ?")) return;
 
     await fetch(API_URL, { 
         method: 'POST', 
         body: JSON.stringify({ 
             action: "updateCommentaire", 
-            nom: nom, 
+            messageId: targetId, // ENVOI DE L'ID UNIQUE
             commentaire: "", // Envoi vide pour masquer/supprimer
             browserId: browserId 
         })
