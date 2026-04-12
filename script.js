@@ -258,7 +258,6 @@ async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
-
     // On définit allergieVal en allant chercher le nouveau champ
     const champAllergie = document.getElementById('allergieSaisie');
     const allergieVal = champAllergie ? champAllergie.value.trim() : "";
@@ -268,10 +267,10 @@ async function ajouterPlat() {
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
     
-    // On autorise la validation si au moins un des trois champs est rempli
+ /**   // On autorise la validation si au moins un des trois champs est rempli
     if (!platVal && !comVal && !allergieVal) {
         return alert("Saisissez un plat, un message ou une allergie !");
-    }
+    } *//
 
     const fields = {
         nom: nomVal,
