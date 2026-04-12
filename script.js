@@ -223,12 +223,28 @@ function afficherPlats() {
 /**
  * Ajoute un nouveau plat
  */
+/**
+ * Ajoute un nouveau plat (Version sécurisée contre les éléments null)
+ */
 async function ajouterPlat() {
-    const nomVal = document.getElementById('nomPersonne').value.trim();
-    const convVal = document.getElementById('nbConvives').value;
-    const platVal = document.getElementById('nouveauPlat').value.trim();
-    const partsVal = document.getElementById('nombreParts').value || 0;
-    const allergieVal = document.getElementById('allergieSaisie') ? document.getElementById('allergieSaisie').value.trim() : "";
+    // On récupère les éléments
+    const elNom = document.getElementById('nomPersonne');
+    const elConv = document.getElementById('nbConvives');
+    const elPlat = document.getElementById('nouveauPlat');
+    const elParts = document.getElementById('nombreParts');
+    const elAllergie = document.getElementById('allergieSaisie');
+    
+    // On vérifie que les éléments essentiels existent dans le HTML
+    if (!elNom || !elPlat) {
+        console.error("Erreur : Les champs nomPersonne ou nouveauPlat sont introuvables dans le HTML.");
+        return;
+    }
+
+    const nomVal = elNom.value.trim();
+    const convVal = elConv ? elConv.value : 0;
+    const platVal = elPlat.value.trim();
+    const partsVal = elParts ? elParts.value : 0;
+    const allergieVal = elAllergie ? elAllergie.value.trim() : "";
     
     const radioCoche = document.querySelector('input[name="categoriePlat"]:checked');
     const catChoisie = radioCoche ? radioCoche.value : "autre";
@@ -236,8 +252,10 @@ async function ajouterPlat() {
     if (!nomVal) return alert("Le prénom est requis !");
 
     const btn = document.getElementById('btnAjouter');
-    btn.disabled = true;
-    btn.innerText = "Envoi...";
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = "Envoi...";
+    }
 
     try {
         await fetch(API_URL, {
@@ -245,7 +263,7 @@ async function ajouterPlat() {
             body: JSON.stringify({
                 action: "insert",
                 nom: nomVal,
-                convives: convVal || 0,
+                convives: convVal,
                 plat: platVal || "Présence uniquement",
                 parts: partsVal,
                 categorie: catChoisie,
@@ -258,8 +276,10 @@ async function ajouterPlat() {
     } catch (e) {
         alert("Erreur lors de l'envoi");
     } finally {
-        btn.disabled = false;
-        btn.innerText = "Valider mon plat";
+        if (btn) {
+            btn.disabled = false;
+            btn.innerText = "Valider mon plat";
+        }
     }
 }
 
