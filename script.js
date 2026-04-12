@@ -348,7 +348,7 @@ async function validerModifModale() {
 }
 
 // --- MODALE CONVIVES ---
-
+/**
 function ouvrirModifConvives(id) {
     const p = plats.find(x => x.id === id);
     if (!p) return;
@@ -360,6 +360,22 @@ function ouvrirModifConvives(id) {
     document.getElementById('editNbConvives').value = p.convives;
 
     // On affiche
+    document.getElementById('modalConvives').style.display = "block";
+}
+**/
+function ouvrirModifConvives(id) {
+    // On cherche le plat dans la liste globale
+    const p = plats.find(x => x.id === id);
+    if (!p) {
+        console.error("Plat non trouvé pour l'ID:", id);
+        return;
+    }
+
+    // CRUCIAL : On remplit la variable globale pour que validerModifConvives sache quoi faire
+    platEnEditionModale = p; 
+
+    document.getElementById('titreModalConvives').innerText = p.nom;
+    document.getElementById('editNbConvives').value = p.convives;
     document.getElementById('modalConvives').style.display = "block";
 }
 
@@ -407,24 +423,28 @@ setTimeout(async () => {
 **/
 
 async function validerModifConvives() {
-    if (!platEnEditionModale) return;
+    // Sécurité supplémentaire
+    if (!platEnEditionModale) {
+        alert("Erreur : Aucun plat sélectionné pour la modification.");
+        fermerModaleConvives();
+        return;
+    }
 
     const saisi = document.getElementById('editNbConvives').value;
     const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0;
 
-    if (isNaN(newNbConvives) || newNbConvives < 0) {
-        alert("Veuillez saisir un nombre valide");
-        return;
-    }
-
+    // ... (le reste de ton code fetch actuel) ...
+    
+    // Une fois fini, on ferme
     fermerModaleConvives();
-
+    
+    // Envoi au serveur
     try {
-        const response = await fetch(API_URL, {
+        await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ 
                 action: "update", 
-                rowId: platEnEditionModale.id, 
+                rowId: platEnEditionModale.id, // Là, ça ne plantera plus !
                 nom: platEnEditionModale.nom, 
                 convives: newNbConvives, 
                 plat: platEnEditionModale.plat, 
@@ -433,23 +453,12 @@ async function validerModifConvives() {
                 browserId: browserId 
             })
         });
-
-        const resultText = await response.text(); // On lit d'abord le texte brut
-        console.log("Réponse brute de Google :", resultText);
-
-        // On vérifie si c'est du JSON valide
-        try {
-            JSON.parse(resultText);
-        } catch(e) {
-            console.warn("La réponse n'est pas du JSON, mais le changement a pu avoir lieu.");
-        }
-
         await chargerDonnees();
-    } catch (error) {
-        console.error("Erreur Fetch détaillé :", error);
-        alert("Erreur lors de la sauvegarde... Vérifie ta connexion ou le script Google.");
+    } catch (e) {
+        console.error(e);
     }
 }
+// SUPPRIMER UN PLAT ----------------------------------------------
 async function supprimerPlat(id) {
     if (!confirm("Supprimer ce plat ?")) return;
     await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
