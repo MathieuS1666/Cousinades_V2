@@ -265,22 +265,6 @@ function ouvrirModifPlat(id) {
 }
 function fermerModale() { document.getElementById('modalEdition').style.display = "none"; }
 // --- MODIF : Suppression par Timestamp ---
-async function supprimerCommentaire(timestamp) {
-    if (!confirm("Voulez-vous supprimer ce message ?")) return;
-    await fetch(API_URL, { 
-        method: 'POST', 
-        body: JSON.stringify({ 
-            action: "updateCommentaire", 
-            timestamp: timestamp, // On envoie l'heure exacte du message
-            commentaire: "", 
-            browserId: browserId 
-        })
-    });
-    await chargerDonnees();
-}
-// Variables pour mémoriser ce qu'on modifie
-let comIdEnEdition = null;
-let comMessageOrigine = null;
 
 // Cette fonction ouvre la modale avec le bon message
 /**function ouvrirModifCom(timestamp, ancienMessage) {
