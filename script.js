@@ -271,10 +271,10 @@ async function ajouterPlat() {
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
     
-    // On autorise la validation si au moins un des trois champs est rempli
+   /** // On autorise la validation si au moins un des trois champs est rempli
     if (!platVal && !comVal && !allergieVal) {
         return alert("Saisissez un plat, un message ou une allergie !");
-    }
+    } **/
 
     const fields = {
         nom: nomVal,
