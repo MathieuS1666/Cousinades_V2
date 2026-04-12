@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw8gCXTm6Ks50-dgse2L9YANwR60qEI_Wy27Lj0wVQYI-XHLFjQ5WtSKrorg-pERONm/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyzeMEwWpGYdwp2K7txDifgFQDXxSqj6OmEens9P7I8lg0xMEkNxT-qgTZJIDnPqVw_/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -74,16 +74,24 @@ function afficherLivreDor() {
 function calculerStatsGlobales() {
     const vus = new Set();
     let totalConv = 0;
+    let totalMidi = 0;
+    let totalSoir = 0;
+    const vus = new Set();
+    
     plats.forEach(p => {
         if (!vus.has(p.ownerId)) {
             totalConv += parseFloat(p.convives || 0);
+            if (p.midi) totalMidi += nb;
+            if (p.soir) totalSoir += nb;
             vus.add(p.ownerId);
         }
     });
 
     document.getElementById('stat-convives').innerText = totalConv;
     document.getElementById('stat-total').innerText = plats.reduce((s, p) => s + parseInt(p.parts || 0), 0);
-
+    document.getElementById('stat-midi').innerText = totalMidi;
+    document.getElementById('stat-soir').innerText = totalSoir;
+    
     const statsMapping = {
         'apero': 'stat-apero',
         'entree': 'stat-entrees',
@@ -100,10 +108,20 @@ function calculerStatsGlobales() {
 
     const unique = {};
     plats.forEach(p => { if (!unique[p.nom]) unique[p.nom] = p; });
-    document.getElementById('listePresents').innerHTML = Object.values(unique).map(p => `
-        <span class="badge-present"><strong>${p.nom}</strong> : ${p.convives}
-        ${p.ownerId === browserId ? `<button onclick="ouvrirModifConvives(${p.id})" class="btn-edit-small">✏️</button>` : ''}</span>
-    `).join('');
+    
+    document.getElementById('listePresents').innerHTML = Object.values(unique).map(p => {
+        let labels = [];
+        if (p.midi) labels.push("☀️M");
+        if (p.soir) labels.push("🌙S");
+        
+        return `
+            <span class="badge-present">
+                <strong>${p.nom}</strong> : ${p.convives}<br>
+                <small>${labels.join(' / ')}</small>
+                ${p.ownerId === browserId ? `<button onclick="ouvrirModifConvives(${p.id})" class="btn-edit-small">✏️</button>` : ''}
+            </span>
+        `;
+    }).join('');
 
     verifierSiDejaInscrit();
 }
@@ -182,6 +200,8 @@ async function ajouterPlat() {
     const fields = {
         nom: nomVal,
         convives: convVal || 0,
+        midi: document.getElementById('checkMidi').checked,
+        soir: document.getElementById('checkSoir').checked,
         plat: platVal || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
