@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycby6mZtTpmD5yi4aP3yx1rWbQ8H0jtEWTqaUghZpHU86IteUAaAWEDM4dJyImmPh6t6_/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwckxoG37eQcCOuLIcsKQv7KYdoktn_OAiBsuj0hpgWv-A4CvCEM7kmvPVIaunGGyGX/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -48,49 +48,17 @@ function afficherLivreDor() {
     if (!container) return;
 
     container.innerHTML = commentaires.map(m => `
-        <div class="com-card" style="background:#fff9e6;
-        padding:15px;
-        border-radius:10px;
-        border-left:5px solid #feca57;
-        position:relative;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        margin-bottom:10px;">
-            
+        <div class="com-card">
             ${m.ownerId === browserId ? `
-                <div style="position:absolute;
-                top:10px;
-                right:10px;
-                display:flex;
-                gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.nom}',
-                    '${m.commentaire.replace(/'/g, "\\'")}')" 
-                    title="Modifier" style="background:none;
-                    border:none;
-                    cursor:pointer;
-                    font-size:1.1em;
-                    padding:0;">✏️</button>
-                    <button onclick="supprimerCommentaire('${m.nom}')" 
-                    title="Supprimer" 
-                    style="background:none;
-                    border:none;cursor:
-                    pointer;
-                    font-size:1.1em;
-                    padding:0;">🗑️</button>
+                <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
+                    <button onclick="ouvrirModifCom('${m.messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
+                    <button onclick="supprimerCommentaire('${m.messageId}')" title="Supprimer">🗑️</button>
                 </div>
             ` : ''}
-
-            <p style="margin:0;
-            font-style:italic;
-            white-space:pre-wrap;
-            color:#444;
-            padding-right:40px;">"${m.commentaire}"</p>
-            <p style="margin:10px 0 0 0;
-            text-align:right;
-            font-weight:bold; 
-            font-size:0.8em;
-            color:#2c3e50;">— ${m.nom}</p>
+            <p>"${m.commentaire}"</p>
+            <p>— ${m.nom}</p>
         </div>
-    `).reverse().join('') ||  '<p style="text-align:center;color:gray;">Aucun message pour le moment...</p>';
+    `).reverse().join('');
 }
 
 // --- 3. STATISTIQUES ET AFFICHAGE DES PLATS ---
@@ -579,7 +547,38 @@ function ouvrirAdmin() {
         window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing");
     }
 }
+async function ajouterCommentaireDirect() {
+    const nomVal = document.getElementById('nomPersonne').value.trim();
+    const comVal = document.getElementById('commentaireSaisieSeule').value.trim();
 
+    if (!nomVal || !comVal) {
+        alert("Merci de saisir votre nom et un message !");
+        return;
+    }
+
+    const btn = document.getElementById('btnCom');
+    btn.disabled = true;
+    btn.innerText = "Publication...";
+
+    const fields = {
+        nom: nomVal,
+        commentaire: comVal,
+        action: "insert",
+        browserId: browserId,
+        plat: "Message Livre d'Or" // Indispensable pour que le GAS sache que c'est un message
+    };
+
+    try {
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify(fields) });
+        document.getElementById('commentaireSaisieSeule').value = "";
+        await chargerDonnees();
+    } catch (e) {
+        alert("Erreur de publication");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Publier mon message";
+    }
+}
 // --- LANCEMENT ---
 mettreAJourCompteARebours();
 chargerDonnees();
