@@ -53,24 +53,49 @@ function afficherLivreDor() {
 }
 **/
 // --- MODIF : Affichage pour gérer plusieurs messages ---
-function afficherLivreDor() {
+ffunction afficherLivreDor() {
     const container = document.getElementById('livreDor');
     if (!container) return;
 
-    container.innerHTML = commentaires.map(m => `
-        <div class="com-card" style="...">
+    // On utilise map pour créer les cartes de messages
+    container.innerHTML = commentaires.map(m => {
+        // Sécurité : on vérifie si l'ID existe, sinon on utilise la date
+        const idUnique = m.messageId || m.date; 
+
+        return `
+        <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; margin-bottom:10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);">
             ${m.ownerId === browserId ? `
                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" class="...">✏️</button>
-                    <button onclick="supprimerCommentaire('${m.messageId}')" class="...">🗑️</button>
+                    <button onclick="ouvrirModifCom('${idUnique}', '${m.commentaire.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer; font-size:1.2em;">✏️</button>
+                    <button onclick="supprimerCommentaire('${idUnique}')" style="background:none; border:none; cursor:pointer; font-size:1.2em;">🗑️</button>
                 </div>
             ` : ''}
-            <p>"${m.commentaire}"</p>
-            <p>— ${m.nom}</p>
+            <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444;">"${m.commentaire}"</p>
+            <p style="margin:10px 0 0 0; text-align:right; font-weight:bold; font-size:0.8em; color:#666;">
+                — ${m.nom}
+            </p>
         </div>
-    `).reverse().join('');
+    `}).reverse().join('') || '<p style="text-align:center;color:gray;">Aucun message...</p>';
 }
 
+// Mise à jour de la fonction de suppression pour utiliser l'ID
+async function supprimerCommentaire(id) {
+    if (!confirm("Voulez-vous supprimer ce message ?")) return;
+    try {
+        await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: "updateCommentaire", 
+                messageId: id,
+                commentaire: "", 
+                browserId: browserId 
+            })
+        });
+        await chargerDonnees();
+    } catch (e) {
+        alert("Erreur lors de la suppression");
+    }
+}
 function afficherPlats() {
     const cats = [
         ['aperoListe', 'apero', '🍹'],
