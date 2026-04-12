@@ -74,17 +74,19 @@
 
 <div class="container">
     <div class="formulaire" id="form-scroll">
-        <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
-        <p style="text-align:center;">Quelle branche Bobillier êtes-vous ?</p>
-        <input type="text" id="nomPersonne" placeholder="Votre prénom">
+    <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
+    <p style="text-align:center;">Quelle branche Bobillier êtes-vous ?</p>
+    
+    <input type="text" id="nomPersonne" placeholder="Votre prénom">
 
+    <div id="sectionPlat" style="border-bottom: 2px dashed #eee; padding-bottom: 20px; margin-bottom: 20px;">
         <div id="boxConvives" class="convives-box">
             <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Nombre de personnes :</label>
             <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
         </div>
 
         <p id="msgConvivesOk" style="display:none; color: #27ae60; font-size: 0.85em; text-align: center; font-weight: bold; margin: 10px 0;">
-           ✅ Présence enregistrée
+            ✅ Présence enregistrée
         </p>
         
         <div id="champsPlat">
@@ -99,21 +101,24 @@
             </div>
             <input type="number" id="nombreParts" placeholder="Nombre de portions">
 
-            <div style="margin-top: 15px;">
-            <label style="font-size: 0.8em; font-weight: bold; color: #d35400; margin-top:10px; display:block;">Allergies / Régimes :</label>
-            <input type="text" id="allergieSaisie" placeholder="Ex: Sans gluten, Végétarien...">
-        </div>
-            
+            <div style="margin-top: 10px;">
+                <label style="font-size: 0.75em; font-weight: bold; color: #7f8c8d; display:block; margin-bottom: 2px;">Allergies / Régimes (optionnel) :</label>
+                <input type="text" id="allergieSaisie" placeholder="Ex: Sans gluten, Végétarien..." style="font-size: 0.9em; padding: 8px;">
+            </div>
         </div>
 
-        <div id="champsCom">
-            <textarea id="commentaire" placeholder="Un petit mot doux ou une info importante ?"></textarea>
-        </div>
-      
-
-        <button onclick="ajouterPlat()" id="btnAjouter">Valider</button>
+        <button onclick="ajouterPlat()" id="btnAjouter" style="background-color: #27ae60;">Valider mon plat</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
     </div>
+
+    <div id="sectionLivreDor" style="background: #fff9e6; padding: 15px; border-radius: 10px; border: 1px solid #feca57;">
+        <h3 style="margin-top:0; font-size: 1em; color: #d35400;">📖 Livre d'Or</h3>
+        <textarea id="commentaireSaisieSeule" placeholder="Un petit mot doux ou une info importante ?" style="height: 80px;"></textarea>
+        <button onclick="ajouterCommentaireDirect()" id="btnCom" style="background: #feca57; color: #2c3e50; font-size: 0.9em; margin-top: 5px; font-weight: bold;">
+            Publier mon message
+        </button>
+    </div>
+</div>
 
     <div class="reponses">
         <div class="colonnes">
