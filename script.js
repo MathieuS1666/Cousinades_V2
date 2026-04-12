@@ -260,7 +260,58 @@ async function supprimerCommentaire(timestamp) {
     });
     await chargerDonnees();
 }
+// Variables pour mémoriser ce qu'on modifie
+let comTimestampEnEdition = null;
+let comMessageOrigine = null;
 
+// Cette fonction ouvre la modale avec le bon message
+function ouvrirModifCom(timestamp, ancienMessage) {
+    comTimestampEnEdition = timestamp;
+    comMessageOrigine = ancienMessage;
+
+    // On remplit le textarea de la modale (vérifie que l'ID est bien 'editCom')
+    const textarea = document.getElementById('editCom');
+    if (textarea) textarea.value = ancienMessage;
+
+    // On affiche la modale (vérifie que l'ID est bien 'modalLivreDor')
+    const modale = document.getElementById('modalLivreDor');
+    if (modale) modale.style.display = "block";
+}
+
+// Cette fonction envoie la modification au Google Sheet
+async function validerModifCom() {
+    const nouveauMessage = document.getElementById('editCom').value.trim();
+
+    // Si pas de changement ou vide, on ferme
+    if (nouveauMessage === comMessageOrigine || nouveauMessage === "") {
+        fermerModaleLivreDor();
+        return;
+    }
+
+    fermerModaleLivreDor(); // Fermeture immédiate pour le confort visuel
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "updateCommentaire",
+                timestamp: comTimestampEnEdition, // Utilisation de la date comme ID unique
+                commentaire: nouveauMessage,
+                browserId: browserId
+            })
+        });
+        await chargerDonnees(); // Rafraîchir l'affichage
+    } catch (e) {
+        alert("Erreur lors de la modification");
+        console.error(e);
+    }
+}
+
+function fermerModaleLivreDor() {
+    const modale = document.getElementById('modalLivreDor');
+    if (modale) modale.style.display = "none";
+    comTimestampEnEdition = null;
+}
 // Lancement
 chargerDonnees();
 setInterval(() => {
