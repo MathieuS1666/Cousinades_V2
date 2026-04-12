@@ -57,17 +57,16 @@ function afficherLivreDor() {
     const container = document.getElementById('livreDor');
     if (!container) return;
 
-    // On trie par date (le plus récent en premier)
     container.innerHTML = commentaires.map(m => {
-        // On crée un ID unique basé sur l'horodatage pour le JS
-        const messageId = m.date; 
+        // On transforme la date en nombre (millisecondes) pour éviter les erreurs de format
+        const messageTimestamp = new Date(m.date).getTime(); 
 
         return `
         <div class="com-card" style="background:#fff9e6; padding:15px; border-radius:10px; border-left:5px solid #feca57; position:relative; margin-bottom:10px;">
             ${m.ownerId === browserId ? `
                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer;">✏️</button>
-                    <button onclick="supprimerCommentaire('${messageId}')" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                    <button onclick="ouvrirModifCom('${messageTimestamp}', '${m.commentaire.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer;">✏️</button>
+                    <button onclick="supprimerCommentaire('${messageTimestamp}')" style="background:none; border:none; cursor:pointer;">🗑️</button>
                 </div>
             ` : ''}
             <p style="margin:0; font-style:italic; white-space:pre-wrap; color:#444;">"${m.commentaire}"</p>
