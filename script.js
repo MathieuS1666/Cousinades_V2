@@ -3,7 +3,7 @@
  * Liaison avec Google Sheets API (Plats & Livre d'Or)
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbz9iMtqfLfQ3MturkqkQHE4585um92Fc_zt9WRjCKFuHusKsDxDTIC1PtKzjPxeC6el/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzO3O3VLhb-djSFkhshy4ZsoOgozNcUD-5gZO2uLXRjqw66Enpz_0D7DkZzDdJInsrE/exec";
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -258,19 +258,23 @@ async function ajouterPlat() {
     const nomVal = document.getElementById('nomPersonne').value.trim();
     const convVal = document.getElementById('nbConvives').value;
     const platVal = document.getElementById('nouveauPlat').value.trim();
+    const comVal = document.getElementById('commentaire').value.trim();
+    
+    // --- LA CORRECTION EST ICI ---
     // On définit allergieVal en allant chercher le nouveau champ
     const champAllergie = document.getElementById('allergieSaisie');
     const allergieVal = champAllergie ? champAllergie.value.trim() : "";
+    // ----------------------------
 
     const estDejaInscrit = document.getElementById('boxConvives').style.display === "none";
 
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
     
- /**   // On autorise la validation si au moins un des trois champs est rempli
+    // On autorise la validation si au moins un des trois champs est rempli
     if (!platVal && !comVal && !allergieVal) {
         return alert("Saisissez un plat, un message ou une allergie !");
-    } *//
+    }
 
     const fields = {
         nom: nomVal,
@@ -278,6 +282,7 @@ async function ajouterPlat() {
         plat: platVal || "Présence uniquement",
         parts: document.getElementById('nombreParts').value || 0,
         categorie: catChoisie,
+        commentaire: comVal,
         allergies: allergieVal, // Maintenant allergieVal est bien défini !
         action: "insert",
         browserId: browserId
@@ -502,37 +507,7 @@ function mettreAJourCompteARebours() {
     const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
     document.getElementById("countdown").innerText = `J-${jours} avant la cousinade !`;
 }
-async function envoyerMessageSeul() {
-    const nomVal = document.getElementById('nomPersonne').value.trim();
-    const comVal = document.getElementById('commentaire').value.trim();
 
-    if (!nomVal) return alert("Le prénom est requis !");
-    if (!comVal) return alert("Saisissez un message !");
-
-    const btn = document.getElementById('btnMessage');
-    btn.disabled = true;
-    btn.innerText = "Envoi...";
-
-    try {
-        await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({
-                nom: nomVal,
-                commentaire: comVal,
-                action: "updateCommentaire",
-                browserId: browserId
-            }) 
-        });
-        document.getElementById('commentaire').value = ''; 
-        await chargerDonnees();
-        alert("Message bien reçu !");
-    } catch (e) {
-        alert("Erreur réseau");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Publier dans le Livre d'Or";
-    }
-}
 function ouvrirAdmin() {
     if (prompt("Pass :") === "1234") {
         window.open("https://docs.google.com/spreadsheets/d/1ouuhTU8QERvZwBimUb-VrpOR4lpkjv8WGlsBqKuFZa8/edit?usp=sharing");
