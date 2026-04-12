@@ -330,16 +330,19 @@ async function supprimerPlat(id) {
 // --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
 
 // --- MODALE LIVRE D'OR ---
-let idMessageEnCours = null; // Variable pour stocker l'ID unique du message en cours
+// --- 6. GESTION DU LIVRE D'OR (MODIFS/SUPPR) ---
+
+let idMessageEnCours = null; 
 
 function ouvrirModifCom(idUnique, ancienMessage) {
-    idMessageEnCours = id; // On stocke l'ID (ex: msg_86du6usbr)
+    // On utilise bien l'idUnique passé par le bouton
+    idMessageEnCours = idUnique; 
     comMessageOrigine = ancienMessage;
 
     // On remplit le textarea
     document.getElementById('editCom').value = ancienMessage;
 
-    // On affiche
+    // On affiche la modale
     document.getElementById('modalLivreDor').style.display = "block";
 }
 
@@ -352,52 +355,54 @@ function fermerModaleLivreDor() {
 async function validerModifCom() {
     const nouveauMessage = document.getElementById('editCom').value.trim();
 
-    // Si pas de changement, on ferme juste
     if (nouveauMessage === comMessageOrigine) {
         fermerModaleLivreDor();
         return;
     }
 
-    // Si le message est vide, on considère que c'est une suppression
     if (nouveauMessage === "") {
-        supprimerCommentaire(idMessageEnCours); // Appelle la fonction existante
         fermerModaleLivreDor();
+        supprimerCommentaire(idMessageEnCours); 
         return;
     }
 
-    fermerModaleLivreDor(); // Effet visuel immédiat
+    fermerModaleLivreDor(); 
 
-    // Envoi au Sheet
-    await fetch(API_URL, { 
-        method: 'POST', 
-        body: JSON.stringify({ 
-            action: "updateCommentaire", 
-            messageId: idMessageEnCours, // ENVOI DE L'ID UNIQUE (Crucial) 
-            commentaire: nouveauMessage, // Le nouveau message
-            browserId: browserId 
-        })
-    });
-
-    await chargerDonnees();
+    try {
+        await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: "updateCommentaire", 
+                messageId: idMessageEnCours, 
+                commentaire: nouveauMessage,
+                browserId: browserId 
+            }) 
+        });
+        await chargerDonnees();
+    } catch (e) {
+        console.error("Erreur modification commentaire:", e);
+    }
 }
 
 async function supprimerCommentaire(id) {
-// Si l'id n'est pas passé (appel direct via bouton), on utilise idMessageEnCours
     const targetId = id || idMessageEnCours;
     
     if (!confirm("Voulez-vous supprimer ce message du livre d'or ?")) return;
 
-    await fetch(API_URL, { 
-        method: 'POST', 
-        body: JSON.stringify({ 
-            action: "updateCommentaire", 
-            messageId: targetId, // ENVOI DE L'ID UNIQUE
-            commentaire: "", // Envoi vide pour masquer/supprimer
-            browserId: browserId 
-        })
-    });
-
-    await chargerDonnees();
+    try {
+        await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: "updateCommentaire", 
+                messageId: targetId,
+                commentaire: "", 
+                browserId: browserId 
+            }) 
+        });
+        await chargerDonnees();
+    } catch (e) {
+        console.error("Erreur suppression commentaire:", e);
+    }
 }
 
 // --- 7. UTILITAIRES ---
