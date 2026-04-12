@@ -51,8 +51,8 @@ function afficherLivreDor() {
         <div class="com-card">
             ${m.ownerId === browserId ? `
                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.messageId}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
-                    <button onclick="supprimerCommentaire('${m.messageId}')" title="Supprimer">🗑️</button>
+                    <button onclick="ouvrirModifCom('${m.MessageId}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
+                    <button onclick="supprimerCommentaire('${m.MessageId}')" title="Supprimer">🗑️</button>
                 </div>
             ` : ''}
             <p>"${m.commentaire}"</p>
