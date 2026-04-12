@@ -364,21 +364,24 @@ function ouvrirModifConvives(id) {
 }
 **/
 function ouvrirModifConvives(id) {
-    // On cherche le plat dans la liste globale
+    // 1. On cherche le plat dans le tableau 'plats' chargé au début
     const p = plats.find(x => x.id === id);
+    
     if (!p) {
-        console.error("Plat non trouvé pour l'ID:", id);
+        console.error("Impossible de trouver le plat avec l'ID:", id);
         return;
     }
 
-    // CRUCIAL : On remplit la variable globale pour que validerModifConvives sache quoi faire
+    // 2. CRUCIAL : On assigne le plat à notre variable globale
     platEnEditionModale = p; 
 
+    // 3. On remplit les champs de la modale
     document.getElementById('titreModalConvives').innerText = p.nom;
     document.getElementById('editNbConvives').value = p.convives;
+
+    // 4. On affiche la modale
     document.getElementById('modalConvives').style.display = "block";
 }
-
 function fermerModaleConvives() {
     document.getElementById('modalConvives').style.display = "none";
     platEnEditionModale = null;
