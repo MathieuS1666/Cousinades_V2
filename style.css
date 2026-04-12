@@ -188,3 +188,25 @@ button {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+.repas-selection {
+    display: flex;
+    justify-content: space-around;
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.repas-selection label {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.badge-present small {
+    display: block;
+    color: #666;
+    font-size: 0.75em;
+    margin-top: 2px;
+}
