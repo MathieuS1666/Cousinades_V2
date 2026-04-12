@@ -364,24 +364,26 @@ function ouvrirModifConvives(id) {
 }
 **/
 function ouvrirModifConvives(id) {
-    // 1. On cherche le plat dans le tableau 'plats' chargé au début
-    const p = plats.find(x => x.id === id);
-    
-    if (!p) {
-        console.error("Impossible de trouver le plat avec l'ID:", id);
-        return;
+    // 1. On trouve le plat
+    const p = plats.find(x => x.id == id); // Utilise == pour plus de souplesse
+    if (!p) return console.error("ID introuvable:", id);
+
+    // 2. On mémorise quand même (sécurité)
+    platEnEditionModale = p;
+
+    // 3. MISE À JOUR DYNAMIQUE DU BOUTON
+    // On force l'ID dans l'appel de la fonction de validation
+    const btnEnregistrer = document.querySelector("#modalConvives button[onclick^='validerModifConvives']");
+    if (btnEnregistrer) {
+        btnEnregistrer.setAttribute("onclick", `validerModifConvives(${id})`);
     }
 
-    // 2. CRUCIAL : On assigne le plat à notre variable globale
-    platEnEditionModale = p; 
-
-    // 3. On remplit les champs de la modale
     document.getElementById('titreModalConvives').innerText = p.nom;
     document.getElementById('editNbConvives').value = p.convives;
-
-    // 4. On affiche la modale
     document.getElementById('modalConvives').style.display = "block";
 }
+// FERMER MODAL CONVIVIES
+
 function fermerModaleConvives() {
     document.getElementById('modalConvives').style.display = "none";
     platEnEditionModale = null;
@@ -425,42 +427,45 @@ setTimeout(async () => {
 }
 **/
 
-async function validerModifConvives() {
-    // Sécurité supplémentaire
-    if (!platEnEditionModale) {
-        alert("Erreur : Aucun plat sélectionné pour la modification.");
-        fermerModaleConvives();
+async function validerModifConvives(idForce) {
+    // Si idForce n'est pas là, on essaie de récupérer la globale
+    const id = idForce || (platEnEditionModale ? platEnEditionModale.id : null);
+    
+    if (!id) {
+        alert("Erreur technique : ID du plat perdu.");
         return;
     }
+
+    // On récupère l'objet plat correspondant à cet ID
+    const p = plats.find(x => x.id == id);
+    if (!p) return;
 
     const saisi = document.getElementById('editNbConvives').value;
     const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0;
 
-    // ... (le reste de ton code fetch actuel) ...
-    
-    // Une fois fini, on ferme
     fermerModaleConvives();
-    
-    // Envoi au serveur
+
     try {
         await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ 
                 action: "update", 
-                rowId: platEnEditionModale.id, // Là, ça ne plantera plus !
-                nom: platEnEditionModale.nom, 
+                rowId: id, // Utilisation de l'ID direct
+                nom: p.nom, 
                 convives: newNbConvives, 
-                plat: platEnEditionModale.plat, 
-                parts: platEnEditionModale.parts, 
-                categorie: platEnEditionModale.categorie, 
+                plat: p.plat, 
+                parts: p.parts, 
+                categorie: p.categorie, 
                 browserId: browserId 
             })
         });
         await chargerDonnees();
     } catch (e) {
-        console.error(e);
+        console.error("Erreur lors de l'envoi :", e);
     }
 }
+
+
 // SUPPRIMER UN PLAT ----------------------------------------------
 async function supprimerPlat(id) {
     if (!confirm("Supprimer ce plat ?")) return;
