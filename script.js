@@ -580,6 +580,49 @@ function ouvrirAdmin() {
     }
 }
 
+async function ajouterCommentaireDirect() {
+    const nomVal = document.getElementById('nomPersonne').value.trim();
+    const comVal = document.getElementById('commentaireSaisieSeule').value.trim();
+
+    if (!nomVal) {
+        alert("Veuillez saisir votre prénom en haut du formulaire pour signer votre message !");
+        return;
+    }
+    if (!comVal) {
+        alert("Le message est vide...");
+        return;
+    }
+
+    const btn = document.getElementById('btnCom');
+    btn.disabled = true;
+    btn.innerText = "Publication...";
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "insert",
+                nom: nomVal,
+                commentaire: comVal,
+                plat: "Message Livre d'Or", // Valeur par défaut pour le Sheet
+                browserId: browserId,
+                convives: 0,
+                parts: 0,
+                categorie: "autre"
+            })
+        });
+
+        document.getElementById('commentaireSaisieSeule').value = ""; 
+        await chargerDonnees(); 
+        alert("Message publié ! ✨");
+    } catch (e) {
+        alert("Erreur lors de l'envoi du message.");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Publier mon message";
+    }
+}
+
 // --- LANCEMENT ---
 mettreAJourCompteARebours();
 chargerDonnees();
