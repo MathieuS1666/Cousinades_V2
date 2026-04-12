@@ -332,7 +332,7 @@ async function supprimerPlat(id) {
 // --- MODALE LIVRE D'OR ---
 let idMessageEnCours = null; // Variable pour stocker l'ID unique du message en cours
 
-function ouvrirModifCom(nom, ancienMessage) {
+function ouvrirModifCom(idUnique, ancienMessage) {
     idMessageEnCours = id; // On stocke l'ID (ex: msg_86du6usbr)
     comMessageOrigine = ancienMessage;
 
