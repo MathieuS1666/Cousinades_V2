@@ -383,22 +383,26 @@ async function validerModifConvives() {
     fermerModaleConvives(); // Effet visuel immédiat
 
     // Envoi au Sheet
+    try {
     await fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({ 
             action: "update", 
             rowId: platEnEditionModale.id, 
             nom: platEnEditionModale.nom, 
-            convives: newNbConvives, // La nouvelle valeur
-            // On garde les infos du plat inchangées
+            convives: newNbConvives,
             plat: platEnEditionModale.plat, 
             parts: platEnEditionModale.parts, 
             categorie: platEnEditionModale.categorie, 
             browserId: browserId 
         })
     });
-
+setTimeout(async () => {
     await chargerDonnees(); // Rafraîchit tout
+    }, 500);
+} catch (e) {
+        alert("Erreur lors de la sauvegarde...");
+    }
 }
 
 async function supprimerPlat(id) {
