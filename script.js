@@ -354,7 +354,7 @@ function fermerModaleLivreDor() {
 
 async function validerModifCom() {
     const nouveauMessage = document.getElementById('editCom').value.trim();
-
+    console.log("Envoi de la modif :", idMessageEnCours, nouveauMessage); // <--- AJOUTE ÇA
     if (nouveauMessage === comMessageOrigine) {
         fermerModaleLivreDor();
         return;
