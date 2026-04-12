@@ -133,7 +133,7 @@ async function ajouterPlat() {
 
     if (!nomVal) return alert("Le prénom est requis !");
     if (!estDejaInscrit && !convVal) return alert("Le nombre de personnes est requis !");
-    if (!platVal && !allergieVal) return alert("Saisissez un plat ou une allergie !");
+    if (estDejaInscrit && !platVal && !allergieVal) return alert("Saisissez un plat ou une allergie !");
 
     const btn = document.getElementById('btnAjouter');
     btn.disabled = true;
