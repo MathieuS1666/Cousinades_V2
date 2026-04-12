@@ -147,3 +147,32 @@ button {
     .container { flex-direction: column; }
     .formulaire { border-right: none; position: static; }
 }
+.total-badge {
+    float: right;
+    background: #eee;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7em;
+    color: #555;
+}
+
+.btn-edit-small {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0 0 0 5px;
+    display: inline;
+    width: auto;
+    margin: 0;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 2px;
+    width: auto;
+    display: inline-block;
+}
