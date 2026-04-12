@@ -367,7 +367,7 @@ function fermerModaleConvives() {
     document.getElementById('modalConvives').style.display = "none";
     platEnEditionModale = null;
 }
-
+/**
 async function validerModifConvives() {
     if (!platEnEditionModale) return;
 
@@ -404,7 +404,52 @@ setTimeout(async () => {
         alert("Erreur lors de la sauvegarde...");
     }
 }
+**/
 
+async function validerModifConvives() {
+    if (!platEnEditionModale) return;
+
+    const saisi = document.getElementById('editNbConvives').value;
+    const newNbConvives = parseFloat(saisi.replace(',', '.')) || 0;
+
+    if (isNaN(newNbConvives) || newNbConvives < 0) {
+        alert("Veuillez saisir un nombre valide");
+        return;
+    }
+
+    fermerModaleConvives();
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ 
+                action: "update", 
+                rowId: platEnEditionModale.id, 
+                nom: platEnEditionModale.nom, 
+                convives: newNbConvives, 
+                plat: platEnEditionModale.plat, 
+                parts: platEnEditionModale.parts, 
+                categorie: platEnEditionModale.categorie, 
+                browserId: browserId 
+            })
+        });
+
+        const resultText = await response.text(); // On lit d'abord le texte brut
+        console.log("Réponse brute de Google :", resultText);
+
+        // On vérifie si c'est du JSON valide
+        try {
+            JSON.parse(resultText);
+        } catch(e) {
+            console.warn("La réponse n'est pas du JSON, mais le changement a pu avoir lieu.");
+        }
+
+        await chargerDonnees();
+    } catch (error) {
+        console.error("Erreur Fetch détaillé :", error);
+        alert("Erreur lors de la sauvegarde... Vérifie ta connexion ou le script Google.");
+    }
+}
 async function supprimerPlat(id) {
     if (!confirm("Supprimer ce plat ?")) return;
     await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", rowId: id, browserId: browserId }) });
