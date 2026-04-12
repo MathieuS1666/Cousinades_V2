@@ -47,18 +47,26 @@ function afficherLivreDor() {
     const container = document.getElementById('livreDor');
     if (!container) return;
 
-    container.innerHTML = commentaires.map(m => `
-        <div class="com-card">
-            ${m.ownerId === browserId ? `
-                <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                    <button onclick="ouvrirModifCom('${m.MessageId}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
-                    <button onclick="supprimerCommentaire('${m.MessageId}')" title="Supprimer">🗑️</button>
-                </div>
-            ` : ''}
-            <p>"${m.commentaire}"</p>
-            <p>— ${m.nom}</p>
-        </div>
-    `).reverse().join('');
+    container.innerHTML = commentaires.map(m => {
+        // Sécurité : on récupère l'ID qu'il soit écrit 'messageId' ou 'MessageID'
+        const idUnique = m.messageId || m.MessageID;
+        
+        // Le bouton n'apparaît que si l'ownerId correspond ET qu'il y a un ID de message
+        const peutModifier = (m.ownerId === browserId && idUnique);
+
+        return `
+            <div class="com-card" style="position:relative;">
+                ${peutModifier ? `
+                    <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
+                        <button onclick="ouvrirModifCom('${idUnique}', '${m.commentaire.replace(/'/g, "\\'")}')" title="Modifier">✏️</button>
+                        <button onclick="supprimerCommentaire('${idUnique}')" title="Supprimer">🗑️</button>
+                    </div>
+                ` : ''}
+                <p>"${m.commentaire}"</p>
+                <p>— ${m.nom}</p>
+            </div>
+        `;
+    }).reverse().join('');
 }
 
 // --- 3. STATISTIQUES ET AFFICHAGE DES PLATS ---
