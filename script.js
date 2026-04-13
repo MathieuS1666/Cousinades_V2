@@ -1,8 +1,9 @@
 /**
  * COUSINADE BOB 2026 - LOGIQUE FRONTEND
  */
-
+// adresse du script Google
 const API_URL = "https://script.google.com/macros/s/AKfycbw1a8S54T7A5w8hYV4xsF5W_cDDJuUkNvPdcOVZPEPDZyqUwb-kmwZcX9paNvriFLs/exec";
+// date de la cousinade pour le compte à rebours
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -33,7 +34,7 @@ async function chargerDonnees() {
 }
 
 // --- 2. STATISTIQUES ET AFFICHAGE ---
-
+// statistiques
 function calculerStatsGlobales() {
     let totalMidi = 0;
     let totalSoir = 0;
@@ -62,8 +63,8 @@ function calculerStatsGlobales() {
     
     document.getElementById('listePresents').innerHTML = Object.values(unique).map(p => {
         let labels = [];
-        if (p.midi === true || p.midi === "true") labels.push("☀️M");
-        if (p.soir === true || p.soir === "true") labels.push("🌙S");
+        if (p.midi === true || p.midi === "TRUE") labels.push("☀️M");
+        if (p.soir === true || p.soir === "TRUE") labels.push("🌙S");
         
         return `
             <span class="badge-present">
