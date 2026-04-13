@@ -197,6 +197,67 @@ button {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+.inscription-repas-box {
+    margin: 20px 0;
+    text-align: center; /* Centre le texte du haut */
+}
+.repas-flex-group {
+    display: flex;
+    justify-content: center; /* Centre les deux boutons */
+    gap: 15px; /* Espace entre les deux */
+}
+
+.repas-option {
+    cursor: pointer;
+    flex: 1;
+    max-width: 140px; /* Largeur max pour ne pas que ce soit trop géant sur PC */
+}
+
+/* Cache la checkbox moche */
+.repas-option input {
+    display: none;
+}
+
+/* Style de la "carte" bouton */
+.repas-card {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 12px 5px;
+    display: flex;
+    flex-direction: column; /* Emoji en haut, texte en dessous */
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.repas-card .emoji {
+    font-size: 1.5em;
+    margin-bottom: 4px;
+}
+
+.repas-card .label-text {
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* État coché : Vert ou Jaune selon ton goût */
+.repas-option input:checked + .repas-card {
+    border-color: #ff9f43;
+    background-color: #fff4e6;
+    transform: translateY(-3px); /* Petit effet de levée */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Changement de couleur du texte quand coché */
+.repas-option input:checked + .repas-card .label-text {
+    color: #e67e22;
+}
+.question-presence {
+    font-weight: bold;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
 .repas-selection {
     display: flex;
     justify-content: space-around;
