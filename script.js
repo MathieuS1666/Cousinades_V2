@@ -60,7 +60,11 @@ function calculerStatsGlobales() {
     if(document.getElementById('stat-entrees')) document.getElementById('stat-entrees').innerText = counts.entree;
     if(document.getElementById('stat-plats')) document.getElementById('stat-plats').innerText = counts.platPrincipal;
     if(document.getElementById('stat-desserts')) document.getElementById('stat-desserts').innerText = counts.dessert;
-    
+    if(document.getElementById('total-apero')) document.getElementById('total-apero').innerText = counts.apero;
+    if(document.getElementById('total-entree')) document.getElementById('total-entree').innerText = counts.entree;
+    if(document.getElementById('total-platPrincipal')) document.getElementById('total-platPrincipal').innerText = counts.platPrincipal;
+    if(document.getElementById('total-dessert')) document.getElementById('total-dessert').innerText = counts.dessert;
+    if(document.getElementById('total-autre')) document.getElementById('total-autre').innerText = counts.autre;
     // Affichage Liste des Présents
     const unique = {};
     plats.forEach(p => { if (!unique[p.nom]) unique[p.nom] = p; });
