@@ -45,7 +45,7 @@ body {
     max-width: 1300px;
     margin: 20px auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.96);
+    background-color: rgba(255, 255, 255, 0.60);
     border-radius: 12px;
 }
 
@@ -136,16 +136,25 @@ button {
 }
 
 .liste-presents, .livre-dor-section {
+    display: block !important;
+    width: 95%;
+    max-width: 1260px;
+    margin: 30px auto !important;
     margin-top: 20px;
     background: white;
     padding: 20px;
     border-radius: 12px;
     text-align: center;
+    float: none; /* Supprime tout flottement résiduel */
 }
 
 @media (max-width: 1000px) {
     .container { flex-direction: column; }
-    .formulaire { border-right: none; position: static; }
+    .formulaire { 
+        border-right: none;
+        margin-bottom: 20px;
+        position: static !important;
+    }
 }
 .total-badge {
     float: right;
@@ -191,7 +200,7 @@ button {
 .repas-selection {
     display: flex;
     justify-content: space-around;
-    background: #fff;
+    background: #dedcca;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -209,4 +218,32 @@ button {
     color: #666;
     font-size: 0.75em;
     margin-top: 2px;
+}
+/* Style pour le titre du Livre d'Or */
+.livre-dor-section h2 {
+    position: relative;
+    margin-bottom: 40px; /* Grand écart pour l'élégance */
+    padding-bottom: 15px;
+}
+
+/* La petite ligne stylée en dessous */
+.livre-dor-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Pour centrer la ligne */
+    width: 100px; /* Largeur de la ligne */
+    height: 3px;
+    background: linear-gradient(to right, transparent, #feca57, transparent);
+    border-radius: 2px;
+}
+
+/* Optionnel : Un petit écart au-dessus du conteneur des messages 
+   pour qu'ils ne collent pas au bouton de publication */
+#livreDor {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espace constant entre chaque carte de message */
 }
