@@ -303,7 +303,9 @@ function afficherLivreDor() {
 
 // --- RESTE DES FONCTIONS (Statiques) ---
 function fermerModale() { document.getElementById('modalEdition').style.display = "none"; }
+
 function fermerModaleConvives() { document.getElementById('modalConvives').style.display = "none"; }
+
 function verifierSiDejaInscrit() {
     const monInscription = plats.find(p => p.ownerId === browserId);
     const box = document.getElementById('boxConvives');
@@ -328,6 +330,16 @@ function mettreAJourCompteARebours() {
     const diff = DATE_COUSINADE - new Date();
     const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
     document.getElementById("countdown").innerText = diff > 0 ? `J-${jours} avant la cousinade !` : "C'est le jour J ! 🎉";
+}
+
+function ouvrirAdmin() {
+    const code = prompt("Entrez le code administrateur :");
+    if (code === "1234") { // Change "1234" par ton code
+        const urlSheet = "https://docs.google.com/spreadsheets/d/1F-Bx57myPupGgfFNAN79Pn8pQNON3aWg1pmF0jLFVNI/edit?usp=sharing";
+        window.open(urlSheet, '_blank');
+    } else {
+        alert("Code incorrect");
+    }
 }
 
 mettreAJourCompteARebours();
