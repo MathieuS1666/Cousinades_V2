@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cousinade Bob 2026</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥂</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -119,18 +120,19 @@
                 <label><input type="radio" name="categoriePlat" value="autre" id="autre" checked> Autre</label>
             </div>
             <input type="number" id="nombreParts" placeholder="Nombre de portions">
-
-            <div style="margin-top: 10px;">
-                <p style="text-align:center; font-size:0.9em;">vos préferences ou contraintes alimentaires</p>
-                <label style="font-size: 0.75em; font-weight: bold; color: #7f8c8d; display:block; margin-bottom: 2px;">Allergies / Régimes (optionnel) :</label>
-                <input type="text" id="allergieSaisie" placeholder="Ex: Sans gluten, Végétarien..." style="font-size: 0.9em; padding: 8px;">
-            </div>
         </div>
 
         <button onclick="ajouterPlat()" id="btnAjouter" style="background-color: #27ae60;">Valider</button>
         <button onclick="annulerEdition()" id="btnAnnuler">Annuler</button>
     </div>
-
+        <div id="sectionAllergies" style="background: #fdf2f2; padding: 15px; border-radius: 10px; border: 1px solid #e74c3c; margin-top: 20px;">
+            <h3 style="margin-top:0; font-size: 1em; color: #c0392b;">🚫 Allergies & Régimes</h3>
+            <p style="font-size: 0.8em; color: #666;">Une contrainte alimentaire ? (Végétarien, Sans Gluten, Noix...)</p>
+            <input type="text" id="allergieSaisieSeule" placeholder="séparez vos divers points par un virgule">
+            <button onclick="mettreAJourAllergies()" id="btnAllergie" style="background: #e74c3c; color: white; font-size: 0.9em; margin-top: 5px;">
+                Enregistrer mes préférences
+        </button>
+    </div>
     <div id="sectionLivreDor" style="background: #fff9e6; padding: 15px; border-radius: 10px; border: 1px solid #feca57;">
         <h3 style="margin-top:0; font-size: 1em; color: #d35400;">📖 Livre d'Or</h3>
         <textarea id="commentaireSaisieSeule" placeholder="Un petit mot doux ou une info importante ?" style="height: 80px;"></textarea>
@@ -146,7 +148,7 @@
             <div class="colonne" id="dessert-col" style="border-top-color:var(--dessert)"><h3>🍰 Dessert <span id="total-dessert" class="total-badge">0</span></h3><div id="dessertListe"></div></div>
             <div class="colonne" id="autre-col" style="border-top-color:var(--autre)"><h3>📦 Autre <span id="total-autre" class="total-badge">0</span></h3><div id="autreListe"></div></div>
             <div class="colonne" id="allergie-col" style="border-top-color: #e74c3c;">
-                <h3>🚫 Allergies <span id="total-allergies" class="total-badge">0</span></h3>
+                <h3>🚫 Allergies/Regimes alimentaires <span id="total-allergies" class="total-badge">0</span></h3>
                 <div id="allergieListe"></div>
             </div>
         </div>  

@@ -2,7 +2,7 @@
  * COUSINADE BOB 2026 - LOGIQUE FRONTEND
  */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbypy-rN0WCaD3WeD76BPZodSC6RR_ZgMDElstDzgoJmUh99KMnAZGCQB4UjXeHJl9Q/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbxkRhcfFKMPlLmCFAItNSr0g1G8vz4qygXet4u9vMa8NKSOfB9epUyzhwZMdcKSDlyM/exec"; 
 const DATE_COUSINADE = new Date("2026-05-09T12:00:00");
 
 let plats = [];
@@ -37,16 +37,18 @@ function renderAll() {
     afficherLivreDor();
     calculerStatsGlobales();
     verifierSiDejaInscrit();
+    afficherAllergies();
 }
 
 async function ajouterParticipant() {
     
     const btn = document.getElementById('btnInscrire');
     const nom = document.getElementById('nomPersonne').value.trim();
-    const convives = parseFloat(document.getElementById('nbConvives').value);
+    let convivesInput = document.getElementById('nbConvives').value.replace(',', '.');
+    const convives = parseFloat(convivesInput);
     const midi = document.getElementById('checkMidi').checked;
     const soir = document.getElementById('checkSoir').checked;
-    const allergies = document.getElementById('allergieSaisie').value.trim();
+    const allergies = document.getElementById('allergieSaisieSeule') ? document.getElementById('allergieSaisieSeule').value.trim() : "";
 
     // 1. BLOCAGE : Prénom vide
     if (!nom) {
@@ -212,7 +214,7 @@ async function ajouterPlat() {
         convives: document.getElementById('nbConvives').value || 0,
         midi: document.getElementById('checkMidi').checked,
         soir: document.getElementById('checkSoir').checked,
-        allergies: document.getElementById('allergieSaisie').value.trim()
+        allergies: document.getElementById('allergieSaisieSeule') ? document.getElementById('allergieSaisieSeule').value.trim() : ""
     };
 
     btn.disabled = true;
@@ -260,6 +262,7 @@ function verifierSiDejaInscrit() {
         inputNom.value = inscrit.nom;
         inputNom.readOnly = true;
         inputNom.style.background = "#f0f0f0";
+        document.getElementById('allergieSaisieSeule').value = inscrit.allergies || "";
     } else {
         if(boxConvives) boxConvives.style.display = "block";
         if(msgOk) msgOk.style.display = "none";
@@ -419,6 +422,59 @@ async function validerModifCom() {
 
 function fermerModaleLivreDor() {
     document.getElementById('modalLivreDor').style.display = "none";
+}
+
+async function mettreAJourAllergies() {
+    const allergie = document.getElementById('allergieSaisieSeule').value.trim();
+    const nom = document.getElementById('nomPersonne').value.trim();
+
+    if (!nom) return alert("Veuillez d'abord saisir votre prénom en haut.");
+    
+    const btn = document.getElementById('btnAllergie');
+    btn.disabled = true;
+    btn.innerText = "Mise à jour...";
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "updateAllergies",
+                browserId: browserId,
+                allergies: allergie
+            })
+        });
+        alert("Vos préférences alimentaires ont été mises à jour !");
+        await chargerDonnees();
+    } catch (e) {
+        alert("Erreur lors de la mise à jour.");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Enregistrer mes préférences";
+    }
+}
+
+function afficherAllergies() {
+    const conteneur = document.getElementById('allergieListe');
+    const badgeTotal = document.getElementById('total-allergies');
+    
+    // On filtre les participants qui ont une allergie non vide
+    const avecAllergies = listeParticipants.filter(p => p.allergies && p.allergies.trim() !== "");
+
+    // Mise à jour du petit badge de compteur
+    if (badgeTotal) badgeTotal.innerText = avecAllergies.length;
+
+    if (avecAllergies.length === 0) {
+        conteneur.innerHTML = '<p style="color:gray; font-size:0.8em; font-style:italic; padding:10px;">Aucune allergie signalée.</p>';
+        return;
+    }
+
+    // On génère le HTML pour chaque allergie
+    conteneur.innerHTML = avecAllergies.map(p => `
+        <div class="plat-item" style="border-left: 4px solid #e74c3c; background: #fff5f5; margin-bottom: 8px; padding: 10px; border-radius: 6px; display: block;">
+            <div style="font-weight: bold; color: #c0392b; font-size: 0.9em;">${p.nom}</div>
+            <div style="font-size: 0.85em; color: #333;">${p.allergies}</div>
+        </div>
+    `).join('');
 }
 function ouvrirAdmin() {
     const pass = prompt("Accès réservé. Veuillez saisir le mot de passe :");
