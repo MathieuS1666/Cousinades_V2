@@ -97,11 +97,26 @@
             <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Combien serez-vous ?:</label>
             <input type="number" id="nbConvives" step="0.5" placeholder="Adulte=1, Enfant=0.5">
        
-        <div class="repas-selection">
-            <label style="font-size: 0.8em; font-weight: bold; color: #d35400;">Serez-vous présent :</label>
-            <label><input type="checkbox" id="checkMidi" > ☀️ Le Midi</label>
-            <label><input type="checkbox" id="checkSoir" > 🌙 Le Soir</label>
-        </div>
+        <div class="inscription-repas-box">
+    <p class="question-presence">Serez-vous présent :</p>
+    <div class="repas-flex-group">
+        <label class="repas-option">
+            <input type="checkbox" id="checkMidi">
+            <div class="repas-card">
+                <span class="emoji">☀️</span>
+                <span class="label-text">Le Midi</span>
+            </div>
+        </label>
+        
+        <label class="repas-option">
+            <input type="checkbox" id="checkSoir">
+            <div class="repas-card">
+                <span class="emoji">🌙</span>
+                <span class="label-text">Le Soir</span>
+            </div>
+        </label>
+    </div>
+</div>
             <button onclick="ajouterParticipant()" id="btnInscrire" style="background-color: #d35400; color: white; margin-top: 15px; margin-bottom: 5px;">
             Valider ma présence
         </button>
