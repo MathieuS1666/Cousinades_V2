@@ -480,7 +480,7 @@ function ouvrirAdmin() {
     const pass = prompt("Accès réservé. Veuillez saisir le mot de passe :");
     
     // Remplace '2026' par le mot de passe de ton choix
-    if (pass === "2026") {
+    if (pass === "1234") {
         // Remplace 'TON_ID_SHEET' par l'identifiant réel de ton Google Sheet
         const urlSheet = "https://docs.google.com/spreadsheets/d/1F-Bx57myPupGgfFNAN79Pn8pQNON3aWg1pmF0jLFVNI/edit?usp=sharing";
         window.open(urlSheet, "_blank");
