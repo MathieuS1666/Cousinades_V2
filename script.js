@@ -56,6 +56,10 @@ function calculerStatsGlobales() {
     if(document.getElementById('stat-midi')) document.getElementById('stat-midi').innerText = totalMidi;
     if(document.getElementById('stat-soir')) document.getElementById('stat-soir').innerText = totalSoir;
     if(document.getElementById('stat-total')) document.getElementById('stat-total').innerText = plats.reduce((s, p) => s + parseInt(p.parts || 0), 0);
+    if(document.getElementById('stat-apero')) document.getElementById('stat-apero').innerText = counts.apero;
+    if(document.getElementById('stat-entrees')) document.getElementById('stat-entrees').innerText = counts.entree;
+    if(document.getElementById('stat-plats')) document.getElementById('stat-plats').innerText = counts.platPrincipal;
+    if(document.getElementById('stat-desserts')) document.getElementById('stat-desserts').innerText = counts.dessert;
     
     // Affichage Liste des Présents
     const unique = {};
