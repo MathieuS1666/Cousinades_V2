@@ -977,7 +977,7 @@ function ouvrirAdmin() {
         alert("Mot de passe incorrect.");
     }
 }
-
+window.ouvrirAdmin = ouvrirAdmin;
 mettreAJourCompteARebours();
 chargerDonnees();
 mettreAJourCompteARebours();
