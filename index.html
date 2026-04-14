@@ -87,8 +87,8 @@
         border-radius: 15px; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); ">
     <h1 style="text-align:center; color: #660503;">Cousinade 2026</h1>
-        <p style="text-align:center;">Afin de s'organiser au mieux pour cette journée merci d'indiquer:</p>
-    <p style="text-align:center;">Entrez votre/vos prénom(s)</p>
+        <p style="text-align:center;font-weight:bold; margin-bottom: 10px;">Afin de s'organiser au mieux pour cette journée merci de remplir ce formulaire:</p>
+    <p style="text-align:center;font-weight:bold; color: #2c3e50; margin-bottom: 10px;">Entrez votre/vos prénom(s)</p>
     
     <input type="text" id="nomPersonne" placeholder="Votre prénom">
 
@@ -125,15 +125,52 @@
         </p>
         
         <div id="champsPlat">
-            <p style="text-align:center; font-size:0.9em;">Dites-nous ce que vous apportez !</p>
+            <p style="text-align:center; font-size:0.9em; font-weight:bold; color: #2c3e50; margin-bottom: 10px;">Dites-nous ce que vous apportez !</p>
             <input type="text" id="nouveauPlat" placeholder="Nom du plat">
+            <p style="text-align:center; font-size:0.85em; font-weight:bold; color: #2c3e50; margin-bottom: 10px;">
+                Quel type de plat est-ce ? :
+            </p>
             <div class="plat-categories">
-                <label><input type="radio" name="categoriePlat" value="apero" id="apero"> Apéro</label>
-                <label><input type="radio" name="categoriePlat" value="entree" id="entree"> Entrée</label>
-                <label><input type="radio" name="categoriePlat" value="platPrincipal" id="platPrincipal"> Plat</label>
-                <label><input type="radio" name="categoriePlat" value="dessert" id="dessert"> Dessert</label>
-                <label><input type="radio" name="categoriePlat" value="autre" id="autre" checked> Autre</label>
-            </div>
+    <label class="repas-option">
+        <input type="radio" name="categoriePlat" value="apero" id="apero">
+        <div class="repas-card">
+            <span class="emoji">🍹</span>
+            <span class="label-text">Apéro</span>
+        </div>
+    </label>
+
+    <label class="repas-option">
+        <input type="radio" name="categoriePlat" value="entree" id="entree">
+        <div class="repas-card">
+            <span class="emoji">🥗</span>
+            <span class="label-text">Entrée</span>
+        </div>
+    </label>
+
+    <label class="repas-option">
+        <input type="radio" name="categoriePlat" value="platPrincipal" id="platPrincipal">
+        <div class="repas-card">
+            <span class="emoji">🥘</span>
+            <span class="label-text">Plat</span>
+        </div>
+    </label>
+
+    <label class="repas-option">
+        <input type="radio" name="categoriePlat" value="dessert" id="dessert">
+        <div class="repas-card">
+            <span class="emoji">🍰</span>
+            <span class="label-text">Dessert</span>
+        </div>
+    </label>
+
+    <label class="repas-option">
+        <input type="radio" name="categoriePlat" value="autre" id="autre" checked>
+        <div class="repas-card">
+            <span class="emoji">📦</span>
+            <span class="label-text">Autre</span>
+        </div>
+    </label>
+</div>
             <input type="number" id="nombreParts" min="0" placeholder="Nombre de portions">
         </div>
 

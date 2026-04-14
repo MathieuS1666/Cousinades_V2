@@ -1,23 +1,26 @@
+/* 1. VARIABLES ET BASE */
 :root {
     --apero: #ff9f43;
     --entree: #1dd1a1;
     --plat: #ff6b6b;
     --dessert: #feca57;
     --autre: #48dbfb;
+    --success: #27ae60;
+    --dark-blue: rgba(44, 62, 80, 0.95);
 }
 
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80');
+    background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
     background-size: cover;
-    background-attachment: fixed;
     min-height: 100vh;
     color: #333;
 }
 
+/* 2. HEADER & STATS */
 .header-info {
-    background: rgba(44, 62, 80, 0.95);
+    background: var(--dark-blue);
     color: white;
     padding: 15px;
     text-align: center;
@@ -37,9 +40,9 @@ body {
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.2);
 }
-
 .stat-item b { color: #feca57; }
 
+/* 3. LAYOUT PRINCIPAL */
 .container {
     display: flex;
     max-width: 1300px;
@@ -49,10 +52,18 @@ body {
     border-radius: 12px;
 }
 
-.formulaire { flex: 1; padding: 20px; border-right: 1px solid #ddd; position: sticky; top: 140px; height: fit-content; }
+.formulaire { 
+    flex: 1; 
+    padding: 20px; 
+    border-right: 1px solid #ddd; 
+    position: sticky; 
+    top: 140px; 
+    height: fit-content; 
+}
 
 .reponses { flex: 3; padding: 20px; }
 
+/* 4. FORMULAIRE & INPUTS */
 input[type="text"], input[type="number"], textarea {
     padding: 12px;
     margin: 8px 0;
@@ -73,18 +84,6 @@ textarea { resize: vertical; min-height: 60px; }
     border: 1px solid #e67e22;
 }
 
-.plat-categories { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; }
-
-.plat-categories label {
-    display: flex;
-    align-items: center;
-    background: #f0f0f0;
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85em;
-}
-
 button {
     padding: 10px;
     border: none;
@@ -97,11 +96,62 @@ button {
     font-size: 1.1em;
     margin-top: 10px;
 }
-
-#btnAjouter { background-color: #27ae60; color: white; }
-
+#btnAjouter { background-color: var(--success); color: white; }
 #btnAnnuler { background-color: #95a5a6; color: white; display: none; margin-top: 5px; }
 
+/* 5. CARTES REPAS & CATÉGORIES (UNIFIÉ) */
+.repas-flex-group, .plat-categories {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.plat-categories { flex-wrap: nowrap; } /* Forcé sur une ligne sur PC */
+
+.repas-option {
+    cursor: pointer;
+    flex: 1;
+    max-width: 140px;
+}
+
+.repas-option input { display: none; } /* Cache radios et checkboxes */
+
+.repas-card {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.repas-card .emoji { font-size: 1.5em; margin-bottom: 4px; }
+.repas-card .label-text { font-size: 0.9em; font-weight: 600; }
+
+/* États cochés */
+.repas-option input:checked + .repas-card {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Couleurs spécifiques Midi/Soir */
+.repas-flex-group input:checked + .repas-card {
+    border-color: #ff9f43;
+    background-color: #fff4e6;
+}
+.repas-flex-group input:checked + .repas-card .label-text { color: #e67e22; }
+
+/* Couleurs spécifiques catégories Plats */
+.plat-categories input:checked + .repas-card {
+    border-color: var(--success);
+    background-color: #ebf9f0;
+}
+.plat-categories input:checked + .repas-card .label-text { color: var(--success); }
+
+/* 6. AFFICHAGE DES RÉSULTATS */
 .colonnes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
 
 .colonne {
@@ -122,7 +172,7 @@ button {
     justify-content: space-between;
     align-items: center;
     font-size: 0.82em;
-    border-left: 4px solid #27ae60;
+    border-left: 4px solid var(--success);
 }
 
 .badge-present {
@@ -134,177 +184,49 @@ button {
     font-size: 0.9em;
     border: 1px solid #ddd;
 }
+.badge-present small { display: block; color: #666; font-size: 0.75em; margin-top: 2px; }
 
 .liste-presents, .livre-dor-section {
-    display: block !important;
     width: 95%;
     max-width: 1260px;
     margin: 30px auto !important;
-    margin-top: 20px;
     background: white;
     padding: 20px;
     border-radius: 12px;
     text-align: center;
-    float: none; /* Supprime tout flottement résiduel */
 }
 
-@media (max-width: 1000px) {
-    .container { flex-direction: column; }
-    .formulaire { 
-        border-right: none;
-        margin-bottom: 20px;
-        position: static !important;
-    }
-}
-.total-badge {
-    float: right;
-    background: #eee;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.7em;
-    color: #555;
-}
-
-.btn-edit-small {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    padding: 0 0 0 5px;
-    display: inline;
-    width: auto;
-    margin: 0;
-}
-
-.btn-action {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1em;
-    padding: 2px;
-    width: auto;
-    display: inline-block;
-}
-.btn-action:hover {
-    transform: scale(1.2);
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-.inscription-repas-box {
-    margin: 20px 0;
-    text-align: center; /* Centre le texte du haut */
-}
-.repas-flex-group {
-    display: flex;
-    justify-content: center; /* Centre les deux boutons */
-    gap: 15px; /* Espace entre les deux */
-}
-
-.repas-option {
-    cursor: pointer;
-    flex: 1;
-    max-width: 140px; /* Largeur max pour ne pas que ce soit trop géant sur PC */
-}
-
-/* Cache la checkbox moche */
-.repas-option input {
-    display: none;
-}
-
-/* Style de la "carte" bouton */
-.repas-card {
-    background: white;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    padding: 12px 5px;
-    display: flex;
-    flex-direction: column; /* Emoji en haut, texte en dessous */
-    align-items: center;
-    transition: all 0.2s ease-in-out;
-}
-
-.repas-card .emoji {
-    font-size: 1.5em;
-    margin-bottom: 4px;
-}
-
-.repas-card .label-text {
-    font-size: 0.9em;
-    font-weight: 600;
-}
-
-/* État coché : Vert ou Jaune selon ton goût */
-.repas-option input:checked + .repas-card {
-    border-color: #ff9f43;
-    background-color: #fff4e6;
-    transform: translateY(-3px); /* Petit effet de levée */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Changement de couleur du texte quand coché */
-.repas-option input:checked + .repas-card .label-text {
-    color: #e67e22;
-}
-.question-presence {
-    font-weight: bold;
-    margin-bottom: 12px;
-    font-size: 1.1em;
-    color: #2c3e50;
-}
-.repas-selection {
-    display: flex;
-    justify-content: space-around;
-    background: #dedcca;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-}
-
-.repas-selection label {
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-.badge-present small {
-    display: block;
-    color: #666;
-    font-size: 0.75em;
-    margin-top: 2px;
-}
-/* Style pour le titre du Livre d'Or */
-.livre-dor-section h2 {
-    position: relative;
-    margin-bottom: 40px; /* Grand écart pour l'élégance */
-    padding-bottom: 15px;
-}
-
-/* La petite ligne stylée en dessous */
+/* 7. LIVRE D'OR SPECIALS */
+.livre-dor-section h2 { position: relative; margin-bottom: 40px; padding-bottom: 15px; }
 .livre-dor-section h2::after {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%); /* Pour centrer la ligne */
-    width: 100px; /* Largeur de la ligne */
-    height: 3px;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 3px;
     background: linear-gradient(to right, transparent, #feca57, transparent);
-    border-radius: 2px;
 }
 
-/* Optionnel : Un petit écart au-dessus du conteneur des messages 
-   pour qu'ils ne collent pas au bouton de publication */
-#livreDor {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espace constant entre chaque carte de message */
+#livreDor { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
+
+/* 8. PETITS ÉLÉMENTS & ANIMATIONS */
+.total-badge { float: right; background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; color: #555; }
+
+.btn-action {
+    background: none; border: none; cursor: pointer; font-size: 1.1em;
+    padding: 2px; width: auto; display: inline-block; transition: transform 0.2s;
+}
+.btn-action:hover { transform: scale(1.2); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* 9. RESPONSIVE */
+@media (max-width: 1000px) {
+    .container { flex-direction: column; }
+    .formulaire { border-right: none; margin-bottom: 20px; position: static !important; }
+}
+
+@media (max-width: 600px) {
+    .plat-categories { flex-wrap: wrap; justify-content: center; }
+    .plat-categories .repas-option { flex: 0 1 30%; }
 }
