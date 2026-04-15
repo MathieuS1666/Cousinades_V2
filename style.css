@@ -243,14 +243,14 @@ button {
 
 .plat-item {
     padding: 10px;
-    background: white;
+    background: rgba(255, 255, 224, 0.3);
     margin: 8px 0;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.82em;
+    font-size: 1.0em;
     border-left: 4px solid var(--success);
 }
 
