@@ -139,7 +139,7 @@ body {
 
 .reponses { 
     flex: 3; 
-    padding: 10px; 
+    padding: 20px; 
     display: flex; 
     flex-direction: column; /* Force le menu traiteur et les colonnes à s'empiler verticalement */
 }
@@ -279,7 +279,7 @@ button {
    ============================================================ */
 .liste-presents, .livre-dor-section {
     width: 100%;
-    max-width: 1260px;
+    /*max-width: 1260px;*/
     margin: 30px auto !important;
     background: white;
     padding: 30px;
