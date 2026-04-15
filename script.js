@@ -194,7 +194,7 @@ function afficherMenuTraiteur(listePlats) {
     // 2. L'Ajout fixe des Vins
     htmlFinal += `
         <div class="ardoise-item">
-            <span class="ardoise-plat">🍷 Séléction de Vins</span>
+            <span class="ardoise-plat">🍷 La Cave des Cousins : Sélection de flacons choisis en accord avec les saveurs du terroir.</span>
         </div>`;
 
     listeHtml.innerHTML = htmlFinal;
