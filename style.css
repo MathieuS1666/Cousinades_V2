@@ -33,15 +33,33 @@ body {
     top: 0;
     z-index: 1000;
 }
-#countdown { font-weight: bold; color: #feca57; font-size: 1.2em; margin-bottom: 10px; }
-.stats-bar { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; font-size: 0.85em; align-items: center; }
+#countdown { 
+   font-weight: bold;
+   color: #feca57;
+   font-size: 1.2em; 
+   margin-bottom: 10px; 
+}
+
+.stats-bar { 
+   display: flex;
+   justify-content: center; 
+   gap: 15px; 
+   flex-wrap: wrap; 
+   font-size: 0.85em; 
+   align-items: center; 
+}
+
 .stat-item {
     background: rgba(255,255,255,0.1);
     padding: 5px 12px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.2);
 }
-.stat-item b { color: #feca57; }
+
+.stat-item b { 
+   color: #feca57; 
+}
+
 /* --- AJUSTEMENT MOBILE --- */
 @media (max-width: 1000px) {
     .header-info {
@@ -67,7 +85,7 @@ body {
 }
 /* --- STYLE DU BLOC INTRODUCTION --- */
 .intro-box {
-    max-width: 1200px; /* Aligné sur la largeur max de ton site */
+    max-width: 1300px; /* Aligné sur la largeur max de ton site */
     margin: 20px 0; /* Centré avec de l'espace haut/bas */
     padding: 25px;
     background-color: rgba(255, 255, 224, 0.8); /* Même jaune clair que le formulaire */
