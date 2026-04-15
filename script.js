@@ -555,6 +555,7 @@ function afficherAllergies() {
     conteneur.innerHTML = avecAllergies.map(p => `
         <div class="plat-item" 
         style="border-left: 4px solid #e74c3c;
+        background: rgba(155, 0, 0, 0.4);
         margin-bottom: 8px;
         padding: 10px;">
             <div style="font-weight: bold; color: #c0392b; font-size: 0.9em;">${p.nom}</div>
