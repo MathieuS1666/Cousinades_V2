@@ -85,7 +85,7 @@ body {
 }
 /* --- STYLE DU BLOC INTRODUCTION --- */
 .intro-box {
-    max-width: 1300px; /* Aligné sur la largeur max de ton site */
+    max-width: 1280px; /* Aligné sur la largeur max de ton site */
     margin: 20px auto; /* Centré avec de l'espace haut/bas */
     padding: 25px;
     background-color: rgba(255, 255, 224, 0.8); /* Même jaune clair que le formulaire */
