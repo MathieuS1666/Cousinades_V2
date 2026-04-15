@@ -353,10 +353,10 @@ button {
     border-radius: 12px;
     border: 10px solid #4e342e; /* Cadre bois plus sombre */
     box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 50px rgba(0,0,0,0.5);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-family: 'Segoe UI', cursive; /* Tu peux mettre 'Brush Script MT' si tu l'as */
     text-align: center; /* Centrage global */
-    width: 100%;
+    width: auto; /*100%;*/
     box-sizing: border-box;
 }
 
