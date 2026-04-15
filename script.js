@@ -86,7 +86,7 @@ function calculerStatsGlobales() {
         if (estMidi) stats.midi += nb;
         if (estSoir) stats.soir += nb;
     });
-
+// B. CALCUL DES PLATS COUSINS
     plats.forEach(p => {
         if (String(p.ownerId).toLowerCase() === "traiteur") return;
         if (p.plat && p.plat !== "null" && p.plat !== "") {
@@ -126,53 +126,9 @@ function calculerStatsGlobales() {
                 </div>`;
         }).join('');
     }
- // --- C. LOGIQUE DE L'ARDOISE TRAITEUR (AJOUT) ---
-    const sectionArdoise = document.getElementById('menuTraiteurSection');
-    const listeArdoise = document.getElementById('menuTraiteurListe');
+ } // <--- Fin de calculerStatsGlobales propre
 
-    if (sectionArdoise && listeArdoise) {
-        // On récupère toutes les lignes de plats dont l'ownerId est "traiteur"
-        const platsTraiteur = plats.filter(p => String(p.ownerId).toLowerCase() === "traiteur");
-
-        if (platsTraiteur.length > 0) {
-            sectionArdoise.style.display = 'block';
-            
-            // On construit la liste ligne par ligne
-            listeArdoise.innerHTML = platsTraiteur.map(p => {
-                let emoji = "🧀";
-                if (p.categorie === "entree") emoji = "🥗";
-                if (p.categorie === "platPrincipal") emoji = "🥘";
-                if (p.categorie === "dessert") emoji = "🍰";
-                if (p.categorie === "apero") emoji = "🍹";
-                
-                return `<div style="margin-bottom:5px;">${emoji} ${p.plat}</div>`;
-            }).join('');
-        } else {
-            sectionArdoise.style.display = 'none';
-        }
-    }
-}
-// FONCTION D4AFFICHAGE DES PLATS DANS LES CADRES
-/*function afficherPlats() {
-    const cats = [['aperoListe', 'apero', '🍹'], ['entreeListe', 'entree', '🥗'], ['platListe', 'platPrincipal', '🥘'], ['dessertListe', 'dessert', '🍰'], ['autreListe', 'autre', '📦']];
-    cats.forEach(([elemId, key, icon]) => {
-        const list = plats.filter(p => p.categorie === key && p.plat && p.plat !== "null" && p.plat !== "");
-        const totalCat = list.reduce((s, p) => s + (parseFloat(p.parts) || 0), 0);
-        const badge = document.getElementById(`total-${key}`);
-        if(badge) { badge.innerText = totalCat; badge.style.display = totalCat > 0 ? "inline" : "none"; }
-
-        document.getElementById(elemId).innerHTML = list.map(p => `
-            <div class="plat-item" style="border-left-color: var(--${key})">
-                <span>${icon} <strong>${p.nom}</strong><br>${p.plat} (${p.parts}p)</span>
-                ${p.ownerId === browserId ? `
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="ouvrirModifPlat(${p.id})" class="btn-action">✏️</button>
-                        <button onclick="supprimerPlat(${p.id})" class="btn-action">🗑️</button>
-                    </div>` : ''}
-            </div>`).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
-    });
-}*/
-// MODIFICATION DE LA FONCTION D'AFFICHAGE DES PLATS
+// FONCTION D'AFFICHAGE DES PLATS
 function afficherPlats() {
     // 1. ON GÈRE LE MENU TRAITEUR D'ABORD
     const platsDuTraiteur = plats.filter(p => String(p.ownerId).toLowerCase() === "traiteur");
@@ -212,30 +168,36 @@ function afficherPlats() {
             </div>`).join('') || '<div style="color:gray; font-size:0.8em; padding:5px;">Rien pour le moment</div>';
     });
 }
-
-// NOUVELLE FONCTION : AFFICHER LE MENU TRAITEUR
+// FONCTION MENU TRAITEUR (LOOK ARDOISE)
 function afficherMenuTraiteur(listePlats) {
     const conteneur = document.getElementById('menuTraiteurSection');
     const listeHtml = document.getElementById('menuTraiteurListe');
     if (!conteneur || !listeHtml) return;
 
-    if (listePlats.length === 0) {
-        conteneur.style.display = "none";
-        return;
-    }
-
+    // Toujours afficher le conteneur car on a au moins le vin
     conteneur.style.display = "block";
     
-    listeHtml.innerHTML = listePlats.map(p => {
-        // Sécurité : on affiche la catégorie seulement si elle existe
-        const catLabel = p.categorie ? `[${p.categorie.toUpperCase()}]` : "";
+    // 1. Plats du traiteur depuis le Sheet
+    let htmlFinal = listePlats.map(p => {
+        let emoji = "🧀";
+        if (p.categorie === "entree") emoji = "🥗";
+        if (p.categorie === "platPrincipal") emoji = "🥘";
+        if (p.categorie === "dessert") emoji = "🍰";
+        if (p.categorie === "apero") emoji = "🍹";
+        
         return `
-            <div class="menu-item-traiteur" style="padding: 10px; border-bottom: 1px dashed #abdbe3;">
-                <span style="font-weight: bold; color: #2980b9;">${catLabel}</span>
-                <span style="margin-left: 10px; color: #2c3e50;">${p.plat}</span>
-            </div>
-        `;
+            <div class="ardoise-item">
+                <span class="ardoise-plat">${emoji} ${p.plat}</span>
+            </div>`;
     }).join('');
+
+    // 2. L'Ajout fixe des Vins
+    htmlFinal += `
+        <div class="ardoise-item">
+            <span class="ardoise-plat">🍷 Séléction de Vins</span>
+        </div>`;
+
+    listeHtml.innerHTML = htmlFinal;
 }
 //===============================================
 // --- 5/ GESTION DES ACTIONS UTILISATEURS ---
