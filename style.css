@@ -33,7 +33,13 @@ body {
     top: 0;
     z-index: 1000;
 }
-
+@media (max-width: 1000px) {
+    .header-info {
+        /* Sur mobile, il devient "static" : il reste en haut de la page 
+           et disparaît quand on descend (scroll) */
+        position: static; 
+        padding: 10px 5px;
+    }
 #countdown { font-weight: bold; color: #feca57; font-size: 1.2em; margin-bottom: 10px; }
 
 .stats-bar { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; font-size: 0.85em; align-items: center; }
