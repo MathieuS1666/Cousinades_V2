@@ -238,7 +238,7 @@ button {
     border-radius: 8px;
     border: 1px solid #eee;
     border-top: 5px solid #ccc; /* La couleur sera surchargée par l'inline style HTML */
-    height: fit-content;
+    /*height: fit-content;*/
 }
 
 .plat-item {
