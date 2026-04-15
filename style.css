@@ -74,7 +74,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     text-align: center;
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 
 .intro-box h1 {
