@@ -243,10 +243,10 @@ button {
 
 .plat-item {
     padding: 10px;
-    background: rgba(255, 255, 224, 0.6);
+    background: rgba(255, 255, 180, 0.6);
     margin: 8px 0;
     border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 5px rgba(0,0,0,0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
