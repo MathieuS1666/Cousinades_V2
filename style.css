@@ -139,7 +139,7 @@ body {
 
 .reponses { 
     flex: 3; 
-    padding: 20px; 
+    padding: 10px; 
     display: flex; 
     flex-direction: column; /* Force le menu traiteur et les colonnes à s'empiler verticalement */
 }
