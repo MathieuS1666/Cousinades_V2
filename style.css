@@ -86,7 +86,7 @@ body {
     max-width: 1300px;
     margin: 20px auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.60);
+    background-color: rgba(255, 255, 224, 0.60);
     border-radius: 12px;
     gap: 20px; /* Ajoute de l'espace entre le formulaire et les réponses */
 }
@@ -708,7 +708,7 @@ button {
     font-size: 1.5em;
     color: #feca57;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     border-bottom: 1px solid rgba(254, 202, 87, 0.4);
     display: inline-block;
     padding-bottom: 10px;
@@ -749,3 +749,58 @@ button {
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
 }
+/* ============================================================
+   11. HARMONISATION FINALE & FOOTER OPAQUE
+   ============================================================ */
+
+/* Harmonisation des cadres du bas avec le formulaire */
+.container-section {
+    width: 95%;
+    max-width: 1260px;
+    margin: 30px auto !important;
+    background-color: rgba(255, 255, 224, 0.8) !important; /* Même jaune que le formulaire */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.section-title-box {
+    background-color: rgba(255, 255, 224, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.section-title-box h2 {
+    color: #660503;
+    margin: 0;
+}
+
+/* LE BANDEAU NOIR OPAQUE */
+.site-footer {
+    background-color: #000000 !important; /* Noir total */
+    color: #ffffff !important;
+    padding: 40px 0;
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+    border-top: 4px solid #feca57; /* Ligne dorée de finition */
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 100;
+}
+
+.site-footer p {
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 0.9em;
+}
+/* Empêche l'image de fond de dépasser sous le noir 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: auto;
+}*/
