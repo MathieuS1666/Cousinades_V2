@@ -79,6 +79,7 @@ function calculerStatsGlobales() {
 
     // A. CALCUL DES STATS (La barre de progression en haut)
     listeParticipants.forEach(p => {
+     if (String(p.ownerId).toLowerCase() === "traiteur") return; //exclu le traiteur des stats
         const nb = parseFloat(p.convives || 0);
         const estMidi = (p.midi === true || String(p.midi).toUpperCase() === "TRUE" || p.midi === "true");
         const estSoir = (p.soir === true || String(p.soir).toUpperCase() === "TRUE" || p.soir === "true");
@@ -87,6 +88,7 @@ function calculerStatsGlobales() {
     });
 
     plats.forEach(p => {
+        if (String(p.ownerId).toLowerCase() === "traiteur") return;
         if (p.plat && p.plat !== "null" && p.plat !== "") {
             const nbParts = parseFloat(p.parts || 0);
             stats.totalParts += nbParts;
@@ -107,7 +109,9 @@ function calculerStatsGlobales() {
     // B. AFFICHAGE DE LA LISTE DES PRÉSENTS (Les badges)
     const listeElem = document.getElementById('listePresents');
     if (listeElem) {
-        listeElem.innerHTML = listeParticipants.map(p => {
+        listeElem.innerHTML = listeParticipants
+         .filter(p => String(p.ownerId).toLowerCase() !== "traiteur")
+         .map(p => {
             let labels = [];
             const estMidi = (p.midi === true || String(p.midi).toUpperCase() === "TRUE" || p.midi === "true");
             const estSoir = (p.soir === true || String(p.soir).toUpperCase() === "TRUE" || p.soir === "true");
