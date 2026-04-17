@@ -272,9 +272,65 @@
         "></div>
 </div>
 
-<script src="script.js"></script>
+<div id="pageFAQ" class="container-section" style="display:none; min-height: 50vh;">
+    <div class="section-title-box">
+        <h2>❓ Questions Fréquentes (FAQ)</h2>
+    </div>
+    
+    <div class="faq-container" style="text-align: left; max-width: 800px; margin: 0 auto;">
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">📍 Où ça se passe exactement ?</h3>
+            <p>La Cousinade se déroule chez Matthieu et Lætitia à Darvoy.</p>
+        </div>
+
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">🚗 Où se garer ?</h3>
+            <p>Un parking est disponible devant chez Matthieu et Lætitia</p>
+        </div>
+    
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">🍲 Comment sont organisés les repas ?</h3>
+            <p>Nos chers "ancêtres" Bobillier (Jacques, Michel, Christian et leurs épouses) prennent en charge le plat principal 
+            et le dessert du repas de midi, ainsi que les fromages et vins des repas de midi et du soir, et les vins de l'apéro.</p>
+            <p>Notez que pour midi l'apéro tiendra lieu d'entrée.</p>
+            <p>Si vous apportez quelque chose à manger, cela servira donc pour l'apéro de midi et pour le repas du soir.</p>
+        </div>
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">🗓️ Quelles sont les dates limites ?</h3>
+            <p>Merci de remplir une page par famille de Cousinade Bob 2026 avant le 27 avril en précisant si vous viendrez ou non et combien vous serez (un enfant de moins de 10 ans compte pour une demi-part (0,5)).<br/>
+            La date limite est imposée par le traiteur qui préparera le repas de midi.</p>
+            <p>Notez que vous pourrez revenir sur votre page pour la compléter ou la modifier, même après le 27 avril.</p>
+        </div>
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">❓ Pourquoi je ne peux pas modifer mes informations ?</h3>
+            <p>Une inscription faite sur un appareil X ne pourra pas être modifiée sur un appareil Y.<br/> 
+                Il faudra reprendre le X pour modifier vos informations.</p>
+            <p>Exemple : Si vous avez fait votre inscription depuis votre téléphone, vous ne pouvez pas faire de modification depuis votre ordinateur.<br/>
+            Pour des raison technique c'est le navigateur utilisé qui est enregistré et lié à votre profil.<br/> 
+                Il faut donc réutiliser le même navigateur pour être reconnu comme déjà enregistré.</p>         
+        </div>
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">❓ Pourquoi ce site et pas un échange mails ?</h3>
+            <p>C'est une idée de Jacques et Valérie (pour ne pas les citer 😉) qui ont pensés qu'un "padelet" pourrait simplifier la centralisation des informations.</p>
+            <p>Jacques a donc demandé à son gendre (moi, Mathieu), informaticien de son état, s'il avait une solution technique.<br/>
+                J'ai donc codé cette page pour les Cousinades 2026 et les prochaines. J'espère que cela vous plaît, moi j'ai pris beaucoup de plaisir à le faire.</p>         
+        </div>
+        <div class="faq-item" style="margin-bottom: 20px;">
+            <h3 style="color: #d35400;">❓ Quelle est la réponse à La grande question sur la Vie, l'Univers et le reste ? </h3>
+            <p style="font-size: 2.0em; font-weight: bold; margin: 10px 0; color: #2c3e50;">   42</p>
+            <div style="text-align: right; font-size: 0.9em; color: #7f8c8d;">
+                    — Deep Thought, <em>Le Guide du voyageur galactique</em>
+            </div>        
+        </div>
+        <button onclick="basculerFAQ(false)" style="background: #95a5a6; width: auto; margin: 30px auto; padding: 10px 20px;">⬅️ Retour à l'accueil</button>
+    </div>
+</div>    
   <footer class="site-footer">
     <p> © MS2026 V2.67 | Fait avec ❤️ pour la Cousinade</p>
-</footer>  
+      <p style="margin-top: 10px;">
+        <a href="javascript:void(0)" onclick="basculerFAQ(true)" style="color: #feca57; text-decoration: underline; font-size: 0.9em;">Besoin d'aide ? Consultez la FAQ</a>
+    </p>
+</footer> 
+    <script src="script.js"></script>
 </body>
 </html>
