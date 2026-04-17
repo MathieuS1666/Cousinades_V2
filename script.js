@@ -557,9 +557,12 @@ function afficherAllergies() {
         style="border-left: 4px solid #e74c3c;
         background: rgba(155, 0, 0, 0.2);
         margin-bottom: 8px;
-        padding: 10px;">
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;">
             <div style="font-weight: bold; color: #c0392b; font-size: 1.0;">${p.nom}</div>
-            <div style="font-size: 1.0em; color: #333;">${p.allergies}</div>
+            <div style="font-size: 1.0em; color: #333;">🚫 ${p.allergies}</div>
         </div>
     `).join('');
 }
